@@ -174,14 +174,14 @@ def imgget(items, uptref, frameobj):
 def textshow(host, port, selector):
 	data=pathfigure(host, port, selector, gtype="0")
 	menu=libgop.menudecode(data, txtflg=1)
-	newgop=gopherpane(host=host, port=port, selector=selector, preload=menu, prefix="text: gopher://")
+	newgop=gopherpane(host=host, port=port, selector=selector, preload=menu, prefix="text: gopher://", gtype="0", shortprefix="text: ")
 	framesc.add_frame(stz.framex(600, 500, "Text Document", resizable=1, pumpcall=newgop.pumpcall1, xpos=20))
 
 
 
 		
 class gopherpane:
-	def __init__(self, host='about:splash', port=70, selector="", prefix="menu: gopher://", preload=None, forceimage=0, linkdisable=0):
+	def __init__(self, host='about:splash', port=70, selector="", prefix="menu: gopher://", preload=None, forceimage=0, linkdisable=0, gtype="1", shortprefix="menu: "):
 		self.host=host
 		self.port=port
 		self.selector=selector
@@ -194,6 +194,8 @@ class gopherpane:
 		self.forceimage=forceimage
 		self.linkdisable=linkdisable
 		self.renderdict={}
+		self.gtype=gtype
+		self.shortprefix=shortprefix
 	#menu get routine
 	def menuget(self):
 		self.data=pathfigure(self.host, self.port, self.selector)
@@ -252,9 +254,9 @@ class gopherpane:
 		self.port=item.port
 		self.selector=item.selector
 		if item.hostname.startswith("about:"):
-			frameobj.name=("menu: "+str(item.hostname))
+			frameobj.name=(self.shortprefix+str(item.hostname))
 		else:
-			frameobj.name=(self.prefix+str(item.hostname) + ":" + str(int(item.port)) + str(item.selector))
+			frameobj.name=(self.prefix+str(item.hostname) + "/" + self.gtype + str(item.selector))
 		self.menuget()
 		self.yoff=0
 		self.menudraw(frameobj)
@@ -262,9 +264,9 @@ class gopherpane:
 	#menu initalization loader
 	def menuinital(self, frameobj):
 		if self.host.startswith("about:"):
-			frameobj.name=("menu: "+str(self.host))
+			frameobj.name=(self.shortprefix+str(self.host))
 		else:
-			frameobj.name=(self.prefix+str(self.host) + ":" + str(int(self.port)) + str(self.selector))
+			frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
 		self.menuget()
 		self.yoff=0
 		self.menudraw(frameobj)
@@ -284,7 +286,10 @@ class gopherpane:
 			else:
 				self.menu=self.preload
 				self.menudraw(frameobj)
-				frameobj.name=(self.prefix+str(self.host) + ":" + str(int(self.port)) + str(self.selector))
+				if self.host.startswith("about:"):
+					frameobj.name=(self.shortprefix+str(self.host))
+				else:
+					frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
 		#resize
 		if frameobj.statflg==2:
 			for item in self.renderdict:
@@ -311,7 +316,7 @@ class gopherpane:
 						if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 							itemcopy=copy.deepcopy(item)
 							del itemcopy.image
-							newgop=gopherpane(host=itemcopy.hostname, port=itemcopy.port, selector=itemcopy.selector, prefix="image: gopher://", preload=[itemcopy], forceimage=1, linkdisable=1)
+							newgop=gopherpane(host=itemcopy.hostname, port=itemcopy.port, selector=itemcopy.selector, prefix="image: gopher://", preload=[itemcopy], forceimage=1, linkdisable=1, gtype=item.gtype, shortprefix="image: ")
 							framesc.add_frame(stz.framex(600, 500, "Image", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
 					if item.gtype=="q" or item.gtype=="7":
 						if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):

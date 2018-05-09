@@ -387,18 +387,88 @@ class querypane:
 					framesc.close_pid(frameobj.pid)
 			elif data.key==pygame.K_BACKSPACE:
 				self.stringblob=self.stringblob[:-1]
-				print(self.stringblob)
+				#print(self.stringblob)
 				self.renderdisp(frameobj)
 			else:
 				if str(data.unicode) in self.validchars:
 					self.stringblob+=str(data.unicode)
-					print(self.stringblob)
+					#print(self.stringblob)
 					self.renderdisp(frameobj)
 				
 		
 
+class urlgo:
+	def __init__(self):
+		self.yoff=0
+		self.yjump=15
+		self.stringblob=""
+		self.validchars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890:/."
+	def renderdisp(self, frameobj):
+		frameobj.surface.fill((255, 255, 255))
+		textitem("Please Type URL", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*2, {})
+		textitem("gopher://"+self.stringblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*4, {})
+	def pumpcall1(self, frameobj, data=None):
+		if frameobj.statflg==2:
+			self.renderdisp(frameobj)
+		if frameobj.statflg==1:
+			
+			print("URLGO:")
+			frameobj.name="URL GO:"
+			self.renderdisp(frameobj)
+		if frameobj.statflg==6:
+			if data.key==pygame.K_RETURN:
+				try:
+					
+					if self.stringblob.startswith("about:"):
+						self.host=self.stringblob
+						self.port=70
+						self.selector=""
+						self.gtype="1"
+					else:
+						
+						if ":" in self.stringblob:
+							self.port=self.stringblob.split(":")[1]
+							self.stringblob=self.stringblob.split(":")[0]
+						else:
+							self.port=70
+						if "/" in self.stringblob:
+							self.host, self.selecttype = self.stringblob.split("/", 1)
+							self.gtype=self.selecttype[0]
+							self.selector=self.selecttype[1:]
+						else:
+							self.host=self.stringblob
+							self.gtype="1"
+							self.selector="/"
+							
+					if self.gtype=="1":
+						try:
+							data=pathfigure(self.host, self.port, self.selector)
+						except Exception:
+							data=open(os.path.join("vgop", "gaierror"))
+						menu=libgop.menudecode(data)
+						newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, preload=menu)
+						framesc.add_frame(stz.framex(600, 500, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
+						#close self
+						framesc.close_pid(frameobj.pid)
+					elif self.gtype=="0":
+						textshow(self.host, self.port, self.selector)
+						framesc.close_pid(frameobj.pid)
+				except IndexError as err:
+					print(err)
+			elif data.key==pygame.K_BACKSPACE:
+				self.stringblob=self.stringblob[:-1]
+				#print(self.stringblob)
+				self.renderdisp(frameobj)
+			else:
+				if str(data.unicode) in self.validchars:
+					self.stringblob+=str(data.unicode)
+					#print(self.stringblob)
+					self.renderdisp(frameobj)
+				
 
-progs=[progobj(gopherpane, pygame.image.load(os.path.join("vgop", "newwindow.png")), "goppane", "Gopher Menu", "GOPHER", 600, 500, 1)]
+
+progs=[progobj(gopherpane, pygame.image.load(os.path.join("vgop", "newwindow.png")), "goppane", "Gopher Menu", "GOPHER", 600, 500, 1),
+progobj(urlgo, pygame.image.load(os.path.join("vgop", "go.png")), "urlgo", "URL GO:", "urlgo", 400, 100, 0)]
 deskt=deskclass(progs)
 pygame.font.init()
 #desktop icons

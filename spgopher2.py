@@ -274,7 +274,7 @@ class gopherpane:
 				
 					
 			else:
-				rects, self.ypos, self.renderdict = textitem("[UNKNOWN]" + item.name, simplefont, 15, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
+				rects, self.ypos, self.renderdict = textitem("[UNKNOWN:" + item.gtype + "]" + item.name, simplefont, 15, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
 				#print(item.gtype)
 		#launch image loader thread if needed
 		if imageset!=[]:

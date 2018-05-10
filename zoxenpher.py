@@ -132,6 +132,7 @@ class deskclass:
 		return
 	def imageloader(self, surface):
 		#self.wallpaper=pygame.image.load("wallpaper.jpg").convert(surface)
+		self.mascot=pygame.image.load(os.path.join("vgop", "mascot45.png"))
 		self.resize(surface)
 		for prog in self.progs:
 			prog.icon=prog.icon.convert(surface)
@@ -142,6 +143,7 @@ class deskclass:
 			self.imageloader(surface)
 			
 		#surface.blit(self.wallpaperx, (0, 0))
+		#surface.blit(self.mascot, (surface.get_width()//2-self.mascot.get_width()//2, surface.get_height()//2-self.mascot.get_height()//2))
 		icnx=0
 		icny=0
 		icnxjmp=45
@@ -150,6 +152,7 @@ class deskclass:
 		for prog in self.progs:
 			prog.iconrect=surface.blit(prog.icon, (icnx, icny))
 			icnx+=icnxjmp
+		surface.blit(self.mascot, (surface.get_width()-self.mascot.get_width(), 0))
 
 
 class progobj:

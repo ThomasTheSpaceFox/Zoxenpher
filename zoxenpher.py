@@ -6,7 +6,7 @@ import pygame
 from threading import Thread
 import strazoloidwm as stz
 import copy
-print("SPGopher v2.0.1")
+print("Zoxenpher v2.0.1")
 #configuration (TODO: build options menu and config file)
 #number of images loaded for preview. (images not previewed will be shown as links)
 maximages=10
@@ -520,7 +520,7 @@ pygame.font.init()
 #desktop icons
 
 
-desk=stz.desktop(800, 600, "SPGopher2", pumpcall=deskt.pumpcall1, resizable=1)
+desk=stz.desktop(800, 600, "Zoxenpher2", pumpcall=deskt.pumpcall1, resizable=1)
 
 windowicon=pygame.image.load(os.path.join("vgop", "icon32.png"))
 framesc=stz.framescape(desk, deskicon=windowicon)

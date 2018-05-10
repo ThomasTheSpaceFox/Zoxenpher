@@ -1,1 +1,1 @@
-SPGophper was unable to load the specified gopher address!
+Zoxenpher was unable to load the specified gopher address!

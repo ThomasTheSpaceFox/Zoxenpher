@@ -520,7 +520,7 @@ pygame.font.init()
 #desktop icons
 
 
-desk=stz.desktop(800, 600, "Zoxenpher2", pumpcall=deskt.pumpcall1, resizable=1)
+desk=stz.desktop(800, 600, "Zoxenpher", pumpcall=deskt.pumpcall1, resizable=1)
 
 windowicon=pygame.image.load(os.path.join("vgop", "icon32.png"))
 framesc=stz.framescape(desk, deskicon=windowicon)

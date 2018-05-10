@@ -1,5 +1,17 @@
-welcome to spgopher! A python graphical gopher client!
+welcome to spgopher's live help system.
 
-SPGopher2 v2.0.1
+Gopher menu Controls:
+ - leftclick: open menu in same window (or any other link in new window)
+ - rightclick: open menu in new window.
+ - mouse wheel: scroll menu up/down
+ - up/down arrow keys: scroll menu up/down
+Global:
+ - CTRL+n: new gopher window
+ - CTRL+g: open go dialog
+ - F1: open help menu
+
+
 
 Topics:
+1Basics	/	about:help_basic	70
+1Troubleshooting	/	about:help_troubleshoot	70

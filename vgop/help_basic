@@ -1,0 +1,12 @@
+When you first open SPGopher, you will see a set of icons and a blank "desktop"  This is a breakdown of what each icon does:
+
+pnew window	/	about:newwindow.png	70
+this icon creates a new gopher window.  this window will start at a splash page containing some helpful links.
+
+pgo	/	about:go.png	70
+This icon will bring up a prompt, asking for a gopher url.  You may enter a gopher URL here to open that url directly.
+
+phelp	/	about:help.png	70
+This icon will open the help menu directly.
+
+1Return to help menu	/	about:help	70

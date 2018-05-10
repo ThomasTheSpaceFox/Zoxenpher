@@ -113,6 +113,17 @@ class deskclass:
 		if frameobj.statflg==8:
 			self.resize(frameobj.surface)
 			self.drawdesk(frameobj.surface)#Needed only if a resizable desk is desired.
+		if frameobj.statflg==6:
+			mods=pygame.key.get_mods()
+			for prog in self.progs:
+				if prog.mod==None:
+					if prog.key!=None:
+						if data.key==prog.key:
+							framesc.add_frame(stz.framex(prog.xsize, prog.ysize, prog.friendly_name, pumpcall=prog.classref().pumpcall1, resizable=prog.resizable))
+				elif mods & prog.mod:
+					if prog.key!=None:
+						if data.key==prog.key:
+							framesc.add_frame(stz.framex(prog.xsize, prog.ysize, prog.friendly_name, pumpcall=prog.classref().pumpcall1, resizable=prog.resizable))
 			
 	#resize handling
 	def resize(self, surface):
@@ -142,7 +153,7 @@ class deskclass:
 
 
 class progobj:
-	def __init__(self, classref, icon, idcode, friendly_name, commname, xsize, ysize, resizable=0):
+	def __init__(self, classref, icon, idcode, friendly_name, commname, xsize, ysize, resizable=0, key=None, mod=None):
 		self.idcode=idcode
 		self.friendly_name=friendly_name
 		self.commname=commname
@@ -151,6 +162,27 @@ class progobj:
 		self.ysize=ysize
 		self.classref=classref
 		self.resizable=resizable
+		self.key=key
+		self.mod=mod
+
+
+class pathprogobj:
+	def __init__(self, classref, icon, idcode, friendly_name, commname, xsize, ysize, resizable=0, key=None, mod=None, host="about:splash", port=70, selector="/"):
+		self.idcode=idcode
+		self.friendly_name=friendly_name
+		self.commname=commname
+		self.icon=icon
+		self.xsize=xsize
+		self.ysize=ysize
+		self.classrefx=classref
+		self.resizable=resizable
+		self.key=key
+		self.mod=mod
+		self.host=host
+		self.port=port
+		self.selector=selector
+	def classref(self):
+		return self.classrefx(host=self.host, port=self.port, selector=self.selector)
 
 #run in a thread for each time a page is rendered the first time.
 def imgget(items, uptref, frameobj):
@@ -217,7 +249,7 @@ class gopherpane:
 			elif item.gtype=="1":
 				rect, self.ypos, self.renderdict = textitem("[MENU]" + item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict)
 				item.rect=rect
-			elif item.gtype=="q" or item.gtype=="7":
+			elif item.gtype=="7":
 				rect, self.ypos, self.renderdict = textitem("[QUERY]" + item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict)
 				item.rect=rect
 			elif item.gtype=="0":
@@ -298,6 +330,15 @@ class gopherpane:
 			self.renderdict={}
 			self.menudraw(frameobj)
 		#mouse button down
+		if frameobj.statflg==6:
+			if data.key==pygame.K_UP:
+				self.yoff+=self.yjump*2
+				if self.yoff>0:
+					self.yoff=0
+				self.menudraw(frameobj)
+			if data.key==pygame.K_DOWN:
+				self.yoff-=self.yjump*2
+				self.menudraw(frameobj)
 		if frameobj.statflg==4:
 			if data.button==1 and not self.linkdisable:
 				for item in self.menu:
@@ -318,7 +359,7 @@ class gopherpane:
 							del itemcopy.image
 							newgop=gopherpane(host=itemcopy.hostname, port=itemcopy.port, selector=itemcopy.selector, prefix="image: gopher://", preload=[itemcopy], forceimage=1, linkdisable=1, gtype=item.gtype, shortprefix="image: ")
 							framesc.add_frame(stz.framex(600, 500, "Image", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
-					if item.gtype=="q" or item.gtype=="7":
+					if item.gtype=="7":
 						if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 							newgop=querypane(host=item.hostname, port=item.port, selector=item.selector)
 							framesc.add_frame(stz.framex(350, 100, "Gopher Query", resizable=0, pumpcall=newgop.pumpcall1))
@@ -357,7 +398,7 @@ class querypane:
 			self.debug=0
 		self.validchars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890"
 	def renderdisp(self, frameobj):
-		str1=self.host+":"+str(int(self.port))+self.selector
+		str1=self.host+"/7"+self.selector
 		frameobj.surface.fill((255, 255, 255))
 		textitem(str1, simplefont, self.yjump, (0, 0, 0), frameobj.surface, 0, {})
 		textitem("Please Type Query", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*2, {})
@@ -366,7 +407,7 @@ class querypane:
 		if frameobj.statflg==2:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
-			str1=self.host+":"+str(int(self.port))+self.selector
+			str1=self.host+"/7"+self.selector
 			print("querypane:")
 			print(str1)
 			frameobj.name="query: "+str1
@@ -397,12 +438,16 @@ class querypane:
 				
 		
 
+
+
+
+
 class urlgo:
 	def __init__(self):
 		self.yoff=0
 		self.yjump=15
 		self.stringblob=""
-		self.validchars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890:/."
+		self.validchars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890:/.-_"
 	def renderdisp(self, frameobj):
 		frameobj.surface.fill((255, 255, 255))
 		textitem("Please Type URL", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*2, {})
@@ -467,8 +512,9 @@ class urlgo:
 				
 
 
-progs=[progobj(gopherpane, pygame.image.load(os.path.join("vgop", "newwindow.png")), "goppane", "Gopher Menu", "GOPHER", 600, 500, 1),
-progobj(urlgo, pygame.image.load(os.path.join("vgop", "go.png")), "urlgo", "URL GO:", "urlgo", 400, 100, 0)]
+progs=[progobj(gopherpane, pygame.image.load(os.path.join("vgop", "newwindow.png")), "goppane", "Gopher Menu", "GOPHER", 600, 500, 1, key=pygame.K_n, mod=pygame.KMOD_CTRL),
+progobj(urlgo, pygame.image.load(os.path.join("vgop", "go.png")), "urlgo", "URL GO:", "urlgo", 400, 100, 0, key=pygame.K_g, mod=pygame.KMOD_CTRL),
+pathprogobj(gopherpane, pygame.image.load(os.path.join("vgop", "help.png")), "goppane_HELP", "Gopher Menu", "GOPHER_HELP", 600, 500, 1, host="about:help", key=pygame.K_F1)]
 deskt=deskclass(progs)
 pygame.font.init()
 #desktop icons

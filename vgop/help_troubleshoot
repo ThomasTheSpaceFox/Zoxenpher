@@ -1,0 +1,10 @@
+In this document, q=question and a=awnser
+
+q: I'm seeing alot of lines with "UNKNOWN:" at the beginning. what do they mean?
+a: This is SPGopher's way of showing a gopher item type it doesn't know how to use.
+
+q: i see "SPGophper was unable to load the specified gopher address!" or
+pErrorImage	/	about:gaierror.png	70
+a: This means SPGopher wasn't able to load that content.  This can be for a variety of reasons, ranging from dead links to server bugs to bugs in SPGopher itself.
+
+1Return to help menu	/	about:help	70

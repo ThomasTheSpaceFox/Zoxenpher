@@ -324,6 +324,7 @@ class gopherpane:
 					frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
 		#resize
 		if frameobj.statflg==2:
+			self.yoff=0
 			for item in self.renderdict:
 				del item
 			del self.renderdict

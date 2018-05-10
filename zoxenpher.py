@@ -407,6 +407,16 @@ class querypane:
 		textitem(str1, simplefont, self.yjump, (0, 0, 0), frameobj.surface, 0, {})
 		textitem("Please Type Query", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*2, {})
 		textitem(">"+self.stringblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*4, {})
+	def loader(self, frameobj):
+		try:
+			data=libgop.gopherget(self.host, self.port, self.selector, query=self.stringblob)
+		except Exception:
+			data=open(os.path.join("vgop", "gaierror"))
+		menu=libgop.menudecode(data)
+		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, preload=menu)
+		framesc.add_frame(stz.framex(600, 500, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
+		#close self
+		framesc.close_pid(frameobj.pid)
 	def pumpcall1(self, frameobj, data=None):
 		if frameobj.statflg==2:
 			self.renderdisp(frameobj)
@@ -421,15 +431,8 @@ class querypane:
 				if self.debug==1:
 					print(self.stringblob)
 				else:
-					try:
-						data=libgop.gopherget(self.host, self.port, self.selector, query=self.stringblob)
-					except Exception:
-						data=open(os.path.join("vgop", "gaierror"))
-					menu=libgop.menudecode(data)
-					newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, preload=menu)
-					framesc.add_frame(stz.framex(600, 500, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
-					#close self
-					framesc.close_pid(frameobj.pid)
+					sideproc=Thread(target = self.loader, args = [frameobj])
+					sideproc.start()
 			elif data.key==pygame.K_BACKSPACE:
 				self.stringblob=self.stringblob[:-1]
 				#print(self.stringblob)
@@ -456,6 +459,19 @@ class urlgo:
 		frameobj.surface.fill((255, 255, 255))
 		textitem("Please Type URL", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*2, {})
 		textitem("gopher://"+self.stringblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*4, {})
+	def loaderg1(self, frameobj):
+		try:
+			data=pathfigure(self.host, self.port, self.selector)
+		except Exception:
+			data=open(os.path.join("vgop", "gaierror"))
+		menu=libgop.menudecode(data)
+		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, preload=menu)
+		framesc.add_frame(stz.framex(600, 500, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
+		#close self
+		framesc.close_pid(frameobj.pid)
+	def loaderg0(self, frameobj):
+		textshow(self.host, self.port, self.selector)
+		framesc.close_pid(frameobj.pid)
 	def pumpcall1(self, frameobj, data=None):
 		if frameobj.statflg==2:
 			self.renderdisp(frameobj)
@@ -490,18 +506,11 @@ class urlgo:
 							self.selector="/"
 							
 					if self.gtype=="1":
-						try:
-							data=pathfigure(self.host, self.port, self.selector)
-						except Exception:
-							data=open(os.path.join("vgop", "gaierror"))
-						menu=libgop.menudecode(data)
-						newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, preload=menu)
-						framesc.add_frame(stz.framex(600, 500, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
-						#close self
-						framesc.close_pid(frameobj.pid)
+						sideproc=Thread(target = self.loaderg1, args = [frameobj])
+						sideproc.start()
 					elif self.gtype=="0":
-						textshow(self.host, self.port, self.selector)
-						framesc.close_pid(frameobj.pid)
+						sideproc=Thread(target = self.loaderg0, args = [frameobj])
+						sideproc.start()
 				except IndexError as err:
 					print(err)
 			elif data.key==pygame.K_BACKSPACE:

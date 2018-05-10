@@ -336,7 +336,7 @@ class gopherpane:
 				if self.yoff>0:
 					self.yoff=0
 				self.menudraw(frameobj)
-			if data.key==pygame.K_DOWN:
+			if data.key==pygame.K_DOWN and self.ypos>frameobj.sizey:
 				self.yoff-=self.yjump*2
 				self.menudraw(frameobj)
 		if frameobj.statflg==4:
@@ -374,7 +374,7 @@ class gopherpane:
 				if self.yoff>0:
 					self.yoff=0
 				self.menudraw(frameobj)
-			if data.button==5:
+			if data.button==5 and self.ypos>frameobj.sizey:
 				self.yoff-=self.yjump*2
 				self.menudraw(frameobj)
 							

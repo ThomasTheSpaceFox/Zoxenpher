@@ -6,6 +6,7 @@ import pygame
 from threading import Thread
 import strazoloidwm as stz
 import copy
+import sys
 print("Zoxenpher v2.0.1")
 #configuration (TODO: build options menu and config file)
 #number of images loaded for preview. (images not previewed will be shown as links)
@@ -100,9 +101,20 @@ class deskclass:
 		print("done.")
 	def pumpcall1(self, frameobj, data=None):
 		if frameobj.statflg==0:
-			if self.hoverprev!=self.hovertext:
-				self.hoverprev=self.hovertext
+			#status area routine. (works via routines setting deskt.hovertext on an active basis.
+			if self.hovertext=="" and self.hovertext!=self.hoverprev:
 				self.drawdesk(frameobj.surface)
+				self.hoverprev=self.hovertext
+				#print("clear")
+			if self.hovertext!="" and self.hovertext!=self.hoverprev:
+				self.drawdesk(frameobj.surface)
+				self.hoverprev=self.hovertext
+				#print("draw")
+			self.hovertext=""
+			
+			for prog in self.progs:
+				if prog.iconrect.collidepoint(pygame.mouse.get_pos()):
+					self.hovertext=prog.hint
 		#init code
 		if frameobj.statflg==1:
 			self.drawdesk(frameobj.surface)
@@ -162,11 +174,10 @@ class deskclass:
 		urllabel=simplefont.render(self.hovertext, True, (255, 255, 255), (60, 60, 120))
 		surface.blit(urllabel, (icnx+10, 10))
 		surface.blit(self.mascot, (surface.get_width()-self.mascot.get_width(), 0))
-		
 
 
 class progobj:
-	def __init__(self, classref, icon, idcode, friendly_name, commname, xsize, ysize, resizable=0, key=None, mod=None):
+	def __init__(self, classref, icon, idcode, friendly_name, commname, xsize, ysize, resizable=0, key=None, mod=None, hint=""):
 		self.idcode=idcode
 		self.friendly_name=friendly_name
 		self.commname=commname
@@ -177,10 +188,11 @@ class progobj:
 		self.resizable=resizable
 		self.key=key
 		self.mod=mod
+		self.hint=hint
 
 
 class pathprogobj:
-	def __init__(self, classref, icon, idcode, friendly_name, commname, xsize, ysize, resizable=0, key=None, mod=None, host="about:splash", port=70, selector="/"):
+	def __init__(self, classref, icon, idcode, friendly_name, commname, xsize, ysize, resizable=0, key=None, mod=None, host="about:splash", port=70, selector="/", hint=""):
 		self.idcode=idcode
 		self.friendly_name=friendly_name
 		self.commname=commname
@@ -194,6 +206,7 @@ class pathprogobj:
 		self.host=host
 		self.port=port
 		self.selector=selector
+		self.hint=hint
 	def classref(self):
 		return self.classrefx(host=self.host, port=self.port, selector=self.selector)
 
@@ -319,7 +332,6 @@ class gopherpane:
 		
 		#link destination preview routine. 
 		if frameobj.statflg==0 and frameobj.wo==0:
-			deskt.hovertext=""
 			for item in self.menu:
 				if item.gtype!=None:
 					if item.gtype in "01pgI7":
@@ -419,7 +431,7 @@ class querypane:
 		self.port=port
 		self.selector=selector
 		self.yoff=0
-		
+		#self.hovmsg="Enter your query into the serarch box"
 		self.yjump=15
 		self.stringblob=""
 		if self.host=="QUERYTEST":
@@ -434,6 +446,7 @@ class querypane:
 		textitem("Please Type Query", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*2, {})
 		textitem(">"+self.stringblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*4, {})
 	def loader(self, frameobj):
+		frameobj.name="Loading..."
 		try:
 			data=libgop.gopherget(self.host, self.port, self.selector, query=self.stringblob)
 		except Exception:
@@ -444,7 +457,10 @@ class querypane:
 		#close self
 		framesc.close_pid(frameobj.pid)
 	def pumpcall1(self, frameobj, data=None):
-		
+		#if frameobj.statflg==0:
+			#show hint in hover text area
+			#if frameobj.wo==0:
+			#	deskt.hovertext=self.hovmsg
 		if frameobj.statflg==2:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
@@ -453,6 +469,9 @@ class querypane:
 			print(str1)
 			frameobj.name="query: "+str1
 			self.renderdisp(frameobj)
+		#if frameobj.statflg==3:
+		#	if deskt.hovertext==self.hovmsg:
+		#		deskt.hovertext=""
 		if frameobj.statflg==6:
 			if data.key==pygame.K_RETURN:
 				if self.debug==1:
@@ -486,12 +505,14 @@ class urlgo:
 		self.yoff=0
 		self.yjump=15
 		self.stringblob=""
+		#self.hovmsg="Enter a gopher URL to load."
 		self.validchars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890:/.-_"
 	def renderdisp(self, frameobj):
 		frameobj.surface.fill((255, 255, 255))
 		textitem("Please Type URL", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*2, {})
 		textitem("gopher://"+self.stringblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*4, {})
 	def loaderg1(self, frameobj):
+		frameobj.name="Loading: gopher://"+self.stringblob+" ..." 
 		try:
 			data=pathfigure(self.host, self.port, self.selector)
 		except Exception:
@@ -505,11 +526,17 @@ class urlgo:
 		textshow(self.host, self.port, self.selector)
 		framesc.close_pid(frameobj.pid)
 	def pumpcall1(self, frameobj, data=None):
+		#if frameobj.statflg==0:
+		#	#show hint in hover text area
+		#	if frameobj.wo==0:
+		#		deskt.hovertext=self.hovmsg
+		#if frameobj.statflg==3:
+		#	if deskt.hovertext==self.hovmsg:
+		#		deskt.hovertext=""
 		if frameobj.statflg==2:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
 			
-			print("URLGO:")
 			frameobj.name="URL GO:"
 			self.renderdisp(frameobj)
 		if frameobj.statflg==6:
@@ -561,9 +588,9 @@ class urlgo:
 
 
 #desktop icons
-progs=[progobj(gopherpane, pygame.image.load(os.path.join("vgop", "newwindow.png")), "goppane", "Gopher Menu", "GOPHER", 600, 500, 1, key=pygame.K_n, mod=pygame.KMOD_CTRL),
-progobj(urlgo, pygame.image.load(os.path.join("vgop", "go.png")), "urlgo", "URL GO:", "urlgo", 400, 100, 0, key=pygame.K_g, mod=pygame.KMOD_CTRL),
-pathprogobj(gopherpane, pygame.image.load(os.path.join("vgop", "help.png")), "goppane_HELP", "Gopher Menu", "GOPHER_HELP", 600, 500, 1, host="about:help", key=pygame.K_F1)]
+progs=[progobj(gopherpane, pygame.image.load(os.path.join("vgop", "newwindow.png")), "goppane", "Gopher Menu", "GOPHER", 600, 500, 1, key=pygame.K_n, mod=pygame.KMOD_CTRL, hint="Open a new gopher window (CTRL+n)"),
+progobj(urlgo, pygame.image.load(os.path.join("vgop", "go.png")), "urlgo", "URL GO:", "urlgo", 400, 100, 0, key=pygame.K_g, mod=pygame.KMOD_CTRL, hint="Enter a Gopher URL to load. (CTRL+g)"),
+pathprogobj(gopherpane, pygame.image.load(os.path.join("vgop", "help.png")), "goppane_HELP", "Gopher Menu", "GOPHER_HELP", 600, 500, 1, host="about:help", key=pygame.K_F1, hint="Bring up a help menu. (F1)")]
 deskt=deskclass(progs)
 pygame.font.init()
 

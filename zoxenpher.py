@@ -85,6 +85,8 @@ class deskclass:
 		#self.wallpaper=pygame.image.load("wallpaper.jpg")
 		self.imgload=0
 		self.clock=pygame.time.Clock()
+		self.hovertext=""
+		self.hoverprev=""
 		return
 	def process(self):
 		
@@ -97,6 +99,10 @@ class deskclass:
 					#frame.move(0, (-22))
 		print("done.")
 	def pumpcall1(self, frameobj, data=None):
+		if frameobj.statflg==0:
+			if self.hoverprev!=self.hovertext:
+				self.hoverprev=self.hovertext
+				self.drawdesk(frameobj.surface)
 		#init code
 		if frameobj.statflg==1:
 			self.drawdesk(frameobj.surface)
@@ -152,7 +158,11 @@ class deskclass:
 		for prog in self.progs:
 			prog.iconrect=surface.blit(prog.icon, (icnx, icny))
 			icnx+=icnxjmp
+			
+		urllabel=simplefont.render(self.hovertext, True, (255, 255, 255), (60, 60, 120))
+		surface.blit(urllabel, (icnx+10, 10))
 		surface.blit(self.mascot, (surface.get_width()-self.mascot.get_width(), 0))
+		
 
 
 class progobj:
@@ -306,6 +316,22 @@ class gopherpane:
 		self.yoff=0
 		self.menudraw(frameobj)
 	def pumpcall1(self, frameobj, data=None):
+		
+		#link destination preview routine. 
+		if frameobj.statflg==0 and frameobj.wo==0:
+			deskt.hovertext=""
+			for item in self.menu:
+				if item.gtype!=None:
+					if item.gtype in "01pgI7":
+						try:
+							if item.rect.collidepoint(stz.mousehelper(pygame.mouse.get_pos(), frameobj)):
+								if item.hostname.startswith("about:"):
+									deskt.hovertext=(item.hostname)
+								else:
+									deskt.hovertext=("gopher://" + item.hostname + "/" + item.gtype + item.selector)
+								break
+						except AttributeError:
+							continue
 		#delete some of the larger things upon close
 		if frameobj.statflg==3:
 			for item in self.renderdict:
@@ -418,6 +444,7 @@ class querypane:
 		#close self
 		framesc.close_pid(frameobj.pid)
 	def pumpcall1(self, frameobj, data=None):
+		
 		if frameobj.statflg==2:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
@@ -444,6 +471,11 @@ class querypane:
 					self.renderdisp(frameobj)
 				
 		
+
+
+
+
+
 
 
 
@@ -525,12 +557,16 @@ class urlgo:
 				
 
 
+
+
+
+#desktop icons
 progs=[progobj(gopherpane, pygame.image.load(os.path.join("vgop", "newwindow.png")), "goppane", "Gopher Menu", "GOPHER", 600, 500, 1, key=pygame.K_n, mod=pygame.KMOD_CTRL),
 progobj(urlgo, pygame.image.load(os.path.join("vgop", "go.png")), "urlgo", "URL GO:", "urlgo", 400, 100, 0, key=pygame.K_g, mod=pygame.KMOD_CTRL),
 pathprogobj(gopherpane, pygame.image.load(os.path.join("vgop", "help.png")), "goppane_HELP", "Gopher Menu", "GOPHER_HELP", 600, 500, 1, host="about:help", key=pygame.K_F1)]
 deskt=deskclass(progs)
 pygame.font.init()
-#desktop icons
+
 
 
 desk=stz.desktop(800, 600, "Zoxenpher", pumpcall=deskt.pumpcall1, resizable=1)
@@ -547,7 +583,7 @@ sideproc.start()
 
 
 
-
+#start wm
 framesc.process()
 
 

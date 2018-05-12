@@ -538,6 +538,7 @@ class imgview:
 			self.surf=pygame.image.load(os.path.join("vgop", "giaerror.png"))
 			print("imgview: Failed to load.")
 		self.loaderupt=1
+		
 	def updatedisp(self, frameobj):
 		if self.pscf!=self.scf:
 			self.surftran=pygame.transform.scale(self.surf, ((int(self.imgx * self.scf)), (int(self.imgy * self.scf))))
@@ -557,7 +558,13 @@ class imgview:
 			self.ppos=self.mpos
 			self.updatedisp(frameobj)
 			
+		if frameobj.statflg==1:
+			if self.host.startswith("about:"):
+				frameobj.name=("Image: " + str(self.host) + "/" + self.gtype)
+			else:
+				frameobj.name=("Image: gopher://" + self.host + "/" + self.gtype + self.selector)
 		if frameobj.statflg==1 or frameobj.statflg==2 or self.loaderupt:
+			
 			self.pscf=None
 			self.loaderupt=0
 			self.surfx=frameobj.sizex

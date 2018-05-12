@@ -484,6 +484,10 @@ class urlgo:
 					elif self.gtype=="0":
 						sideproc=Thread(target = self.loaderg0, args = [frameobj])
 						sideproc.start()
+					elif self.gtype=="7":
+						newgop=querypane(host=self.host, port=self.port, selector=self.selector)
+						framesc.add_frame(stz.framex(350, 100, "Gopher Query", resizable=0, pumpcall=newgop.pumpcall1))
+						framesc.close_pid(frameobj.pid)
 					elif self.gtype=="g" or self.gtype=="p" or self.gtype=="I":
 						newgop=imgview(host=self.host, port=self.port, selector=self.selector, gtype=self.gtype)
 						framesc.add_frame(stz.framex(500, 400, "Image", resizable=1, pumpcall=newgop.pumpcall1))

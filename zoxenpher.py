@@ -67,13 +67,7 @@ class deskclass:
 			print("shutting down...")
 			#prevent new connections.
 			libgop.stopget=2
-			print("closing any active connections...")
-			#shutdown any remaining connections by force.
-			for connection in libgop.socketlist:
-				connection.shutdown(socket.SHUT_RDWR)
-				connection.close()
 			self.active=0
-		#click event processing
 		if frameobj.statflg==4:
 			for prog in self.progs:
 				if prog.iconrect.collidepoint(data.pos):
@@ -213,6 +207,7 @@ class gopherpane:
 		#launch image loader thread if needed
 		if imageset!=[]:
 			sideproc=Thread(target = imgget, args = [imageset, self.menudraw, frameobj])
+			sideproc.daemon=True
 			sideproc.start()
 	#menu change loader
 	def menuchange(self, item, frameobj):
@@ -263,6 +258,7 @@ class gopherpane:
 		if frameobj.statflg==1:
 			if self.preload==None:
 				sideproc=Thread(target = self.menuinital, args = [frameobj])
+				sideproc.daemon=True
 				sideproc.start()
 			else:
 				self.menu=self.preload
@@ -296,11 +292,13 @@ class gopherpane:
 						if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 							self.menu=[]
 							sideproc=Thread(target = self.menuchange, args = [item, frameobj])
+							sideproc.daemon=True
 							sideproc.start()
 							break
 					if item.gtype=="0":
 						if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 							sideproc=Thread(target = textshow, args = [item.hostname, item.port, item.selector])
+							sideproc.daemon=True
 							sideproc.start()
 							break
 					if item.gtype=="g" or item.gtype=="p" or item.gtype=="I":
@@ -388,6 +386,7 @@ class querypane:
 					print(self.stringblob)
 				else:
 					sideproc=Thread(target = self.loader, args = [frameobj])
+					sideproc.daemon=True
 					sideproc.start()
 			elif data.key==pygame.K_BACKSPACE:
 				self.stringblob=self.stringblob[:-1]
@@ -481,9 +480,11 @@ class urlgo:
 							
 					if self.gtype=="1":
 						sideproc=Thread(target = self.loaderg1, args = [frameobj])
+						sideproc.daemon=True
 						sideproc.start()
 					elif self.gtype=="0":
 						sideproc=Thread(target = self.loaderg0, args = [frameobj])
+						sideproc.daemon=True
 						sideproc.start()
 					elif self.gtype=="7":
 						newgop=querypane(host=self.host, port=self.port, selector=self.selector)
@@ -521,6 +522,7 @@ class imgview:
 		if self.imagesurf==None:
 			self.surf=self.dummysurf
 			sideproc=Thread(target = self.imageload)
+			sideproc.daemon=True
 			sideproc.start()
 		else:
 			self.surf=self.imagesurf

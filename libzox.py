@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-import time
+#import time
 import os
 import libgop
 import pygame
 from threading import Thread
-import copy
-import sys
+#import copy
+#import sys
 
 #determines if a host-port-selector location is one of zoxenpher's special "about:" paths or a normal gopher location.
 #also brings up appropiate error pages and images in the event of load failures.

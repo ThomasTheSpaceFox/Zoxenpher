@@ -1,13 +1,11 @@
 #!/usr/bin/env python
-import time
+#import time
 import os
 import libgop
 import pygame
 from threading import Thread
 import strazoloidwm as stz
-import socket
-import copy
-import sys
+#import copy
 print("Zoxenpher v2.0.1")
 #configuration (TODO: build options menu and config file)
 #number of images loaded for preview. (images not previewed will be shown as links)

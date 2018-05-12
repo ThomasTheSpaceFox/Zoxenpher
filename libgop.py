@@ -29,7 +29,7 @@ class mitem:
 		else:
 				
 			try:
-				
+				data=data.replace("\r\n", "")
 				self.gtype=data[0]
 				self.datalist=data[1:].split("\t")
 				self.name=self.datalist[0]

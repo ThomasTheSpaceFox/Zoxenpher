@@ -64,6 +64,8 @@ class deskclass:
 		#shutdown code
 		if frameobj.statflg==3:
 			print("shutting down...")
+			#prevent new connections.
+			libgop.stopget=2
 			print("closing any active connections...")
 			#shutdown any remaining connections by force.
 			for connection in libgop.socketlist:

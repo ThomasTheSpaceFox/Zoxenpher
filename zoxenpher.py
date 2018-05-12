@@ -141,7 +141,7 @@ def textshow(host, port, selector):
 
 
 
-#gopher menu class. also used for text documents and currently as a placeholder image viewer.
+#gopher menu class. also used for text documents
 class gopherpane:
 	def __init__(self, host='about:splash', port=70, selector="", prefix="menu: gopher://", preload=None, forceimage=0, linkdisable=0, gtype="1", shortprefix="menu: "):
 		self.host=host
@@ -192,13 +192,16 @@ class gopherpane:
 					if item.image!=None:
 						item.rect=frameobj.surface.blit(item.image, (0, self.ypos))
 						self.ypos+=item.image.get_height()
-					else:
+					if item.image==None:
 						item.rect, self.ypos, self.renderdict = textitem("[IMAGE]" + item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict)
 					#pygame.draw.rect(frameobj.surface, (255, 255, 0), item.rect, 1)
-				except AttributeError:
+				except AttributeError as err:
+					#print(err)
 					item.image=None
 					if imagecount<maximages or (imagecount<2 and self.forceimage):
 						imageset.extend([item])
+					item.rect, self.ypos, self.renderdict = textitem("[IMAGE]" + item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict)
+
 					
 						
 				
@@ -301,10 +304,11 @@ class gopherpane:
 							break
 					if item.gtype=="g" or item.gtype=="p" or item.gtype=="I":
 						if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
-							itemcopy=copy.deepcopy(item)
-							del itemcopy.image
-							newgop=gopherpane(host=itemcopy.hostname, port=itemcopy.port, selector=itemcopy.selector, prefix="image: gopher://", preload=[itemcopy], forceimage=1, linkdisable=1, gtype=item.gtype, shortprefix="image: ")
-							framesc.add_frame(stz.framex(600, 500, "Image", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
+							#itemcopy=copy.deepcopy(item)
+							#del itemcopy.image
+							#newgop=gopherpane(host=itemcopy.hostname, port=itemcopy.port, selector=itemcopy.selector, prefix="image: gopher://", preload=[itemcopy], forceimage=1, linkdisable=1, gtype=item.gtype, shortprefix="image: ")
+							newgop=imgview(host=item.hostname, port=item.port, selector=item.selector, gtype=item.gtype, imagesurf=item.image)
+							framesc.add_frame(stz.framex(500, 400, "Image", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
 					if item.gtype=="7":
 						if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 							newgop=querypane(host=item.hostname, port=item.port, selector=item.selector)
@@ -452,7 +456,12 @@ class urlgo:
 						self.host=self.stringblob
 						self.port=70
 						self.selector=""
-						self.gtype="1"
+						#self.gtype="1"
+						if "/" in self.stringblob:
+							self.host, self.selecttype = self.stringblob.split("/", 1)
+							self.gtype=self.selecttype[0]
+						else:
+							self.gtype="1"
 					else:
 						
 						if ":" in self.stringblob:
@@ -475,6 +484,10 @@ class urlgo:
 					elif self.gtype=="0":
 						sideproc=Thread(target = self.loaderg0, args = [frameobj])
 						sideproc.start()
+					elif self.gtype=="g" or self.gtype=="p" or self.gtype=="I":
+						newgop=imgview(host=self.host, port=self.port, selector=self.selector, gtype=self.gtype)
+						framesc.add_frame(stz.framex(500, 400, "Image", resizable=1, pumpcall=newgop.pumpcall1))
+						framesc.close_pid(frameobj.pid)
 				except IndexError as err:
 					print(err)
 			elif data.key==pygame.K_BACKSPACE:
@@ -488,8 +501,97 @@ class urlgo:
 					self.renderdisp(frameobj)
 				
 
-
-
+#image viewer
+class imgview:
+	def __init__(self, host, port, selector, gtype="I", imagesurf=None):
+		self.host=host
+		self.port=port
+		self.selector=selector
+		self.gtype=gtype
+		self.imagesurf=imagesurf
+		self.pscf=None
+		self.pan=0
+		self.loaderupt=0
+		self.dummysurf=pygame.image.load(os.path.join("vgop", "loadingimage.png"))
+		if self.imagesurf==None:
+			self.surf=self.dummysurf
+			sideproc=Thread(target = self.imageload)
+			sideproc.start()
+		else:
+			self.surf=self.imagesurf
+	def imageload(self):
+		data=pathfigure(self.host, self.port, self.selector, gtype=self.gtype)
+		try:
+			if self.gtype=="g":
+				imagefx=pygame.image.load(data, "quack.gif")
+			if self.gtype=="p":
+				imagefx=pygame.image.load(data, "quack.png")
+			if self.gtype=="I":
+				imagefx=pygame.image.load(data)
+			imagefx.convert()
+			self.surf=imagefx
+		except pygame.error:
+			self.surf=pygame.image.load(os.path.join("vgop", "giaerror.png"))
+			print("imgview: Failed to load.")
+		self.loaderupt=1
+	def updatedisp(self, frameobj):
+		if self.pscf!=self.scf:
+			self.surftran=pygame.transform.scale(self.surf, ((int(self.imgx * self.scf)), (int(self.imgy * self.scf))))
+			self.pscf=self.scf
+		self.imgbox = self.surftran.get_rect()
+		self.imgbox.centerx = self.xoff
+		self.imgbox.centery = self.yoff
+		frameobj.surface.fill((255, 255, 255))
+		frameobj.surface.blit(self.surftran, self.imgbox)
+	def pumpcall1(self, frameobj, data=None):
+		
+		if frameobj.statflg==0 and self.pan:
+			self.mpos=pygame.mouse.get_pos()
+			
+			self.xoff+=(self.mpos[0]-self.ppos[0])
+			self.yoff+=(self.mpos[1]-self.ppos[1])
+			self.ppos=self.mpos
+			self.updatedisp(frameobj)
+			
+		if frameobj.statflg==1 or frameobj.statflg==2 or self.loaderupt:
+			self.pscf=None
+			self.loaderupt=0
+			self.surfx=frameobj.sizex
+			self.surfy=frameobj.sizey
+			self.imgx=self.surf.get_width()
+			self.imgy=self.surf.get_height()
+			scfx=(float(self.surfx) / self.imgx)
+			scfy=(self.surfy) / float(self.imgy)
+			self.xoff=self.surfx//2
+			self.yoff=self.surfy//2
+			if scfx>scfy:
+				scf=scfy
+			else:
+				scf=scfx
+			
+			self.scfdef=scf
+			self.scf=scf
+			self.updatedisp(frameobj)
+		if frameobj.statflg==4:
+			if data.button==5:
+				self.scf-=0.3
+				if self.scf<0.1:
+					self.scf=0.1
+			if data.button==4:
+				self.scf+=0.3
+			if data.button==1:
+				self.ppos=data.pos
+				self.pan=1
+			if data.button==3:
+				self.xoff=self.surfx//2
+				self.yoff=self.surfy//2
+				self.scf=self.scfdef
+				self.updatedisp(frameobj)
+		if frameobj.statflg==5:
+			if data.button==1:
+				self.pan=0
+			self.updatedisp(frameobj)
+		return
 
 
 #desktop icons

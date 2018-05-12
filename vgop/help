@@ -5,6 +5,11 @@ Gopher menu Controls:
  - rightclick: open menu in new window.
  - mouse wheel: scroll menu up/down
  - up/down arrow keys: scroll menu up/down
+Image viewer:
+ - leftclick+drag: pan image
+ - rightclick: reset pan and zoom
+ - mouse wheel: zoom image in and out.
+   Note: image viewer will calculate optimal zoom automatically upon load and window resize.
 Global:
  - CTRL+n: new gopher window
  - CTRL+g: open go dialog

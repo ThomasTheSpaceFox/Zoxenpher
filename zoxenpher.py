@@ -5,6 +5,7 @@ import libgop
 import pygame
 from threading import Thread
 import strazoloidwm as stz
+import socket
 import copy
 import sys
 print("Zoxenpher v2.0.1")

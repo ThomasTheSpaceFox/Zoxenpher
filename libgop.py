@@ -44,6 +44,7 @@ class mitem:
 				data=data.replace("\r\n", "").replace("\t", "        ")
 				self.name=data
 
+socketlist=[]
 
 def menudecode(data, txtflg=0):
 	menulist=[]
@@ -55,11 +56,14 @@ def menudecode(data, txtflg=0):
 #if stopget is set to 2, both active and subsequent calls will imediately stop. the latter is used upon Zoxenpher shutting down.
 def gopherget(host, port, selector, query=None):
 	global stopget
+	global socketlist
 	if stopget==1:
 		stopget=0
 	print("GopherGet: \"" + host + ":" + str(port) + " " + selector + "\"")
 	gsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	socketlist.extend([gsocket])
 	gsocket.connect((host, int(port)))
+	gsocket.settimeout(20.0)
 	if query!=None:
 		query="\t"+query
 	else:
@@ -77,6 +81,7 @@ def gopherget(host, port, selector, query=None):
 	if stopget!=0:
 		print("Connection to: \"" + host + ":" + str(port) + " " + selector + "\" Terminated early.")
 	gsocket.close()
+	socketlist.remove(gsocket)
 	tmpbuff.seek(0)
 	print("done.")
 	return tmpbuff

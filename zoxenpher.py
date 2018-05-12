@@ -19,6 +19,7 @@ from libzox import progobj
 from libzox import pathprogobj
 from libzox import imgget
 simplefont = pygame.font.SysFont("mono", 15)
+hudfont = pygame.font.SysFont(None, 22)
 
 #virtual desktop
 class deskclass:
@@ -64,8 +65,10 @@ class deskclass:
 		if frameobj.statflg==3:
 			print("shutting down...")
 			print("closing any active connections...")
-			#set special stopget flag so gopherget will stop
-			libgop.stopget=2
+			#shutdown any remaining connections by force.
+			for connection in libgop.socketlist:
+				connection.shutdown(socket.SHUT_RDWR)
+				connection.close()
 			self.active=0
 		#click event processing
 		if frameobj.statflg==4:
@@ -116,7 +119,8 @@ class deskclass:
 			prog.iconrect=surface.blit(prog.icon, (icnx, icny))
 			icnx+=icnxjmp
 			
-		urllabel=simplefont.render(self.hovertext, True, (255, 255, 255), (60, 60, 120))
+		#urllabel=simplefont.render(self.hovertext, True, (255, 255, 255), (60, 60, 120))
+		urllabel=hudfont.render(self.hovertext, True, (255, 255, 255), (60, 60, 120))
 		surface.blit(urllabel, (icnx+10, 10))
 		surface.blit(self.mascot, (surface.get_width()-self.mascot.get_width(), 0))
 
@@ -347,7 +351,8 @@ class querypane:
 		frameobj.name="Loading..."
 		try:
 			data=libgop.gopherget(self.host, self.port, self.selector, query=self.stringblob)
-		except Exception:
+		except Exception as err:
+			print(err)
 			data=open(os.path.join("vgop", "gaierror"))
 		menu=libgop.menudecode(data)
 		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, preload=menu)

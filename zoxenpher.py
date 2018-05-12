@@ -20,7 +20,7 @@ from libzox import pathprogobj
 from libzox import imgget
 simplefont = pygame.font.SysFont("mono", 15)
 
-
+#virtual desktop
 class deskclass:
 	def __init__(self, progs):
 		self.progs=progs
@@ -63,6 +63,9 @@ class deskclass:
 		#shutdown code
 		if frameobj.statflg==3:
 			print("shutting down...")
+			print("closing any active connections...")
+			#set special stopget flag so gopherget will stop
+			libgop.stopget=2
 			self.active=0
 		#click event processing
 		if frameobj.statflg==4:
@@ -120,10 +123,10 @@ class deskclass:
 
 
 
-#run in a thread for each time a page is rendered the first time.
 
 
 
+#text document wrapper for gopherpane
 def textshow(host, port, selector):
 	data=pathfigure(host, port, selector, gtype="0")
 	menu=libgop.menudecode(data, txtflg=1)
@@ -132,7 +135,7 @@ def textshow(host, port, selector):
 
 
 
-		
+#gopher menu class. also used for text documents and currently as a placeholder image viewer.
 class gopherpane:
 	def __init__(self, host='about:splash', port=70, selector="", prefix="menu: gopher://", preload=None, forceimage=0, linkdisable=0, gtype="1", shortprefix="menu: "):
 		self.host=host
@@ -319,7 +322,7 @@ class gopherpane:
 		return
 			
 
-
+#query (gopher item type 7) dialog box
 class querypane:
 	def __init__(self, host, port, selector):
 		self.host=host
@@ -394,7 +397,7 @@ class querypane:
 
 
 
-
+#url entry dialog box.
 class urlgo:
 	def __init__(self):
 		self.yoff=0
@@ -490,22 +493,18 @@ deskt=deskclass(progs)
 pygame.font.init()
 
 
-
-desk=stz.desktop(800, 600, "Zoxenpher", pumpcall=deskt.pumpcall1, resizable=1)
+#logical equivalent to the desktop's "frame"
+deskframe=stz.desktop(800, 600, "Zoxenpher", pumpcall=deskt.pumpcall1, resizable=1)
 
 windowicon=pygame.image.load(os.path.join("vgop", "icon32.png"))
-framesc=stz.framescape(desk, deskicon=windowicon)
+framesc=stz.framescape(deskframe, deskicon=windowicon)
 
+#start auxilary desktop thread.
 sideproc=Thread(target = deskt.process, args = [])
 sideproc.start()
 
 
-
-
-
-
-
-#start wm
+#start wm (takes over main thread)
 framesc.process()
 
 

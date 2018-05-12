@@ -7,6 +7,8 @@ from threading import Thread
 import copy
 import sys
 
+#determines if a host-port-selector location is one of zoxenpher's special "about:" paths or a normal gopher location.
+#also brings up appropiate error pages and images in the event of load failures.
 def pathfigure(host, port, selector, gtype="0"):
 	if host.startswith("about:"):
 		hoststripped=host.replace('\\', "").replace("/", "").replace("..", "")
@@ -38,7 +40,7 @@ def pathfigure(host, port, selector, gtype="0"):
 	return data
 
 
-
+#displays text and links with automatic word wrap.
 def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict):
 	xpos=0
 	rectlist=[]
@@ -75,7 +77,7 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict):
 		return (pygame.Rect(0, 0, 0, 0), ypos, renderdict)
 
 
-
+#normal "launch icon" class
 class progobj:
 	def __init__(self, classref, icon, idcode, friendly_name, commname, xsize, ysize, resizable=0, key=None, mod=None, hint=""):
 		self.idcode=idcode
@@ -90,7 +92,7 @@ class progobj:
 		self.mod=mod
 		self.hint=hint
 
-
+#special gopherpane "launch icon" class. used by help icon to bring up "about:help"
 class pathprogobj:
 	def __init__(self, classref, icon, idcode, friendly_name, commname, xsize, ysize, resizable=0, key=None, mod=None, host="about:splash", port=70, selector="/", hint=""):
 		self.idcode=idcode
@@ -110,7 +112,7 @@ class pathprogobj:
 	def classref(self):
 		return self.classrefx(host=self.host, port=self.port, selector=self.selector)
 
-
+#image loader routine. (runs in separate thread when needed)
 def imgget(items, uptref, frameobj):
 	for mitem in items:
 		data=pathfigure(mitem.hostname, mitem.port, mitem.selector, gtype=mitem.gtype)

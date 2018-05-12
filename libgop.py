@@ -4,6 +4,9 @@ import socket
 import io
 import tempfile
 import sys
+
+
+stopget=0
 print("libgop gopher library v0.1")
 print("check python version...")
 vers=sys.version_info[0]
@@ -48,8 +51,13 @@ def menudecode(data, txtflg=0):
 		menulist.extend([mitem(item, txtflg)])
 	return menulist
 #gopherget uses tempfile as a buffer.
+#if stopget is set to 1 while gopherget is reciving data, it will abruptly stop. subsequent calls will reset stopget.
+#if stopget is set to 2, both active and subsequent calls will imediately stop. the latter is used upon Zoxenpher shutting down.
 def gopherget(host, port, selector, query=None):
-	print("GopherGet:" + host + ":" + str(port) + " " + selector)
+	global stopget
+	if stopget==1:
+		stopget=0
+	print("GopherGet: \"" + host + ":" + str(port) + " " + selector + "\"")
 	gsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	gsocket.connect((host, int(port)))
 	if query!=None:
@@ -62,10 +70,13 @@ def gopherget(host, port, selector, query=None):
 		gsocket.sendall((""+(selector)+query+'\r\n').encode("utf-8"))
 	x = gsocket.recv(1024)
 	tmpbuff=tempfile.TemporaryFile("r+b")
-	while (x):
+	while (x) and stopget==0:
 		print("Receiving...")
 		tmpbuff.write(x)
 		x = gsocket.recv(1024)
+	if stopget!=0:
+		print("Connection to: \"" + host + ":" + str(port) + " " + selector + "\" Terminated early.")
+	gsocket.close()
 	tmpbuff.seek(0)
 	print("done.")
 	return tmpbuff

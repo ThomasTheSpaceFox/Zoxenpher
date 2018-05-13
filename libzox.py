@@ -200,3 +200,31 @@ def bmsave(bmlist):
 #bmlist=bmload()
 #bmlist.extend([bmitem("about:splash", "Splash page")])
 #bmsave(bmlist)
+
+
+cnfdef={"imgpreview" : "10",
+"deskw" : "800",
+"deskh" : "600",
+"menufontsize" : "15",
+"menutextjump" : "15",
+"menufont" : "mono"}
+
+
+
+
+
+def cnfload():
+	cnfdict=cnfdef.copy()
+	try:
+		cnffile=open(os.path.join("usr", "cnf.dat"))
+		for line in cnffile:
+			if not line.startswith("#") and "=" in line:
+				line=line.replace("\n", "")
+				item, data = line.split("=")
+				if item in cnfdict:
+					cnfdict[item]=data
+	except IOError:
+		return cnfdict
+	return cnfdict
+print("Libzox: loading configuration data.")
+cnfdict=cnfload()

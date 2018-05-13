@@ -9,7 +9,8 @@ import strazoloidwm as stz
 print("Zoxenpher v2.0.1")
 #configuration (TODO: build options menu and config file)
 #number of images loaded for preview. (images not previewed will be shown as links)
-maximages=10
+
+
 
 import libzox
 from libzox import pathfigure
@@ -17,9 +18,10 @@ from libzox import textitem
 from libzox import progobj
 from libzox import pathprogobj
 from libzox import imgget
-simplefont = pygame.font.SysFont("mono", 15)
+simplefont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
 hudfont = pygame.font.SysFont(None, 22)
 
+maximages=int(libzox.cnfdict["imgpreview"])
 bmlist=libzox.bmload()
 
 #virtual desktop
@@ -143,7 +145,7 @@ class gopherpane:
 		self.port=port
 		self.selector=selector
 		self.yoff=0
-		self.yjump=15
+		self.yjump=int(libzox.cnfdict["menutextjump"])
 		self.menu=[]
 		self.data=None
 		self.prefix=prefix
@@ -355,7 +357,7 @@ class querypane:
 		self.selector=selector
 		self.yoff=0
 		#self.hovmsg="Enter your query into the serarch box"
-		self.yjump=15
+		self.yjump=int(libzox.cnfdict["menutextjump"])
 		self.stringblob=""
 		if self.host=="QUERYTEST":
 			self.debug=1
@@ -420,7 +422,7 @@ class querypane:
 class bookmarks:
 	def __init__(self, url="", bookm=None):
 		self.yoff=0
-		self.yjump=15
+		self.yjump=int(libzox.cnfdict["menutextjump"])
 		self.stringblob=""
 		#self.hovmsg="Enter a gopher URL to load."
 		self.validchars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890:/.-_ "
@@ -565,7 +567,7 @@ class bookmarks:
 class bookmadded:
 	def __init__(self, url="", bookm=None):
 		self.yoff=0
-		self.yjump=15
+		self.yjump=int(libzox.cnfdict["menutextjump"])
 		self.stringblob=""
 		#self.hovmsg="Enter a gopher URL to load."
 		self.validchars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890:/.-_ "
@@ -634,7 +636,7 @@ class bookmadded:
 class bookdel:
 	def __init__(self, bookm):
 		self.yoff=0
-		self.yjump=15
+		self.yjump=int(libzox.cnfdict["menutextjump"])
 		self.bookm=bookm
 		self.urlblob=self.bookm.url
 		self.nameblob=self.bookm.name
@@ -662,7 +664,7 @@ class bookdel:
 class urlgo:
 	def __init__(self):
 		self.yoff=0
-		self.yjump=15
+		self.yjump=int(libzox.cnfdict["menutextjump"])
 		self.stringblob=""
 		#self.hovmsg="Enter a gopher URL to load."
 		self.validchars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890:/.-_"
@@ -874,7 +876,7 @@ pygame.font.init()
 
 
 #logical equivalent to the desktop's "frame"
-deskframe=stz.desktop(800, 600, "Zoxenpher", pumpcall=deskt.pumpcall1, resizable=1)
+deskframe=stz.desktop(int(libzox.cnfdict["deskw"]), int(libzox.cnfdict["deskh"]), "Zoxenpher", pumpcall=deskt.pumpcall1, resizable=1)
 
 windowicon=pygame.image.load(os.path.join("vgop", "icon32.png"))
 framesc=stz.framescape(deskframe, deskicon=windowicon)

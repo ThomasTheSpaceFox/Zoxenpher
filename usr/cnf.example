@@ -1,0 +1,22 @@
+#example cnf.dat Zoxenpher config file
+#to override any default settings, create a file called cnf.dat in the
+#usr subdirectory (the same one this file is in), then specify any desired
+#options. not all options must be specified.
+#examples shown here are using the default parameters.
+
+#number of images to show in-line in menus
+imgpreview=10
+
+#desk width
+deskw=800
+
+#desk height
+deskh=600
+
+
+#font size for menus
+menufontsize=15
+#font jump for menus
+menujump=15
+#system font for menus. a monospace font is HIGHLY recommended.
+menufont="mono"

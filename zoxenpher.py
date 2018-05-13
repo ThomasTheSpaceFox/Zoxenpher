@@ -504,12 +504,21 @@ class bookmarks:
 			self.offset=0
 			self.renderdisp(frameobj)
 		if frameobj.statflg==0 and frameobj.wo==0:
+			mpos=pygame.mouse.get_pos()
 			for item in bmlist:
-				if item.rect.collidepoint(stz.mousehelper(pygame.mouse.get_pos(), frameobj)):
+				if item.rect.collidepoint(stz.mousehelper(mpos, frameobj)):
 					if item.url.startswith("about:"):
 						deskt.hovertext=item.url
 					else:
 						deskt.hovertext="gopher://" + item.url
+			if self.newrect.collidepoint(stz.mousehelper(mpos, frameobj)):
+				deskt.hovertext="Create a new bookmark."
+			if self.editrect.collidepoint(stz.mousehelper(mpos, frameobj)):
+				deskt.hovertext="Edit a bookmark."
+			if self.delrect.collidepoint(stz.mousehelper(mpos, frameobj)):
+				deskt.hovertext="Delete a bookmark."
+			if self.gorect.collidepoint(stz.mousehelper(mpos, frameobj)):
+				deskt.hovertext="Open a bookmark in a new window."
 		if frameobj.statflg==1:
 			frameobj.name="Bookmarks"
 			self.renderdisp(frameobj)
@@ -855,9 +864,9 @@ class imgview:
 
 
 #desktop icons
-progs=[progobj(gopherpane, pygame.image.load(os.path.join("vgop", "newwindow.png")), "goppane", "Gopher Menu", "GOPHER", 600, 500, 1, key=pygame.K_n, mod=pygame.KMOD_CTRL, hint="Open a new gopher window (CTRL+n)"),
+progs=[progobj(gopherpane, pygame.image.load(os.path.join("vgop", "newwindow.png")), "goppane", "Gopher Menu", "GOPHER", 600, 500, 1, key=pygame.K_n, mod=pygame.KMOD_CTRL, hint="Open a new gopher window. (CTRL+n)"),
 progobj(urlgo, pygame.image.load(os.path.join("vgop", "go.png")), "urlgo", "URL GO:", "urlgo", 400, 100, 0, key=pygame.K_g, mod=pygame.KMOD_CTRL, hint="Enter a Gopher URL to load. (CTRL+g)"),
-progobj(bookmarks, pygame.image.load(os.path.join("vgop", "bookmarks.png")), "bookmarks", "Bookmarks", "bookmarks", 600, 500, 1, key=pygame.K_b, mod=pygame.KMOD_CTRL, hint="Open bookmarks (CTRL+b)"),
+progobj(bookmarks, pygame.image.load(os.path.join("vgop", "bookmarks.png")), "bookmarks", "Bookmarks", "bookmarks", 600, 500, 1, key=pygame.K_b, mod=pygame.KMOD_CTRL, hint="Open bookmarks. (CTRL+b)"),
 
 pathprogobj(gopherpane, pygame.image.load(os.path.join("vgop", "help.png")), "goppane_HELP", "Gopher Menu", "GOPHER_HELP", 600, 500, 1, host="about:help", key=pygame.K_F1, hint="Bring up a help menu. (F1)")]
 deskt=deskclass(progs)

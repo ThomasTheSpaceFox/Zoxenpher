@@ -1,0 +1,30 @@
+Bookmarks howto
+
+
+Bookmarks manager:
+
+To open the bookmarks manager, use CTRL+b or click the "book" icon.
+
+Opening Bookmarks:
+To open a bookmark, leftclick the "go" button in the bookmarks window. It will turn green when selected. Now leftclick the desired bookmark. The bookmark will be opened into an appropiate window.
+
+Deleteing Bookmarks:
+To delete a bookmark, leftclick the "del" button in the bookmarks window.  It will turn green when selected. Now leftclick the desired bookmark.  A confirmation dialog will appear. Press [Y] to confirm or [N] to cancel.
+
+--- The Bookmark Edit dialog ---
+
+
+Editing Bookmarks:
+To edit a bookmark, leftclick the "edit" button in the bookmarks window. It will turn green when selected. Now leftclick the desired bookmark. An edit dialog will appear. use [TAB] to alternate between the url and name feilds. The selected feild will have a "|" following it. modify the url and name feilds as desired. Press [Enter/Return]
+
+Creating Bookmarks:
+To create a new bookmark, leftclick the "new" button in the bookmarks window. An edit dialog will appear. This will be the same as the edit dialog described above. except the url ("gopher://") and name ("name:") feilds will be blank.
+
+bookmarking pages:
+In both the image viewer, and text/menu windows, pressing [m] will open a bookmark edit dialog. This will be the same as the "Editing Bookmarks" edit dialog described above,  except the url will be prefilled, and you will need to enter a label.
+
+Bookmark a Link:
+hold shift and leftclick the desired link. as with "Bookmarking pages", an edit dialog with the url prefilled will appear.
+
+
+1Return to help menu	/	about:help	70

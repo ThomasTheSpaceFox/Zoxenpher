@@ -5,15 +5,24 @@ Gopher menu Controls:
  - rightclick: open menu in new window.
  - mouse wheel: scroll menu up/down
  - up/down arrow keys: scroll menu up/down
+ - m: bookmark page (will open dialog for label and confirmation)
+ - SHIFT+leftclick: bookmark link. (will open dialog for label and confirmation)
 Image viewer:
  - leftclick+drag: pan image
  - rightclick: reset pan and zoom
  - mouse wheel: zoom image in and out.
    Note: image viewer will calculate optimal zoom automatically upon load and window resize.
+ - m: bookmark image (will open dialog for label and confirmation)
 Global:
  - CTRL+n: new gopher window
  - CTRL+g: open go dialog
  - F1: open help menu
+ - CTRL+b: open bookmarks manager
+Bookmarks:
+ - choose go (open), del (delete), or edit, (active one will be green, go is picked by default)
+ - then, choose a bookmark to operate on via leftclicking it.
+ - click new to add a new bookmark
+ - mouse wheel: to scroll list.
 
 
 

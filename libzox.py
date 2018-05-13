@@ -129,3 +129,74 @@ def imgget(items, uptref, frameobj):
 			return
 	if uptref!=None:
 		uptref(frameobj)
+
+def gurlencode(host, selector, gtype, port=70):
+	if int(port)==70:
+		return (host + "/" + gtype + selector)
+	else:
+		return (host + "/" + gtype + selector + ":" + str(port))
+
+def gurldecode(url):
+	if url.startswith("gopher://"):
+		url.replace("gopher://", "")
+	stringblob=url
+	if stringblob.startswith("about:"):
+		host=stringblob
+		port=70
+		selector=""
+		#self.gtype="1"
+		if "/" in stringblob:
+			host, selecttype = stringblob.split("/", 1)
+			gtype=selecttype[0]
+		else:
+			gtype="1"
+	else:
+		
+		if ":" in stringblob:
+			port=stringblob.split(":")[1]
+			stringblob=stringblob.split(":")[0]
+		else:
+			port=70
+		if "/" in stringblob:
+			host, selecttype = stringblob.split("/", 1)
+			gtype=selecttype[0]
+			selector=selecttype[1:]
+		else:
+			host=stringblob
+			gtype="1"
+			selector="/"
+	return host, port, selector, gtype
+
+
+class bmitem:
+	def __init__(self, url, name):
+		self.url=url
+		self.name=name
+		self.rect=None
+
+
+def bmload():
+	bmlist=[]
+	bmfilename=os.path.join("usr", "bm.dat")
+	try:
+		bmfile=open(bmfilename, 'r')
+		for line in bmfile:
+			line=line.replace("\n", "")
+			url, name = line.split("\t")
+			bmlist.extend([bmitem(url, name)])
+		bmfile.close()
+		return bmlist
+	except IOError:
+		return []
+		
+
+def bmsave(bmlist):
+	bmfilename=os.path.join("usr", "bm.dat")
+	bmfile=open(bmfilename, 'w')
+	for item in bmlist:
+		bmfile.write(item.url + "\t" + item.name + "\n")
+	bmfile.close()
+
+#bmlist=bmload()
+#bmlist.extend([bmitem("about:splash", "Splash page")])
+#bmsave(bmlist)

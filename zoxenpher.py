@@ -496,6 +496,9 @@ class bookmarks:
 			newgop=imgview(host=self.host, port=self.port, selector=self.selector, gtype=self.gtype)
 			framesc.add_frame(stz.framex(500, 400, "Image", resizable=1, pumpcall=newgop.pumpcall1))
 	def pumpcall1(self, frameobj, data=None):
+		if frameobj.statflg==2:
+			self.offset=0
+			self.renderdisp(frameobj)
 		if frameobj.statflg==0 and self.bmprev!=bmlist:
 			self.bmprev=list(bmlist)
 			self.offset=0

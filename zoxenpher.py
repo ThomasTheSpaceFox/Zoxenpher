@@ -503,6 +503,13 @@ class bookmarks:
 			self.bmprev=list(bmlist)
 			self.offset=0
 			self.renderdisp(frameobj)
+		if frameobj.statflg==0 and frameobj.wo==0:
+			for item in bmlist:
+				if item.rect.collidepoint(stz.mousehelper(pygame.mouse.get_pos(), frameobj)):
+					if item.url.startswith("about:"):
+						deskt.hovertext=item.url
+					else:
+						deskt.hovertext="gopher://" + item.url
 		if frameobj.statflg==1:
 			frameobj.name="Bookmarks"
 			self.renderdisp(frameobj)

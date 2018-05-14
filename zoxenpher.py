@@ -57,10 +57,13 @@ class deskclass:
 				self.hoverprev=self.hovertext
 				#print("draw")
 			self.hovertext=""
-			
+			mpos=pygame.mouse.get_pos()
 			for prog in self.progs:
-				if prog.iconrect.collidepoint(pygame.mouse.get_pos()):
+				if prog.iconrect.collidepoint(mpos):
 					self.hovertext=prog.hint
+			
+			if self.mascotrect.collidepoint(mpos):
+				self.hovertext="About Zoxenpher"
 		#init code
 		if frameobj.statflg==1:
 			self.drawdesk(frameobj.surface)
@@ -71,6 +74,9 @@ class deskclass:
 			libgop.stopget=2
 			self.active=0
 		if frameobj.statflg==4:
+			if self.mascotrect.collidepoint(data.pos):
+				newgop=gopherpane(host="about:about", port=70, selector="/", shortprefix="About: ")
+				framesc.add_frame(stz.framex(700, 500, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 			for prog in self.progs:
 				if prog.iconrect.collidepoint(data.pos):
 					framesc.add_frame(stz.framex(prog.xsize, prog.ysize, prog.friendly_name, pumpcall=prog.classref().pumpcall1, resizable=prog.resizable))
@@ -97,7 +103,9 @@ class deskclass:
 		return
 	def imageloader(self, surface):
 		#self.wallpaper=pygame.image.load("wallpaper.jpg").convert(surface)
-		self.mascot=pygame.image.load(os.path.join("vgop", "mascot45.png"))
+		self.mascot=pygame.image.load(os.path.join("vgop", "mascot45.png")).convert(surface)
+		self.iconend=pygame.image.load(os.path.join("vgop", "iconbarend.png")).convert(surface)
+		self.iconbegin=pygame.image.load(os.path.join("vgop", "iconbarbegin.png")).convert(surface)
 		self.resize(surface)
 		for prog in self.progs:
 			prog.icon=prog.icon.convert(surface)
@@ -117,11 +125,15 @@ class deskclass:
 		for prog in self.progs:
 			prog.iconrect=surface.blit(prog.icon, (icnx, icny))
 			icnx+=icnxjmp
-			
+		surface.blit(self.iconend, (icnx, icny))
+		icnx+=icnxjmp//2
+		
 		#urllabel=simplefont.render(self.hovertext, True, (255, 255, 255), (60, 60, 120))
 		urllabel=hudfont.render(self.hovertext, True, (255, 255, 255), (60, 60, 120))
 		surface.blit(urllabel, (icnx+10, 10))
-		surface.blit(self.mascot, (surface.get_width()-self.mascot.get_width(), 0))
+		mascotx=surface.get_width()-self.mascot.get_width()
+		self.mascotrect=surface.blit(self.mascot, (mascotx, 0))
+		surface.blit(self.iconbegin, (mascotx-self.iconbegin.get_width(), 0))
 
 
 
@@ -459,11 +471,13 @@ class bookmarks:
 	def loaderg0(self, frameobj):
 		textshow(self.host, self.port, self.selector)
 	def renderdisp(self, frameobj):
+		
 		if self.offset>0:
 			xlist=bmlist[self.offset:]
 		else:
 			xlist=bmlist
 		frameobj.surface.fill((255, 255, 255))
+		pygame.draw.rect(frameobj.surface, (60, 60, 120), pygame.Rect(0, 0, frameobj.surface.get_width(), 25))
 		self.newrect=frameobj.surface.blit(self.newbm, (150, 0))
 		if self.funct==0:
 			self.gorect=frameobj.surface.blit(self.go1, (0, 0))
@@ -477,7 +491,7 @@ class bookmarks:
 			self.gorect=frameobj.surface.blit(self.go0, (0, 0))
 			self.delrect=frameobj.surface.blit(self.del0, (50, 0))
 			self.editrect=frameobj.surface.blit(self.edit1, (100, 0))
-		self.ypos=40
+		self.ypos=25
 		for item in xlist:
 			item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict)
 	

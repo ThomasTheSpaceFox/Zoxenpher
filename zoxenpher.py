@@ -307,6 +307,7 @@ class gopherpane:
 			del self.data
 		#startup
 		if frameobj.statflg==1:
+			self.menudraw(frameobj)
 			if self.preload==None:
 				sideproc=Thread(target = self.menuinital, args = [frameobj])
 				sideproc.daemon=True

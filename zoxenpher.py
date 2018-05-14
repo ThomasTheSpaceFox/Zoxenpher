@@ -24,6 +24,10 @@ hudfont = pygame.font.SysFont(None, 22)
 maximages=int(libzox.cnfdict["imgpreview"])
 bmlist=libzox.bmload()
 
+bookbtn=pygame.image.load(os.path.join("vgop", "bookbtn.png"))
+rootbtn=pygame.image.load(os.path.join("vgop", "rootbtn.png"))
+loadbtn=pygame.image.load(os.path.join("vgop", "loadbtn.png"))
+
 #virtual desktop
 class deskclass:
 	def __init__(self, progs):
@@ -63,7 +67,7 @@ class deskclass:
 					self.hovertext=prog.hint
 			
 			if self.mascotrect.collidepoint(mpos):
-				self.hovertext="About Zoxenpher"
+				self.hovertext="About Zoxenpher."
 		#init code
 		if frameobj.statflg==1:
 			self.drawdesk(frameobj.surface)
@@ -156,7 +160,7 @@ class gopherpane:
 		self.host=host
 		self.port=port
 		self.selector=selector
-		self.yoff=0
+		self.yoff=25
 		self.yjump=int(libzox.cnfdict["menutextjump"])
 		self.menu=[]
 		self.data=None
@@ -167,6 +171,9 @@ class gopherpane:
 		self.renderdict={}
 		self.gtype=gtype
 		self.shortprefix=shortprefix
+		self.bookbtn=bookbtn.convert()
+		self.rootbtn=rootbtn.convert()
+		self.loadbtn=loadbtn.convert()
 	#menu get routine
 	def menuget(self):
 		self.data=pathfigure(self.host, self.port, self.selector)
@@ -223,6 +230,11 @@ class gopherpane:
 			sideproc=Thread(target = imgget, args = [imageset, self.menudraw, frameobj])
 			sideproc.daemon=True
 			sideproc.start()
+		self.hudrect=pygame.Rect(0, 0, frameobj.surface.get_width(), 25)
+		pygame.draw.rect(frameobj.surface, (60, 60, 120), self.hudrect)
+		self.rootrect=frameobj.surface.blit(self.rootbtn, (0, 3))
+		self.bookrect=frameobj.surface.blit(self.bookbtn, (60, 3))
+		self.loadrect=frameobj.surface.blit(self.loadbtn, (120, 3))
 	#menu change loader
 	def menuchange(self, item, frameobj):
 		self.host=item.hostname
@@ -233,9 +245,26 @@ class gopherpane:
 		else:
 			frameobj.name=(self.prefix+str(item.hostname) + "/" + self.gtype + str(item.selector))
 		self.menuget()
-		self.yoff=0
+		self.yoff=25
 		self.menudraw(frameobj)
 		return
+	def menurefresh(self, frameobj):
+		self.menuget()
+		self.yoff=25
+		self.menudraw(frameobj)
+	def menuroot(self, frameobj):
+		self.selector="/"
+		self.gtype="1"
+		#reset prefixes in case of text document being the current.
+		self.prefix="menu: gopher://"
+		self.shortprefix="menu: "
+		if self.host.startswith("about:"):
+			frameobj.name=(self.shortprefix+str(self.host))
+		else:
+			frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
+		self.menuget()
+		self.yoff=25
+		self.menudraw(frameobj)
 	#menu initalization loader
 	def menuinital(self, frameobj):
 		if self.host.startswith("about:"):
@@ -243,24 +272,32 @@ class gopherpane:
 		else:
 			frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
 		self.menuget()
-		self.yoff=0
+		self.yoff=25
 		self.menudraw(frameobj)
 	def pumpcall1(self, frameobj, data=None):
 		
 		#link destination preview routine. 
 		if frameobj.statflg==0 and frameobj.wo==0:
-			for item in self.menu:
-				if item.gtype!=None:
-					if item.gtype in "01pgI7":
-						try:
-							if item.rect.collidepoint(stz.mousehelper(pygame.mouse.get_pos(), frameobj)):
-								if item.hostname.startswith("about:"):
-									deskt.hovertext=(item.hostname)
-								else:
-									deskt.hovertext=("gopher://" + item.hostname + "/" + item.gtype + item.selector)
-								break
-						except AttributeError:
-							continue
+			mpos=stz.mousehelper(pygame.mouse.get_pos(), frameobj)
+			if self.loadrect.collidepoint(mpos):
+				deskt.hovertext="Reload this menu."
+			elif self.rootrect.collidepoint(mpos):
+				deskt.hovertext="Goto server root."
+			elif self.bookrect.collidepoint(mpos):
+				deskt.hovertext="Bookmark this menu."
+			elif not self.hudrect.collidepoint(mpos):
+				for item in self.menu:
+					if item.gtype!=None:
+						if item.gtype in "01pgI7":
+							try:
+								if item.rect.collidepoint(mpos):
+									if item.hostname.startswith("about:"):
+										deskt.hovertext=(item.hostname)
+									else:
+										deskt.hovertext=("gopher://" + item.hostname + "/" + item.gtype + item.selector)
+									break
+							except AttributeError:
+								continue
 		#delete some of the larger things upon close
 		if frameobj.statflg==3:
 			for item in self.renderdict:
@@ -283,7 +320,7 @@ class gopherpane:
 					frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
 		#resize
 		if frameobj.statflg==2:
-			self.yoff=0
+			self.yoff=25
 			for item in self.renderdict:
 				del item
 			del self.renderdict
@@ -293,8 +330,8 @@ class gopherpane:
 		if frameobj.statflg==6:
 			if data.key==pygame.K_UP:
 				self.yoff+=self.yjump*2
-				if self.yoff>0:
-					self.yoff=0
+				if self.yoff>25:
+					self.yoff=25
 				self.menudraw(frameobj)
 			if data.key==pygame.K_DOWN and self.ypos>frameobj.sizey:
 				self.yoff-=self.yjump*2
@@ -305,7 +342,24 @@ class gopherpane:
 				
 
 		if frameobj.statflg==4:
-			if data.button==1 and not self.linkdisable:
+			if self.hudrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
+				#print("Blocked")
+				if data.button==3:
+					newgop=gopherpane(host=self.host, port=self.port, selector="/")
+					framesc.add_frame(stz.framex(600, 500, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
+				if data.button==1:
+					if self.loadrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
+						sideproc=Thread(target = self.menurefresh, args = [frameobj])
+						sideproc.daemon=True
+						sideproc.start()
+					if self.rootrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
+						sideproc=Thread(target = self.menuroot, args = [frameobj])
+						sideproc.daemon=True
+						sideproc.start()
+					if self.bookrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
+						newgop=bookmadded(url=libzox.gurlencode(self.host, self.selector, self.gtype, self.port))
+						framesc.add_frame(stz.framex(350, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
+			elif data.button==1 and not self.linkdisable:
 				for item in self.menu:
 					mods=pygame.key.get_mods()
 					
@@ -342,18 +396,18 @@ class gopherpane:
 							if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 								newgop=querypane(host=item.hostname, port=item.port, selector=item.selector)
 								framesc.add_frame(stz.framex(350, 100, "Gopher Query", resizable=0, pumpcall=newgop.pumpcall1))
-			if data.button==3 and not self.linkdisable:
+			elif data.button==3 and not self.linkdisable:
 				for item in self.menu:
 					if item.gtype=="1":
 						if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 							newgop=gopherpane(host=item.hostname, port=item.port, selector=item.selector)
 							framesc.add_frame(stz.framex(600, 500, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
-			if data.button==4:
+			elif data.button==4:
 				self.yoff+=self.yjump*2
-				if self.yoff>0:
-					self.yoff=0
+				if self.yoff>25:
+					self.yoff=25
 				self.menudraw(frameobj)
-			if data.button==5 and self.ypos>frameobj.sizey:
+			elif data.button==5 and self.ypos>frameobj.sizey:
 				self.yoff-=self.yjump*2
 				self.menudraw(frameobj)
 							
@@ -478,19 +532,19 @@ class bookmarks:
 			xlist=bmlist
 		frameobj.surface.fill((255, 255, 255))
 		pygame.draw.rect(frameobj.surface, (60, 60, 120), pygame.Rect(0, 0, frameobj.surface.get_width(), 25))
-		self.newrect=frameobj.surface.blit(self.newbm, (150, 0))
+		self.newrect=frameobj.surface.blit(self.newbm, (150, 3))
 		if self.funct==0:
-			self.gorect=frameobj.surface.blit(self.go1, (0, 0))
-			self.delrect=frameobj.surface.blit(self.del0, (50, 0))
-			self.editrect=frameobj.surface.blit(self.edit0, (100, 0))
+			self.gorect=frameobj.surface.blit(self.go1, (0, 3))
+			self.delrect=frameobj.surface.blit(self.del0, (50, 3))
+			self.editrect=frameobj.surface.blit(self.edit0, (100, 3))
 		elif self.funct==1:
-			self.gorect=frameobj.surface.blit(self.go0, (0, 0))
-			self.delrect=frameobj.surface.blit(self.del1, (50, 0))
-			self.editrect=frameobj.surface.blit(self.edit0, (100, 0))
+			self.gorect=frameobj.surface.blit(self.go0, (0, 3))
+			self.delrect=frameobj.surface.blit(self.del1, (50, 3))
+			self.editrect=frameobj.surface.blit(self.edit0, (100, 3))
 		else:
-			self.gorect=frameobj.surface.blit(self.go0, (0, 0))
-			self.delrect=frameobj.surface.blit(self.del0, (50, 0))
-			self.editrect=frameobj.surface.blit(self.edit1, (100, 0))
+			self.gorect=frameobj.surface.blit(self.go0, (0, 3))
+			self.delrect=frameobj.surface.blit(self.del0, (50, 3))
+			self.editrect=frameobj.surface.blit(self.edit1, (100, 3))
 		self.ypos=25
 		for item in xlist:
 			item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict)

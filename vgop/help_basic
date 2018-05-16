@@ -6,6 +6,10 @@ this icon creates a new gopher window.  this window will start at a splash page 
 pgo	/	about:go.png	70
 This icon will bring up a prompt, asking for a gopher url.  You may enter a gopher URL here to open that url directly.
 
+pbook	/	about:bookmarks.png	70
+This will bring up the bookmarks menu. 
+1See Bookmarks help for more information.	/	about:help_bookmarks	70
+
 phelp	/	about:help.png	70
 This icon will open the help menu directly.
 

@@ -23,11 +23,12 @@ hudfont = pygame.font.SysFont(None, 22)
 
 maximages=int(libzox.cnfdict["imgpreview"])
 bmlist=libzox.bmload()
-
+#
 bookbtn=pygame.image.load(os.path.join("vgop", "bookbtn.png"))
 rootbtn=pygame.image.load(os.path.join("vgop", "rootbtn.png"))
 loadbtn=pygame.image.load(os.path.join("vgop", "loadbtn.png"))
 
+#
 #virtual desktop
 class deskclass:
 	def __init__(self, progs):
@@ -192,14 +193,17 @@ class gopherpane:
 		for item in self.menu:
 			if item.gtype=="i" or item.gtype==None:
 				rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
+			elif item.gtype=="1" and (item.hostname==self.host or item.hostname.startswith("about:")):
+				rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenu)
+				item.rect=rect
 			elif item.gtype=="1":
-				rect, self.ypos, self.renderdict = textitem("[MENU]" + item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict)
+				rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenuremote)
 				item.rect=rect
 			elif item.gtype=="7":
-				rect, self.ypos, self.renderdict = textitem("[QUERY]" + item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict)
+				rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtquery)
 				item.rect=rect
 			elif item.gtype=="0":
-				rect, self.ypos, self.renderdict = textitem("[TEXT]" + item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict)
+				rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gttext)
 				item.rect=rect
 			#image preview routine
 			elif item.gtype=="g" or item.gtype=="p" or item.gtype=="I":
@@ -209,14 +213,14 @@ class gopherpane:
 						item.rect=frameobj.surface.blit(item.image, (0, self.ypos))
 						self.ypos+=item.image.get_height()
 					if item.image==None:
-						item.rect, self.ypos, self.renderdict = textitem("[IMAGE]" + item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict)
+						item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage)
 					#pygame.draw.rect(frameobj.surface, (255, 255, 0), item.rect, 1)
 				except AttributeError as err:
 					#print(err)
 					item.image=None
 					if imagecount<maximages or (imagecount<2 and self.forceimage):
 						imageset.extend([item])
-					item.rect, self.ypos, self.renderdict = textitem("[IMAGE]" + item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict)
+					item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage)
 
 					
 						
@@ -949,6 +953,13 @@ deskframe=stz.desktop(int(libzox.cnfdict["deskw"]), int(libzox.cnfdict["deskh"])
 
 windowicon=pygame.image.load(os.path.join("vgop", "icon32.png"))
 framesc=stz.framescape(deskframe, deskicon=windowicon)
+
+gtmenu=pygame.image.load(os.path.join("vgop", "menuicn.png")).convert()
+gtmenuremote=pygame.image.load(os.path.join("vgop", "menuremoteicn.png")).convert()
+
+gtimage=pygame.image.load(os.path.join("vgop", "imageicon.png")).convert()
+gttext=pygame.image.load(os.path.join("vgop", "texticon.png")).convert()
+gtquery=pygame.image.load(os.path.join("vgop", "queryicon.png")).convert()
 
 #start auxilary desktop thread.
 sideproc=Thread(target = deskt.process, args = [])

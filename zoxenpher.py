@@ -552,8 +552,18 @@ class bookmarks:
 			self.editrect=frameobj.surface.blit(self.edit1, (100, 3))
 		self.ypos=25
 		for item in xlist:
-			item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict)
-	
+			item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, self.getitemtypeicn(item.url))
+	def getitemtypeicn(self, url):
+		gtype=libzox.gurldecode(url)[3]
+		if gtype=="1":
+			return gtmenu
+		if gtype=="0":
+			return gttext
+		if gtype=="7":
+			return gtquery
+		if gtype=="g" or gtype=="p" or gtype=="I":
+			return gtimage
+		return None
 	def rotarylaunch(self, url, frameobj):
 		self.host, self.port, self.selector, self.gtype = libzox.gurldecode(url)
 		if self.gtype=="1":

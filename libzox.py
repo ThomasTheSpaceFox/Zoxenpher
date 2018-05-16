@@ -41,7 +41,7 @@ def pathfigure(host, port, selector, gtype="0"):
 
 
 #displays text and links with automatic word wrap.
-def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=None):
+def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=None, link=0):
 	xpos=0
 	rectlist=[]
 	words=text.split(" ")
@@ -60,7 +60,10 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 				if dictkey in renderdict:
 					namelabel=renderdict[dictkey]
 				else:
-					namelabel=xfont.render(buffstring, True, textcolx, (255, 255, 255))
+					if link:
+						namelabel=xfont.render(buffstring.strip(), True, textcolx, (255, 255, 255))
+					else:
+						namelabel=xfont.render(buffstring, True, textcolx, (255, 255, 255))
 					renderdict[dictkey]=namelabel
 				rectlist.extend([surface.blit(namelabel, (xpos, ypos))])
 				if xpos!=0:
@@ -74,7 +77,10 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 				if dictkey in renderdict:
 					namelabel=renderdict[dictkey]
 				else:
-					namelabel=xfont.render(buffstring, True, textcolx, (255, 255, 255))
+					if link:
+						namelabel=xfont.render(buffstring.strip(), True, textcolx, (255, 255, 255))
+					else:
+						namelabel=xfont.render(buffstring, True, textcolx, (255, 255, 255))
 					renderdict[dictkey]=namelabel
 				rectlist.extend([surface.blit(namelabel, (xpos, ypos))])
 				if xpos!=0:

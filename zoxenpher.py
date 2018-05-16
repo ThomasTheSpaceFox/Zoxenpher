@@ -19,6 +19,8 @@ from libzox import progobj
 from libzox import pathprogobj
 from libzox import imgget
 simplefont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
+linkfont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
+linkfont.set_underline(1)
 hudfont = pygame.font.SysFont(None, 22)
 
 maximages=int(libzox.cnfdict["imgpreview"])
@@ -194,16 +196,16 @@ class gopherpane:
 			if item.gtype=="i" or item.gtype==None:
 				rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
 			elif item.gtype=="1" and (item.hostname==self.host or item.hostname.startswith("about:")):
-				rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenu)
+				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenu, 1)
 				item.rect=rect
 			elif item.gtype=="1":
-				rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenuremote)
+				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenuremote, 1)
 				item.rect=rect
 			elif item.gtype=="7":
-				rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtquery)
+				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtquery, 1)
 				item.rect=rect
 			elif item.gtype=="0":
-				rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gttext)
+				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gttext, 1)
 				item.rect=rect
 			#image preview routine
 			elif item.gtype=="g" or item.gtype=="p" or item.gtype=="I":
@@ -213,14 +215,14 @@ class gopherpane:
 						item.rect=frameobj.surface.blit(item.image, (0, self.ypos))
 						self.ypos+=item.image.get_height()
 					if item.image==None:
-						item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage)
+						item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
 					#pygame.draw.rect(frameobj.surface, (255, 255, 0), item.rect, 1)
 				except AttributeError as err:
 					#print(err)
 					item.image=None
 					if imagecount<maximages or (imagecount<2 and self.forceimage):
 						imageset.extend([item])
-					item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage)
+					item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
 
 					
 						
@@ -552,7 +554,7 @@ class bookmarks:
 			self.editrect=frameobj.surface.blit(self.edit1, (100, 3))
 		self.ypos=25
 		for item in xlist:
-			item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, self.getitemtypeicn(item.url))
+			item.rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, itemicn=self.getitemtypeicn(item.url), link=1)
 	def getitemtypeicn(self, url):
 		gtype=libzox.gurldecode(url)[3]
 		if gtype=="1":

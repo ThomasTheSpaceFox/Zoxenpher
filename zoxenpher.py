@@ -193,13 +193,21 @@ class gopherpane:
 		frameobj.surface.fill((255, 255, 255))
 		
 		for item in self.menu:
-			if item.gtype=="i" or item.gtype==None:
+			if item.gtype=="3":
+				rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict, gterror)
+			elif item.gtype=="i" or item.gtype==None:
 				rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
-			elif item.gtype=="1" and (item.hostname==self.host or item.hostname.startswith("about:")):
-				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenu, 1)
+			elif item.gtype=="1" and item.hostname.startswith("about:"):
+				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenuint, 1)
+				item.rect=rect
+			elif item.gtype=="1" and item.hostname!=self.host:
+				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenuremote, 1)
+				item.rect=rect
+			elif item.gtype=="1" and (item.selector=="/" or item.selector==""):
+				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenuroot, 1)
 				item.rect=rect
 			elif item.gtype=="1":
-				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenuremote, 1)
+				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenu, 1)
 				item.rect=rect
 			elif item.gtype=="7":
 				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtquery, 1)
@@ -228,8 +236,15 @@ class gopherpane:
 						
 				
 					
+			elif item.gtype=="9":
+				rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gtbin, 1)
+			elif item.gtype=="s":
+				rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gtsound, 1)
+			elif item.gtype=="h":
+				rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gtweb, 1)
+
 			else:
-				rects, self.ypos, self.renderdict = textitem("[UNKNOWN:" + item.gtype + "]" + item.name, simplefont, 15, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
+				rects, self.ypos, self.renderdict = textitem("[NS:" + item.gtype + "]" + item.name, simplefont, 15, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
 				#print(item.gtype)
 		#launch image loader thread if needed
 		if imageset!=[]:
@@ -557,8 +572,12 @@ class bookmarks:
 			item.rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, itemicn=self.getitemtypeicn(item.url), link=1)
 	def getitemtypeicn(self, url):
 		gtype=libzox.gurldecode(url)[3]
+		selector=libzox.gurldecode(url)[2]
 		if gtype=="1":
-			return gtmenu
+			if selector=="" or selector=="/":
+				return gtmenuroot
+			else:
+				return gtmenu
 		if gtype=="0":
 			return gttext
 		if gtype=="7":
@@ -760,7 +779,7 @@ class urlgo:
 	def loaderg1(self, frameobj):
 		frameobj.name="Loading: gopher://"+self.stringblob+" ..." 
 		try:
-			data=pathfigure(self.host, self.port, self.selector)
+			data=pathfigure(self.host, self.port, self.selector, self.gtype)
 		except Exception:
 			data=open(os.path.join("vgop", "gaierror"))
 		menu=libgop.menudecode(data)
@@ -968,10 +987,17 @@ framesc=stz.framescape(deskframe, deskicon=windowicon)
 
 gtmenu=pygame.image.load(os.path.join("vgop", "menuicn.png")).convert()
 gtmenuremote=pygame.image.load(os.path.join("vgop", "menuremoteicn.png")).convert()
+gtmenuint=pygame.image.load(os.path.join("vgop", "menuinticn.png")).convert()
+gtmenuroot=pygame.image.load(os.path.join("vgop", "menurooticn.png")).convert()
 
 gtimage=pygame.image.load(os.path.join("vgop", "imageicon.png")).convert()
 gttext=pygame.image.load(os.path.join("vgop", "texticon.png")).convert()
 gtquery=pygame.image.load(os.path.join("vgop", "queryicon.png")).convert()
+
+gtsound=pygame.image.load(os.path.join("vgop", "soundicn.png")).convert()
+gtbin=pygame.image.load(os.path.join("vgop", "binicn.png")).convert()
+gtweb=pygame.image.load(os.path.join("vgop", "webicn.png")).convert()
+gterror=pygame.image.load(os.path.join("vgop", "erroricn.png")).convert()
 
 #start auxilary desktop thread.
 sideproc=Thread(target = deskt.process, args = [])

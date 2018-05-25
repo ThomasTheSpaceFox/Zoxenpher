@@ -613,7 +613,7 @@ class bookmarks:
 			if data.button==4:
 				self.offset-=1
 				if self.offset<0:
-					self.offset==0
+					self.offset=0
 				self.renderdisp(frameobj)
 			if data.button==5:
 				self.offset+=1

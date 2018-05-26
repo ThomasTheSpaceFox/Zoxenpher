@@ -10,4 +10,7 @@ a: This means Zoxenpher wasn't able to load that content.  This can be for a var
 q: A connection seems to have hanged.
 a: wait 20 seconds. this is the default timeout pereod for the connection. OR, close down zoxenpher. Zoxenpher is written in such a way that a hanged connection SHOULD NOT stop it from exiting.
 
+q: A menu or text document is scrolling slowly
+a: Unfortunately, Zoxenpher does not handle massive text documents and menus that well. So, you will run into the odd situation where zoxenpher runs rather poorly when displaying alot of text at once.
+
 1Return to help menu	/	about:help	70

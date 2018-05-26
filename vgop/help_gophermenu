@@ -1,0 +1,30 @@
+Here is a quick guide to navigating gopher in zoxenpher.
+
+<-- First off, note this grey bar. icons will appear here to show you what the accompanying menu item is.
+
+For more information, and an overview of the gopher types zoxenpher supports,
+1     See: "help: gopher types" for more information.	/	about:help_gtypes	70
+
+You will also notice the buttons above.  These in order of left to right are:
+
+-root: This will return to the root menu of a server if you are not already there.  rightclick this to open server root in a new window.
+-book: This will open an add bookmark menu. Yes! Zoxenpher has a complete bookmarks system!
+1      See: "help: bookmarks" for more information.	/	about:help_bookmarks	70
+-load: This will reload the current gopher menu.
+
+When you click the new button, you are presented with a splash page with some helpful links  to documentation, and some common gopher servers, for your convienence. 
+
+--- Basics of gopher ---
+
+Gopher is really just one massive series of menus. each menu has various sorts of "selectors". These selectors are like gopher's equivalent to "links". Notice how some slectors are not treated as links. Text, and in zoxenpher's case, unsupported gopher types, being notable examples.
+
+Zoxenpher has some important features relating to links. Such as with links to other menus, rightclick opens it in a new window. For all links, clicking while holding the shift key brings up an add bookmarks dialog. And another helpful feature: the gopher URL of a link (in the window that has focus) is shown in the hud bar above, upon hovering the mouse over said link. try it!
+
+Finding information on gopher has the same solution as the web. search engines of course. A notable example is floodgap's "veronica 2" search engine. (link provided in splash page) Across gopher, you will find queries (also called ask, index search, etc.). These queries, when clicked, will open a special query entry box. enter your query in this box and your results should open in a new window once they have been loaded.
+
+Things to remember:
+
+server root: This is the highest menu of the gopher server.
+
+
+1Return to help menu	/	about:help	70

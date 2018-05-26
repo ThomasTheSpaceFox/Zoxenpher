@@ -45,7 +45,7 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 	xpos=0
 	rectlist=[]
 	words=text.split(" ")
-	if itemicn!=None:
+	if itemicn!=None and ypos>=(-30-yjump) and ypos<=surface.get_height():
 		
 		rectlist.extend([surface.blit(itemicn, (xpos, ypos))])
 	xpos=xoff
@@ -57,31 +57,33 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 			
 			#print buffstring
 			if word==None:
-				dictkey=str(textcolx[0])+str(textcolx[1])+str(textcolx[2])+buffstring
-				if dictkey in renderdict:
-					namelabel=renderdict[dictkey]
-				else:
-					if link:
-						namelabel=xfont.render(buffstring.strip(), True, textcolx, (255, 255, 255))
+				if ypos>=(-30-yjump) and ypos<=surface.get_height():
+					dictkey=str(textcolx[0])+str(textcolx[1])+str(textcolx[2])+buffstring
+					if dictkey in renderdict:
+						namelabel=renderdict[dictkey]
 					else:
-						namelabel=xfont.render(buffstring, True, textcolx, (255, 255, 255))
-					renderdict[dictkey]=namelabel
-				rectlist.extend([surface.blit(namelabel, (xpos, ypos))])
-				
+						if link:
+							namelabel=xfont.render(buffstring.strip(), True, textcolx, (255, 255, 255))
+						else:
+							namelabel=xfont.render(buffstring, True, textcolx, (255, 255, 255))
+						renderdict[dictkey]=namelabel
+					rectlist.extend([surface.blit(namelabel, (xpos, ypos))])
+					
 				ypos+=yjump
-			elif xfont.size(buffstring+word+" ")[0]<=surface.get_width():
+			elif xfont.size(buffstring+word+" ")[0]<=(surface.get_width()-xoff):
 				buffstring+=word+" "
 			else:
-				dictkey=str(textcolx[0])+str(textcolx[1])+str(textcolx[2])+buffstring
-				if dictkey in renderdict:
-					namelabel=renderdict[dictkey]
-				else:
-					if link:
-						namelabel=xfont.render(buffstring.strip(), True, textcolx, (255, 255, 255))
+				if ypos>=(-30-yjump) and ypos<=surface.get_height():
+					dictkey=str(textcolx[0])+str(textcolx[1])+str(textcolx[2])+buffstring
+					if dictkey in renderdict:
+						namelabel=renderdict[dictkey]
 					else:
-						namelabel=xfont.render(buffstring, True, textcolx, (255, 255, 255))
-					renderdict[dictkey]=namelabel
-				rectlist.extend([surface.blit(namelabel, (xpos, ypos))])
+						if link:
+							namelabel=xfont.render(buffstring.strip(), True, textcolx, (255, 255, 255))
+						else:
+							namelabel=xfont.render(buffstring, True, textcolx, (255, 255, 255))
+						renderdict[dictkey]=namelabel
+					rectlist.extend([surface.blit(namelabel, (xpos, ypos))])
 				
 				ypos+=yjump
 				buffstring=word+" "

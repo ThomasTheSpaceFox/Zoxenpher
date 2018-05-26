@@ -191,7 +191,10 @@ class gopherpane:
 		imagecount=0
 		self.ypos=self.yoff
 		frameobj.surface.fill((255, 255, 255))
-		
+		self.siderect=pygame.Rect(0, 0, 25, frameobj.surface.get_height())
+		#pygame.draw.rect(frameobj.surface, (185, 195, 255), self.siderect)
+		pygame.draw.rect(frameobj.surface, (223, 223, 223), self.siderect)
+		pygame.draw.line(frameobj.surface, (0, 0, 0), (25, 0), (25, frameobj.surface.get_height()), 1)
 		for item in self.menu:
 			if item.gtype=="3":
 				rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict, gterror)
@@ -220,7 +223,10 @@ class gopherpane:
 				imagecount+=1
 				try:
 					if item.image!=None:
-						item.rect=frameobj.surface.blit(item.image, (0, self.ypos))
+						rectia, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
+						rectib=frameobj.surface.blit(item.image, (26, self.ypos))
+						item.rect=rectia.unionall([rectib])
+						#pygame.draw.rect(frameobj.surface, (60, 60, 255), item.rect, 1)
 						self.ypos+=item.image.get_height()
 					if item.image==None:
 						item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
@@ -228,7 +234,7 @@ class gopherpane:
 				except AttributeError as err:
 					#print(err)
 					item.image=None
-					if imagecount<maximages or (imagecount<2 and self.forceimage):
+					if imagecount<maximages or (imagecount<2 and self.forceimage) or self.host.startswith("about:"):
 						imageset.extend([item])
 					item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
 
@@ -417,7 +423,7 @@ class gopherpane:
 						if item.gtype=="7":
 							if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 								newgop=querypane(host=item.hostname, port=item.port, selector=item.selector)
-								framesc.add_frame(stz.framex(350, 100, "Gopher Query", resizable=0, pumpcall=newgop.pumpcall1))
+								framesc.add_frame(stz.framex(350, 100, "Gopher Query", resizable=1, pumpcall=newgop.pumpcall1))
 			elif data.button==3 and not self.linkdisable:
 				for item in self.menu:
 					if item.gtype=="1":
@@ -455,9 +461,9 @@ class querypane:
 	def renderdisp(self, frameobj):
 		str1=self.host+"/7"+self.selector
 		frameobj.surface.fill((255, 255, 255))
-		textitem(str1, simplefont, self.yjump, (0, 0, 0), frameobj.surface, 0, {})
-		textitem("Please Type Query", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*2, {})
-		textitem(">"+self.stringblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*4, {})
+		textitem(str1, simplefont, self.yjump, (0, 0, 0), frameobj.surface, 0, {}, xoff=0)
+		textitem("Please Type Query", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*2, {}, xoff=0)
+		textitem(">"+self.stringblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*4, {}, xoff=0)
 	def loader(self, frameobj):
 		frameobj.name="Loading..."
 		try:
@@ -553,6 +559,10 @@ class bookmarks:
 		else:
 			xlist=bmlist
 		frameobj.surface.fill((255, 255, 255))
+		self.siderect=pygame.Rect(0, 0, 25, frameobj.surface.get_height())
+		#pygame.draw.rect(frameobj.surface, (185, 195, 255), self.siderect)
+		pygame.draw.rect(frameobj.surface, (223, 223, 223), self.siderect)
+		pygame.draw.line(frameobj.surface, (0, 0, 0), (25, 0), (25, frameobj.surface.get_height()), 1)
 		pygame.draw.rect(frameobj.surface, (60, 60, 120), pygame.Rect(0, 0, frameobj.surface.get_width(), 25))
 		self.newrect=frameobj.surface.blit(self.newbm, (150, 3))
 		if self.funct==0:
@@ -597,7 +607,7 @@ class bookmarks:
 			sideproc.start()
 		elif self.gtype=="7":
 			newgop=querypane(host=self.host, port=self.port, selector=self.selector)
-			framesc.add_frame(stz.framex(350, 100, "Gopher Query", resizable=0, pumpcall=newgop.pumpcall1))
+			framesc.add_frame(stz.framex(350, 100, "Gopher Query", resizable=1, pumpcall=newgop.pumpcall1))
 		elif self.gtype=="g" or self.gtype=="p" or self.gtype=="I":
 			newgop=imgview(host=self.host, port=self.port, selector=self.selector, gtype=self.gtype)
 			framesc.add_frame(stz.framex(500, 400, "Image", resizable=1, pumpcall=newgop.pumpcall1))
@@ -687,13 +697,13 @@ class bookmadded:
 		self.line=1
 	def renderdisp(self, frameobj):
 		frameobj.surface.fill((255, 255, 255))
-		textitem("tab=switch entries, enter=accept", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*1, {})
+		textitem("tab=switch entries, enter=accept", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*1, {}, xoff=0)
 		if self.line:
-			textitem("gopher://"+self.urlblob+"", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*3, {})
-			textitem("name:"+self.nameblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*5, {})
+			textitem("gopher://"+self.urlblob+"", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*3, {}, xoff=0)
+			textitem("name:"+self.nameblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*5, {}, xoff=0)
 		else:
-			textitem("gopher://"+self.urlblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*3, {})
-			textitem("name:"+self.nameblob+"", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*5, {})
+			textitem("gopher://"+self.urlblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*3, {}, xoff=0)
+			textitem("name:"+self.nameblob+"", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*5, {}, xoff=0)
 	def pumpcall1(self, frameobj, data=None):
 		if frameobj.statflg==2:
 			self.renderdisp(frameobj)
@@ -746,9 +756,9 @@ class bookdel:
 		self.nameblob=self.bookm.name
 	def renderdisp(self, frameobj):
 		frameobj.surface.fill((255, 255, 255))
-		textitem("Delete Bookmark? [Y]es or [N]o.", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*1, {})
-		textitem("gopher://"+self.urlblob, simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*3, {})
-		textitem("name:"+self.nameblob, simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*5, {})
+		textitem("Delete Bookmark? [Y]es or [N]o.", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*1, {}, xoff=0)
+		textitem("gopher://"+self.urlblob, simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*3, {}, xoff=0)
+		textitem("name:"+self.nameblob, simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*5, {}, xoff=0)
 	def pumpcall1(self, frameobj, data=None):
 		if frameobj.statflg==2:
 			self.renderdisp(frameobj)
@@ -774,8 +784,8 @@ class urlgo:
 		self.validchars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890:/.-_"
 	def renderdisp(self, frameobj):
 		frameobj.surface.fill((255, 255, 255))
-		textitem("Please Type URL", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*2, {})
-		textitem("gopher://"+self.stringblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*4, {})
+		textitem("Please Type URL", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*2, {}, xoff=0)
+		textitem("gopher://"+self.stringblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*4, {}, xoff=0)
 	def loaderg1(self, frameobj):
 		frameobj.name="Loading: gopher://"+self.stringblob+" ..." 
 		try:
@@ -844,7 +854,7 @@ class urlgo:
 						sideproc.start()
 					elif self.gtype=="7":
 						newgop=querypane(host=self.host, port=self.port, selector=self.selector)
-						framesc.add_frame(stz.framex(350, 100, "Gopher Query", resizable=0, pumpcall=newgop.pumpcall1))
+						framesc.add_frame(stz.framex(350, 100, "Gopher Query", resizable=1, pumpcall=newgop.pumpcall1))
 						framesc.close_pid(frameobj.pid)
 					elif self.gtype=="g" or self.gtype=="p" or self.gtype=="I":
 						newgop=imgview(host=self.host, port=self.port, selector=self.selector, gtype=self.gtype)
@@ -971,7 +981,7 @@ class imgview:
 
 #desktop icons
 progs=[progobj(gopherpane, pygame.image.load(os.path.join("vgop", "newwindow.png")), "goppane", "Gopher Menu", "GOPHER", 600, 500, 1, key=pygame.K_n, mod=pygame.KMOD_CTRL, hint="Open a new gopher window. (CTRL+n)"),
-progobj(urlgo, pygame.image.load(os.path.join("vgop", "go.png")), "urlgo", "URL GO:", "urlgo", 400, 100, 0, key=pygame.K_g, mod=pygame.KMOD_CTRL, hint="Enter a Gopher URL to load. (CTRL+g)"),
+progobj(urlgo, pygame.image.load(os.path.join("vgop", "go.png")), "urlgo", "URL GO:", "urlgo", 400, 100, 1, key=pygame.K_g, mod=pygame.KMOD_CTRL, hint="Enter a Gopher URL to load. (CTRL+g)"),
 progobj(bookmarks, pygame.image.load(os.path.join("vgop", "bookmarks.png")), "bookmarks", "Bookmarks", "bookmarks", 600, 500, 1, key=pygame.K_b, mod=pygame.KMOD_CTRL, hint="Open bookmarks. (CTRL+b)"),
 
 pathprogobj(gopherpane, pygame.image.load(os.path.join("vgop", "help.png")), "goppane_HELP", "Gopher Menu", "GOPHER_HELP", 600, 500, 1, host="about:help", key=pygame.K_F1, hint="Bring up a help menu. (F1)")]

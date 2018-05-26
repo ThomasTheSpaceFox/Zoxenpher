@@ -41,15 +41,16 @@ def pathfigure(host, port, selector, gtype="0"):
 
 
 #displays text and links with automatic word wrap.
-def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=None, link=0):
+def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=None, link=0, xoff=26):
 	xpos=0
 	rectlist=[]
 	words=text.split(" ")
 	if itemicn!=None:
 		
 		rectlist.extend([surface.blit(itemicn, (xpos, ypos))])
-		xpos=25
-		ypos+=5
+	xpos=xoff
+	if 25>yjump:
+		yjump=25
 	if True:
 		buffstring=""
 		for word in words+[" ", None]:
@@ -66,10 +67,8 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 						namelabel=xfont.render(buffstring, True, textcolx, (255, 255, 255))
 					renderdict[dictkey]=namelabel
 				rectlist.extend([surface.blit(namelabel, (xpos, ypos))])
-				if xpos!=0:
-					ypos+=5
+				
 				ypos+=yjump
-				xpos=0
 			elif xfont.size(buffstring+word+" ")[0]<=surface.get_width():
 				buffstring+=word+" "
 			else:
@@ -83,10 +82,8 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 						namelabel=xfont.render(buffstring, True, textcolx, (255, 255, 255))
 					renderdict[dictkey]=namelabel
 				rectlist.extend([surface.blit(namelabel, (xpos, ypos))])
-				if xpos!=0:
-					ypos+=5
+				
 				ypos+=yjump
-				xpos=0
 				buffstring=word+" "
 	if len(rectlist)>0:
 		return (rectlist[0].unionall(rectlist), ypos, renderdict)

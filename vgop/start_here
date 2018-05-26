@@ -1,0 +1,18 @@
+welcome to Zoxenpher! A python graphical gopher client!
+
+Zoxenpher v2.0.1
+
+Features:
+ - automatic wordwrap & graphical gopher type icons with special context-aware menu type icons.
+ - multitasking interface based upon the Strazoloid virtual window manager framework.
+ - Categoriezed help system built-in.
+ - Bookmarks system with ability to directly bookmark various selector types.
+ - automatic image preview functionality.
+
+Overview:
+
+Zoxenpher is built from the ground up as a gopherspace client first, unlike some other clients where gopher is an afterthought, its the key feature here.  That said, while Zoxenpher is quite a new entry to the world of the gopher, it already has support for basic browsing, images, search queries, even a bookmarks system.
+
+Even better, Zoxenpher is built on the portable programming language, python, as well as the ubiquitous pygame.  What this means is, Zoxenpher isn't restricted to any one operating system or CPU architecture. Its also a fully GUI client, with modern amenities like in-line images, multiple windows, obvious links, url-on-link-mouseover, and more.
+
+While Zoxenpher currently lacks some functionalities like downloads, and web url support, its still quite usable, and like most gopher clients, doesn't eat your ram for breakfast, and your CPU power for dessert. (*cough*, webbrowsers, *cough*) 

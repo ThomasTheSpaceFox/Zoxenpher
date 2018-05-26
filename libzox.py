@@ -197,7 +197,7 @@ def bmload():
 	try:
 		bmfile=open(bmfilename, 'r')
 		for line in bmfile:
-			line=line.replace("\n", "")
+			line=line.replace("\n", "").replace("\r", "")
 			url, name = line.split("\t")
 			bmlist.extend([bmitem(url, name)])
 		bmfile.close()
@@ -235,7 +235,7 @@ def cnfload():
 		cnffile=open(os.path.join("usr", "cnf.dat"))
 		for line in cnffile:
 			if not line.startswith("#") and "=" in line:
-				line=line.replace("\n", "")
+				line=line.replace("\n", "").replace("\r", "")
 				item, data = line.split("=")
 				if item in cnfdict:
 					cnfdict[item]=data

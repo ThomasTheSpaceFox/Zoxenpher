@@ -4,7 +4,7 @@
 #options. not all options must be specified.
 #examples shown here are using the default parameters.
 
-#number of images to show in-line in menus
+#number of images to show in-line in menus. 0=disable
 imgpreview=10
 
 #desk width
@@ -19,4 +19,4 @@ menufontsize=15
 #font jump for menus
 menujump=15
 #system font for menus. a monospace font is HIGHLY recommended.
-menufont="mono"
+menufont=mono

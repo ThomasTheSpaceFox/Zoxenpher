@@ -13,4 +13,13 @@ a: wait 20 seconds. this is the default timeout pereod for the connection. OR, c
 q: A menu or text document is scrolling slowly
 a: Unfortunately, Zoxenpher does not handle massive text documents and menus that well. So, you will run into the odd situation where zoxenpher runs rather poorly when displaying alot of text at once.
 
+--- Configuration file ---
+1See: Configuration help for how to set up a cnf.dat file.	/	about:help_conf	70
+
+q: the text is too small/too big in menus.
+a: you can change the font size and vertical spacing via the cnf.dat file.
+
+q: the menus are not using a monospace font!
+a: this means you will need to manually set a system font to be used via the cnf.dat file.
+
 1Return to help menu	/	about:help	70

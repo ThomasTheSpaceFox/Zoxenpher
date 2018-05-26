@@ -1,0 +1,49 @@
+--- Overview ---
+
+Zoxenpher currently lacks any in-program options menu, so you will need to setup cnf.dat file manually to alter the default settings.
+
+--- Creating cnf.dat ---
+
+look in the subdirectory called "usr" (the one in the directory where zoxenpher.py is).  You should see a file called cnf.example. 
+
+copy cnf.example as cnf.dat and open it in a code editor, or very basic text editor. DO NOT USE A WORD PROCESSOR!
+
+Now, refer to the sections below to find the setting you wish to change.
+
+
+--- Fixing menu font ---
+
+On some systems, the default settings will end up loading a non-monospaced font, or wind up being the wrong size.
+
+
+ -To change the size, use a setting like this:
+menufontsize=15
+
+ -Just remember to change the vertical offset as well. that setting looks like this:
+menujump=15
+
+ -To change the font, find the name of a system font thats monospace, and enter it in this setting:
+menufont=mono
+
+--- Image preview settings ---
+
+If you have a slow internet connection, or a slow computer, you may wish to adjust the image preview settings. Likewise, you may also want to increase the number of previewed images as well.
+
+ -To do either of these things, use this setting. (note that setting this to 0 disables image previewing outright):
+imgpreview=10
+
+
+--- Default Window Size ---
+
+If 800x600 is not your desired window size, you can change it. via these settings:
+(note: this refers to the "main" zoxenpher window, not the smaller "sub-windows".)
+
+ -width:
+deskw=800
+
+ -height:
+deskh=600
+
+
+
+1Return to help menu	/	about:help	70

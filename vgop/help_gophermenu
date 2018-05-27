@@ -7,10 +7,15 @@ For more information, and an overview of the gopher types zoxenpher supports,
 
 You will also notice the buttons above.  These in order of left to right are:
 
--root: This will return to the root menu of a server if you are not already there.  rightclick this to open server root in a new window.
--book: This will open an add bookmark menu. Yes! Zoxenpher has a complete bookmarks system!
+p-root:	/	about:rootbtn.png	70
+This will return to the root menu of a server if you are not already there.  rightclick this to open server root in a new window.
+
+p-book:	/	about:bookbtn.png	70
+This will open an add bookmark menu. Yes! Zoxenpher has a complete bookmarks system!
 1      See: "help: bookmarks" for more information.	/	about:help_bookmarks	70
--load: This will reload the current gopher menu.
+
+p-load:	/	about:loadbtn.png	70
+This will reload the current gopher menu.
 
 When you click the new button, you are presented with a splash page with some helpful links  to documentation, and some common gopher servers, for your convienence. 
 

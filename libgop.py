@@ -24,7 +24,7 @@ class mitem:
 			self.hostname=None
 			self.selector=None
 			self.gtype=None
-			data=data.replace("\r\n", "").replace("\t", "        ")
+			data=data.replace("\r\n", "").replace("\r", "").replace("\n", "").replace("\t", "        ")
 			self.name=data
 		else:
 				
@@ -41,7 +41,7 @@ class mitem:
 				self.hostname=None
 				self.selector=None
 				self.gtype=None
-				data=data.replace("\r\n", "").replace("\t", "        ")
+				data=data.replace("\r\n", "").replace("\r", "").replace("\n", "").replace("\t", "        ")
 				self.name=data
 
 socketlist=[]

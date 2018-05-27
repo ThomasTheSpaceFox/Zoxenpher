@@ -138,8 +138,9 @@ class deskclass:
 		icnyjmp=50
 		pygame.draw.rect(surface, (60, 60, 120), pygame.Rect(0, 0, surface.get_width(), 45))
 		for prog in self.progs:
-			prog.iconrect=surface.blit(prog.icon, (icnx, icny))
-			icnx+=icnxjmp
+			if not prog.side:
+				prog.iconrect=surface.blit(prog.icon, (icnx, icny))
+				icnx+=icnxjmp
 		surface.blit(self.iconend, (icnx, icny))
 		icnx+=icnxjmp//2
 		
@@ -148,6 +149,10 @@ class deskclass:
 		surface.blit(urllabel, (icnx+10, 10))
 		mascotx=surface.get_width()-self.mascot.get_width()
 		self.mascotrect=surface.blit(self.mascot, (mascotx, 0))
+		for prog in self.progs:
+			if prog.side:
+				mascotx-=45
+				prog.iconrect=surface.blit(prog.icon, (mascotx, icny))
 		surface.blit(self.iconbegin, (mascotx-self.iconbegin.get_width(), 0))
 
 
@@ -1000,7 +1005,7 @@ progs=[progobj(gopherpane, pygame.image.load(os.path.join("vgop", "newwindow.png
 progobj(urlgo, pygame.image.load(os.path.join("vgop", "go.png")), "urlgo", "URL GO:", "urlgo", 500, 100, 1, key=pygame.K_g, mod=pygame.KMOD_CTRL, hint="Enter a Gopher URL to load. (CTRL+g)"),
 progobj(bookmarks, pygame.image.load(os.path.join("vgop", "bookmarks.png")), "bookmarks", "Bookmarks", "bookmarks", gopherwidth, gopherheight, 1, key=pygame.K_b, mod=pygame.KMOD_CTRL, hint="Open bookmarks. (CTRL+b)"),
 
-progobj(quitx, pygame.image.load(os.path.join("vgop", "exit.png")), "quit", "quit", "quit", gopherwidth, gopherheight, 1, key=pygame.K_q, mod=pygame.KMOD_CTRL, hint="quit. (CTRL+q)"),
+progobj(quitx, pygame.image.load(os.path.join("vgop", "exit.png")), "quit", "quit", "quit", gopherwidth, gopherheight, 1, key=pygame.K_q, mod=pygame.KMOD_CTRL, hint="quit. (CTRL+q)", side=1),
 pathprogobj(gopherpane, pygame.image.load(os.path.join("vgop", "help.png")), "goppane_HELP", "Gopher Menu", "GOPHER_HELP", gopherwidth, gopherheight, 1, host="about:help", key=pygame.K_F1, hint="Bring up a help menu. (F1)")]
 deskt=deskclass(progs)
 pygame.font.init()

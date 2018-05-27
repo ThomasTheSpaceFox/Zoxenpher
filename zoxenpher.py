@@ -395,7 +395,7 @@ class gopherpane:
 						if item.gtype!=None:
 							if item.gtype in "10gpI7":
 								if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
-									newgop=bookmadded(url=libzox.gurlencode(item.hostname, item.selector, item.gtype, item.port))
+									newgop=bookmadded(url=libzox.gurlencode(item.hostname, item.selector, item.gtype, item.port), name=item.name)
 									framesc.add_frame(stz.framex(350, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
 
 					else:
@@ -679,7 +679,7 @@ class bookmarks:
 
 #bookmark creator/editor dialog.
 class bookmadded:
-	def __init__(self, url="", bookm=None):
+	def __init__(self, url="", bookm=None, name=""):
 		self.yoff=0
 		self.yjump=int(libzox.cnfdict["menutextjump"])
 		self.stringblob=""
@@ -690,7 +690,7 @@ class bookmadded:
 		self.url=url
 		#self.mode=mode
 		self.urlblob=url
-		self.nameblob=""
+		self.nameblob=name
 		if self.bookm!=None:
 			self.urlblob=self.bookm.url
 			self.nameblob=self.bookm.name

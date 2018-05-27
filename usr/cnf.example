@@ -20,3 +20,5 @@ menufontsize=15
 menujump=15
 #system font for menus. a monospace font is HIGHLY recommended.
 menufont=mono
+
+menuheight=460

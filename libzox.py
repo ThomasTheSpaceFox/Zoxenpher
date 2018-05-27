@@ -48,9 +48,10 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 	if itemicn!=None and ypos>=(-30-yjump) and ypos<=surface.get_height():
 		
 		rectlist.extend([surface.blit(itemicn, (xpos, ypos))])
+		if 25>yjump:
+			yjump=25
 	xpos=xoff
-	if 25>yjump:
-		yjump=25
+	
 	if True:
 		buffstring=""
 		for word in words+[" ", None]:
@@ -223,7 +224,8 @@ cnfdef={"imgpreview" : "10",
 "deskh" : "600",
 "menufontsize" : "15",
 "menutextjump" : "15",
-"menufont" : "mono"}
+"menufont" : "mono",
+"menuheight" : "460"}
 
 
 

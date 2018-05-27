@@ -25,6 +25,9 @@ menujump=15
  -To change the font, find the name of a system font thats monospace, and enter it in this setting:
 menufont=mono
 
+ -While the default width is sized automatically to 80 columns, the height is set in the configuration. adjust to your preference.
+menuheight=460
+
 --- Image preview settings ---
 
 If you have a slow internet connection, or a slow computer, you may wish to adjust the image preview settings. Likewise, you may also want to increase the number of previewed images as well.

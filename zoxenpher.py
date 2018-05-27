@@ -25,14 +25,9 @@ linkfont.set_underline(1)
 
 gopherwidth=((simplefont.size("_")[0])*80)+25
 #too tall!
-#gfontjump=int(libzox.cnfdict["menutextjump"])
-#giconjump=25
-#if giconjump>gfontjump:
-#	gvjump=giconjump
-#else:
-#	gvjump=gfontjump
-#gopherheight=(gvjump*25)+26
-gopherheight=450
+gfontjump=int(libzox.cnfdict["menutextjump"])
+
+gopherheight=int(libzox.cnfdict["menuheight"])
 
 hudfont = pygame.font.SysFont(None, 22)
 

@@ -21,6 +21,19 @@ from libzox import imgget
 simplefont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
 linkfont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
 linkfont.set_underline(1)
+
+
+gopherwidth=((simplefont.size("_")[0])*80)+25
+#too tall!
+#gfontjump=int(libzox.cnfdict["menutextjump"])
+#giconjump=25
+#if giconjump>gfontjump:
+#	gvjump=giconjump
+#else:
+#	gvjump=gfontjump
+#gopherheight=(gvjump*25)+26
+gopherheight=450
+
 hudfont = pygame.font.SysFont(None, 22)
 
 maximages=int(libzox.cnfdict["imgpreview"])
@@ -83,7 +96,7 @@ class deskclass:
 		if frameobj.statflg==4:
 			if self.mascotrect.collidepoint(data.pos):
 				newgop=gopherpane(host="about:about", port=70, selector="/", shortprefix="About: ")
-				framesc.add_frame(stz.framex(700, 500, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
+				framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 			for prog in self.progs:
 				if prog.iconrect.collidepoint(data.pos):
 					framesc.add_frame(stz.framex(prog.xsize, prog.ysize, prog.friendly_name, pumpcall=prog.classref().pumpcall1, resizable=prog.resizable))
@@ -153,7 +166,7 @@ def textshow(host, port, selector):
 	data=pathfigure(host, port, selector, gtype="0")
 	menu=libgop.menudecode(data, txtflg=1)
 	newgop=gopherpane(host=host, port=port, selector=selector, preload=menu, prefix="text: gopher://", gtype="0", shortprefix="text: ")
-	framesc.add_frame(stz.framex(600, 500, "Text Document", resizable=1, pumpcall=newgop.pumpcall1, xpos=20))
+	framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Text Document", resizable=1, pumpcall=newgop.pumpcall1, xpos=20))
 
 
 
@@ -374,7 +387,7 @@ class gopherpane:
 				#print("Blocked")
 				if data.button==3:
 					newgop=gopherpane(host=self.host, port=self.port, selector="/")
-					framesc.add_frame(stz.framex(600, 500, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
+					framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 				if data.button==1:
 					if self.loadrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 						sideproc=Thread(target = self.menurefresh, args = [frameobj])
@@ -429,7 +442,7 @@ class gopherpane:
 					if item.gtype=="1":
 						if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 							newgop=gopherpane(host=item.hostname, port=item.port, selector=item.selector)
-							framesc.add_frame(stz.framex(600, 500, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
+							framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 			elif data.button==4:
 				self.yoff+=self.yjump*2
 				if self.yoff>25:
@@ -473,7 +486,7 @@ class querypane:
 			data=open(os.path.join("vgop", "gaierror"))
 		menu=libgop.menudecode(data)
 		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, preload=menu)
-		framesc.add_frame(stz.framex(600, 500, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
+		framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 		#close self
 		framesc.close_pid(frameobj.pid)
 	def pumpcall1(self, frameobj, data=None):
@@ -547,7 +560,7 @@ class bookmarks:
 			data=open(os.path.join("vgop", "gaierror"))
 		menu=libgop.menudecode(data)
 		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, preload=menu)
-		framesc.add_frame(stz.framex(600, 500, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
+		framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 		#close self
 		self.offset=0
 	def loaderg0(self, frameobj):
@@ -794,7 +807,7 @@ class urlgo:
 			data=open(os.path.join("vgop", "gaierror"))
 		menu=libgop.menudecode(data)
 		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, preload=menu)
-		framesc.add_frame(stz.framex(600, 500, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
+		framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 		#close self
 		framesc.close_pid(frameobj.pid)
 	def loaderg0(self, frameobj):
@@ -978,13 +991,22 @@ class imgview:
 
 		return
 
+#basic routine for quitting.
+class quitx:
+	def __init__(self):
+		return
+	def pumpcall1(self, frameobj, data=None):
+		if frameobj.statflg==0:
+			pygame.event.clear()
+			pygame.event.post(pygame.event.Event(pygame.QUIT))
 
 #desktop icons
-progs=[progobj(gopherpane, pygame.image.load(os.path.join("vgop", "newwindow.png")), "goppane", "Gopher Menu", "GOPHER", 600, 500, 1, key=pygame.K_n, mod=pygame.KMOD_CTRL, hint="Open a new gopher window. (CTRL+n)"),
-progobj(urlgo, pygame.image.load(os.path.join("vgop", "go.png")), "urlgo", "URL GO:", "urlgo", 400, 100, 1, key=pygame.K_g, mod=pygame.KMOD_CTRL, hint="Enter a Gopher URL to load. (CTRL+g)"),
-progobj(bookmarks, pygame.image.load(os.path.join("vgop", "bookmarks.png")), "bookmarks", "Bookmarks", "bookmarks", 600, 500, 1, key=pygame.K_b, mod=pygame.KMOD_CTRL, hint="Open bookmarks. (CTRL+b)"),
+progs=[progobj(gopherpane, pygame.image.load(os.path.join("vgop", "newwindow.png")), "goppane", "Gopher Menu", "GOPHER", gopherwidth, gopherheight, 1, key=pygame.K_n, mod=pygame.KMOD_CTRL, hint="Open a new gopher window. (CTRL+n)"),
+progobj(urlgo, pygame.image.load(os.path.join("vgop", "go.png")), "urlgo", "URL GO:", "urlgo", 500, 100, 1, key=pygame.K_g, mod=pygame.KMOD_CTRL, hint="Enter a Gopher URL to load. (CTRL+g)"),
+progobj(bookmarks, pygame.image.load(os.path.join("vgop", "bookmarks.png")), "bookmarks", "Bookmarks", "bookmarks", gopherwidth, gopherheight, 1, key=pygame.K_b, mod=pygame.KMOD_CTRL, hint="Open bookmarks. (CTRL+b)"),
 
-pathprogobj(gopherpane, pygame.image.load(os.path.join("vgop", "help.png")), "goppane_HELP", "Gopher Menu", "GOPHER_HELP", 600, 500, 1, host="about:help", key=pygame.K_F1, hint="Bring up a help menu. (F1)")]
+progobj(quitx, pygame.image.load(os.path.join("vgop", "exit.png")), "quit", "quit", "quit", gopherwidth, gopherheight, 1, key=pygame.K_q, mod=pygame.KMOD_CTRL, hint="quit. (CTRL+q)"),
+pathprogobj(gopherpane, pygame.image.load(os.path.join("vgop", "help.png")), "goppane_HELP", "Gopher Menu", "GOPHER_HELP", gopherwidth, gopherheight, 1, host="about:help", key=pygame.K_F1, hint="Bring up a help menu. (F1)")]
 deskt=deskclass(progs)
 pygame.font.init()
 

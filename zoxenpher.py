@@ -22,6 +22,18 @@ simplefont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict[
 linkfont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
 linkfont.set_underline(1)
 
+tilestr=libzox.cnfdict["bgtile"]
+if tilestr=="none":
+	tiledraw=None
+else:
+	try:
+		tiledraw=pygame.image.load(os.path.join("vgop", tilestr))
+	except pygame.error:
+		try:
+			tiledraw=pygame.image.load(os.path.join("usr", tilestr))
+		except pygame.error:
+			tiledraw=None
+
 
 gopherwidth=((simplefont.size("_")[0])*80)+25
 #too tall!
@@ -49,6 +61,7 @@ class deskclass:
 		self.clock=pygame.time.Clock()
 		self.hovertext=""
 		self.hoverprev=""
+		self.mattesurf=None
 		return
 	def process(self):
 		
@@ -56,8 +69,8 @@ class deskclass:
 			self.clock.tick(10)
 			#yes i know its a bit of a wonky solution.
 			for frame in framesc.proclist:
-				if frame.ypos<69:
-					frame.move(0, (frame.ypos-69))
+				if frame.ypos<70:
+					frame.move(0, (frame.ypos-70))
 					#frame.move(0, (-22))
 		print("done.")
 	def pumpcall1(self, frameobj, data=None):
@@ -98,6 +111,8 @@ class deskclass:
 		#resize
 		if frameobj.statflg==8:
 			self.resize(frameobj.surface)
+			#reset tile background
+			self.mattesurf=None
 			self.drawdesk(frameobj.surface)#Needed only if a resizable desk is desired.
 		if frameobj.statflg==6:
 			mods=pygame.key.get_mods()
@@ -122,6 +137,10 @@ class deskclass:
 		self.iconend=pygame.image.load(os.path.join("vgop", "iconbarend.png")).convert(surface)
 		self.iconbegin=pygame.image.load(os.path.join("vgop", "iconbarbegin.png")).convert(surface)
 		self.resize(surface)
+		if tiledraw!=None:
+			self.tilesurf=tiledraw.convert(surface)
+		else:
+			self.tilesurf=None
 		for prog in self.progs:
 			prog.icon=prog.icon.convert(surface)
 	##
@@ -130,6 +149,13 @@ class deskclass:
 			self.imgload=1
 			self.imageloader(surface)
 			
+		if self.tilesurf!=None:
+			if self.mattesurf==None:
+				self.mattesurf=(libzox.tiledraw(surface, self.tilesurf)).convert(surface)
+			surface.blit(self.mattesurf, (0, 0))
+			
+			
+			
 		#surface.blit(self.wallpaperx, (0, 0))
 		#surface.blit(self.mascot, (surface.get_width()//2-self.mascot.get_width()//2, surface.get_height()//2-self.mascot.get_height()//2))
 		icnx=0
@@ -137,6 +163,7 @@ class deskclass:
 		icnxjmp=45
 		icnyjmp=50
 		pygame.draw.rect(surface, (60, 60, 120), pygame.Rect(0, 0, surface.get_width(), 45))
+		pygame.draw.line(surface, (20, 40, 80), (0, 45), (surface.get_width(), 45), 1)
 		for prog in self.progs:
 			if not prog.side:
 				prog.iconrect=surface.blit(prog.icon, (icnx, icny))

@@ -11,6 +11,9 @@ copy cnf.example as cnf.dat and open it in a code editor, or very basic text edi
 Now, refer to the sections below to find the setting you wish to change.
 
 
+--- Setting wallpaper ---
+1see: wallpaper help	/	about:help_wallpaper	70
+
 --- Fixing menu font ---
 
 On some systems, the default settings will end up loading a non-monospaced font, or wind up being the wrong size.

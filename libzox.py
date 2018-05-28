@@ -227,7 +227,8 @@ cnfdef={"imgpreview" : "10",
 "menufontsize" : "15",
 "menutextjump" : "15",
 "menufont" : "mono",
-"menuheight" : "460"}
+"menuheight" : "460",
+"bgtile" : "diagbg.png"}
 
 
 
@@ -248,3 +249,20 @@ def cnfload():
 	return cnfdict
 print("Libzox: loading configuration data.")
 cnfdict=cnfload()
+
+#draw tiles (tilesurf) on a copy of a surface (drawsurf)
+def tiledraw(drawsurf, tilesurf):
+	drawsurf=drawsurf.copy()
+	destwidth=drawsurf.get_width()
+	destheight=drawsurf.get_height()
+	sourcewidth=tilesurf.get_width()
+	sourceheight=tilesurf.get_height()
+	ywid=0
+	while ywid<=destheight:
+		xwid=0
+		while xwid<=destwidth:
+			drawsurf.blit(tilesurf, (xwid, ywid))
+			xwid+=sourcewidth
+		ywid+=sourceheight
+	return drawsurf
+

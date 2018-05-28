@@ -22,3 +22,13 @@ menujump=15
 menufont=mono
 
 menuheight=460
+
+
+#wallpaper (tiled automatically, should either be in 'usr' or 'vgop' directories)
+bgtile=none
+#included examples
+#bgtile=tilebg.png
+#bgtile=tilebg2.png
+#bgtile=mascotbg.png
+default wallpaper:
+#bgtile=diagbg.png

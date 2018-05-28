@@ -1,0 +1,29 @@
+
+
+--- wallpaper ---
+zoxenpher has tiled wallpaper support. You can choose a wallpaper using a cnf.dat setting.
+1Note: read configuration help first!	/	about:help_conf	70
+
+ -Set to 'none' for no wallpaper.
+bgtile=none
+
+using your own wallpaper:
+place the wallpaper image in the 'usr' directory (where cnf.example and cnf.dat are)
+then set bgtile to the filename of the image. i.e. bgtile=example.jpg
+
+you can also select from the included wallpapers in the following gallery:
+
+example: 'bgtile=tilebg.png'
+
+
+gallery:
+p'tilebg.png'	/	about:tilebg.png	70
+p'tilebg2.png'	/	about:tilebg2.png	70
+p'mascotbg.png'	/	about:mascotbg.png	70
+p'diagbg.png'	/	about:diagbg.png	70
+
+
+
+
+1Return to configuration help	/	about:help_conf	70
+1Return to help menu	/	about:help	70

@@ -259,10 +259,9 @@ class gopherpane:
 		for item in self.renderdict:
 			del item
 		del self.renderdict
-		
+		self.renderdict={}
 	def newhist(self):
 		#print("newhist")
-		self.renderdict={}
 		self.histlist=self.histlist[:self.histpoint+1]
 		self.histlist.extend([libzox.histitem(self.host, self.port, self.selector, self.gtype, self.data, self.menu)])
 		self.histpoint+=1
@@ -370,8 +369,12 @@ class gopherpane:
 		self.menudraw(frameobj)
 		return
 	def menurefresh(self, frameobj):
-		self.histpoint-=1
-		self.menuget()
+		#self.histpoint-=1
+		self.menuget_nohist()
+		#refresh history entry of the current page.
+		histref=self.histlist[self.histpoint]
+		histref.menu=self.menu
+		histref.data=self.data
 		self.yoff=25
 		self.menudraw(frameobj)
 	def menuroot(self, frameobj):

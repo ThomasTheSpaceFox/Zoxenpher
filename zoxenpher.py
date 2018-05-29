@@ -34,6 +34,8 @@ else:
 		except pygame.error:
 			tiledraw=None
 
+histsize=int(libzox.cnfdict["histsize"])
+
 
 gopherwidth=((simplefont.size("_")[0])*80)+25
 #too tall!
@@ -49,6 +51,12 @@ bmlist=libzox.bmload()
 bookbtn=pygame.image.load(os.path.join("vgop", "bookbtn.png"))
 rootbtn=pygame.image.load(os.path.join("vgop", "rootbtn.png"))
 loadbtn=pygame.image.load(os.path.join("vgop", "loadbtn.png"))
+
+backbtn=pygame.image.load(os.path.join("vgop", "backbtn.png"))
+backbtn_inact=pygame.image.load(os.path.join("vgop", "backbtn_inact.png"))
+nextbtn=pygame.image.load(os.path.join("vgop", "nextbtn.png"))
+nextbtn_inact=pygame.image.load(os.path.join("vgop", "nextbtn_inact.png"))
+
 
 #
 #virtual desktop
@@ -217,14 +225,32 @@ class gopherpane:
 		self.bookbtn=bookbtn.convert()
 		self.rootbtn=rootbtn.convert()
 		self.loadbtn=loadbtn.convert()
+		
+		self.histlist=[]
+		self.histpoint=-1
+		
+		self.backbtn=backbtn.convert()
+		self.backbtn_inact=backbtn_inact.convert()
+		self.nextbtn=nextbtn.convert()
+		self.nextbtn_inact=nextbtn_inact.convert()
 	#menu get routine
 	def menuget(self):
+		
+		
 		self.data=pathfigure(self.host, self.port, self.selector)
 		self.menu=libgop.menudecode(self.data)
 		for item in self.renderdict:
 			del item
 		del self.renderdict
+		#print("newhist")
 		self.renderdict={}
+		self.histlist=self.histlist[:self.histpoint+1]
+		self.histlist.extend([libzox.histitem(self.host, self.port, self.selector, self.gtype, self.data, self.menu)])
+		self.histpoint+=1
+		if len(self.histlist)==histsize+1:
+			#print("histpop")
+			self.histlist.pop(0)
+			self.histpoint-=1
 	#render routine
 	def menudraw(self, frameobj):
 		imageset=[]
@@ -302,6 +328,15 @@ class gopherpane:
 		self.rootrect=frameobj.surface.blit(self.rootbtn, (0, 3))
 		self.bookrect=frameobj.surface.blit(self.bookbtn, (60, 3))
 		self.loadrect=frameobj.surface.blit(self.loadbtn, (120, 3))
+		
+		if self.histpoint>0:
+			self.backrect=frameobj.surface.blit(self.backbtn, (180, 3))
+		else:
+			self.backrect=frameobj.surface.blit(self.backbtn_inact, (180, 3))
+		if self.histpoint<len(self.histlist)-1:
+			self.nextrect=frameobj.surface.blit(self.nextbtn, (240, 3))
+		else:
+			self.nextrect=frameobj.surface.blit(self.nextbtn_inact, (240, 3))
 	#menu change loader
 	def menuchange(self, item, frameobj):
 		self.host=item.hostname
@@ -341,6 +376,23 @@ class gopherpane:
 		self.menuget()
 		self.yoff=25
 		self.menudraw(frameobj)
+	def histchange(self, histitem, frameobj):
+		self.data=histitem.data
+		self.menu=histitem.menu
+		self.host=histitem.host
+		self.port=histitem.port
+		self.selector=histitem.selector
+		self.gtype=histitem.gtype
+		self.prefix="menu: gopher://"
+		self.shortprefix="menu: "
+		if self.host.startswith("about:"):
+			frameobj.name=(self.shortprefix+str(self.host))
+		else:
+			frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
+		self.renderdict={}
+		self.yoff=25
+		self.menudraw(frameobj)
+		
 	def pumpcall1(self, frameobj, data=None):
 		
 		#link destination preview routine. 
@@ -352,6 +404,10 @@ class gopherpane:
 				deskt.hovertext="Goto server root."
 			elif self.bookrect.collidepoint(mpos):
 				deskt.hovertext="Bookmark this menu."
+			elif self.backrect.collidepoint(mpos):
+				deskt.hovertext="Previous menu in history."
+			elif self.nextrect.collidepoint(mpos):
+				deskt.hovertext="Next menu in history."
 			elif not self.hudrect.collidepoint(mpos):
 				for item in self.menu:
 					if item.gtype!=None:
@@ -427,6 +483,16 @@ class gopherpane:
 					if self.bookrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 						newgop=bookmadded(url=libzox.gurlencode(self.host, self.selector, self.gtype, self.port))
 						framesc.add_frame(stz.framex(350, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
+					if self.backrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
+						if self.histpoint>0:
+							self.histpoint-=1
+							self.histchange(self.histlist[self.histpoint], frameobj)
+					if self.nextrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
+						if self.histpoint<len(self.histlist)-1:
+							self.histpoint+=1
+							self.histchange(self.histlist[self.histpoint], frameobj)
+							
+						
 			elif data.button==1 and not self.linkdisable:
 				for item in self.menu:
 					mods=pygame.key.get_mods()

@@ -17,6 +17,19 @@ This will open an add bookmark menu. Yes! Zoxenpher has a complete bookmarks sys
 p-load:	/	about:loadbtn.png	70
 This will reload the current gopher menu.
 
+
+--- History function ---
+
+Zoxenpher will cache up to 10 previous pages (by default. you can change this via cnf.dat) per gopher menu to provide back/next(forward) button capacity similar to that of a web browser.
+
+p-back:	/	about:backbtn.png	70
+Go back to previous page in menu history. unavailable when greyed out.
+
+p-next:	/	about:nextbtn.png	70
+Go to next page in menu history. unavailable when greyed out. opening a new gopher menu clears any items after the current page in history. 
+
+
+
 When you click the new button, you are presented with a splash page with some helpful links  to documentation, and some common gopher servers, for your convienence. 
 
 --- Basics of gopher ---

@@ -7,6 +7,9 @@
 #number of images to show in-line in menus. 0=disable
 imgpreview=10
 
+#max number of history items in menu windows
+histsize=10
+
 #desk width
 deskw=800
 

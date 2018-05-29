@@ -38,6 +38,11 @@ If you have a slow internet connection, or a slow computer, you may wish to adju
  -To do either of these things, use this setting. (note that setting this to 0 disables image previewing outright):
 imgpreview=10
 
+--- Menu window history size limit ---
+
+ -This will limit how many history entries zoxenpher will keep for each gopher menu. history entries are cached.
+histsize=10
+
 
 --- Default Window Size ---
 

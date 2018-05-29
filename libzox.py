@@ -187,6 +187,15 @@ def gurldecode(url):
 	return host, port, selector, gtype
 
 
+class histitem:
+	def __init__(self, host, port, selector, gtype, data, menu):
+		self.host=host
+		self.selector=selector
+		self.port=port
+		self.data=data
+		self.menu=menu
+		self.gtype=gtype
+
 class bmitem:
 	def __init__(self, url, name):
 		self.url=url
@@ -222,6 +231,7 @@ def bmsave(bmlist):
 
 
 cnfdef={"imgpreview" : "10",
+"histsize" : "10",
 "deskw" : "800",
 "deskh" : "600",
 "menufontsize" : "15",
@@ -229,6 +239,7 @@ cnfdef={"imgpreview" : "10",
 "menufont" : "mono",
 "menuheight" : "460",
 "bgtile" : "diagbg.png"}
+
 
 
 

@@ -251,6 +251,25 @@ class gopherpane:
 			#print("histpop")
 			self.histlist.pop(0)
 			self.histpoint-=1
+	def menuget_nohist(self):
+		
+		
+		self.data=pathfigure(self.host, self.port, self.selector)
+		self.menu=libgop.menudecode(self.data)
+		for item in self.renderdict:
+			del item
+		del self.renderdict
+		
+	def newhist(self):
+		#print("newhist")
+		self.renderdict={}
+		self.histlist=self.histlist[:self.histpoint+1]
+		self.histlist.extend([libzox.histitem(self.host, self.port, self.selector, self.gtype, self.data, self.menu)])
+		self.histpoint+=1
+		if len(self.histlist)==histsize+1:
+			#print("histpop")
+			self.histlist.pop(0)
+			self.histpoint-=1
 	#render routine
 	def menudraw(self, frameobj):
 		imageset=[]
@@ -351,6 +370,7 @@ class gopherpane:
 		self.menudraw(frameobj)
 		return
 	def menurefresh(self, frameobj):
+		self.histpoint-=1
 		self.menuget()
 		self.yoff=25
 		self.menudraw(frameobj)
@@ -442,6 +462,7 @@ class gopherpane:
 					frameobj.name=(self.shortprefix+str(self.host))
 				else:
 					frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
+				self.newhist()
 		#resize
 		if frameobj.statflg==2:
 			self.yoff=25

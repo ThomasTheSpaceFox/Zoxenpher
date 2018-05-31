@@ -11,6 +11,7 @@ Gopher menu Controls:
  - ALT+down: goto server root menu if not alreay there.
  - ALT+left: goto previous menu in history.
  - ALT+right: goto next menu in history.
+ - CTRL+r: reload current menu. (disabled when menu is loading data)
 
 Image viewer:
  - leftclick+drag: pan image

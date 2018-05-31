@@ -52,6 +52,7 @@ bookbtn=pygame.image.load(os.path.join("vgop", "bookbtn.png"))
 menucorner=pygame.image.load(os.path.join("vgop", "menucorner.png"))
 menucorner_wait=pygame.image.load(os.path.join("vgop", "menucorner_wait.png"))
 loadbtn=pygame.image.load(os.path.join("vgop", "loadbtn.png"))
+loadbtn_inact=pygame.image.load(os.path.join("vgop", "loadbtn_inact.png"))
 
 backbtn=pygame.image.load(os.path.join("vgop", "backbtn.png"))
 backbtn_inact=pygame.image.load(os.path.join("vgop", "backbtn_inact.png"))
@@ -241,7 +242,7 @@ class gopherpane:
 		self.rootbtn=rootbtn.convert()
 		self.rootbtn_inact=rootbtn_inact.convert()
 		self.loadbtn=loadbtn.convert()
-		
+		self.loadbtn_inact=loadbtn_inact.convert()
 		self.histlist=[]
 		self.histpoint=-1
 		
@@ -394,7 +395,10 @@ class gopherpane:
 		xpos+=8
 		self.bookrect=frameobj.surface.blit(self.bookbtn, (xpos, 1))
 		xpos+=60
-		self.loadrect=frameobj.surface.blit(self.loadbtn, (xpos, 1))
+		if self.loading:
+			self.loadrect=frameobj.surface.blit(self.loadbtn_inact, (xpos, 1))
+		else:
+			self.loadrect=frameobj.surface.blit(self.loadbtn, (xpos, 1))
 		
 	#menu change loader
 	def menuchange(self, item, frameobj):
@@ -557,6 +561,14 @@ class gopherpane:
 				newgop=bookmadded(url=libzox.gurlencode(self.host, self.selector, self.gtype, self.port))
 				framesc.add_frame(stz.framex(500, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
 			mods=pygame.key.get_mods()
+			if mods & pygame.KMOD_CTRL:
+				if data.key==pygame.K_r:
+					if not self.loading:
+						self.loading=1
+						self.menudraw(frameobj)
+						sideproc=Thread(target = self.menurefresh, args = [frameobj])
+						sideproc.daemon=True
+						sideproc.start()
 			if mods & pygame.KMOD_ALT:
 				if data.key==pygame.K_LEFT:
 					if self.histpoint>0:
@@ -593,11 +605,12 @@ class gopherpane:
 							framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 				if data.button==1:
 					if self.loadrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
-						self.loading=1
-						self.menudraw(frameobj)
-						sideproc=Thread(target = self.menurefresh, args = [frameobj])
-						sideproc.daemon=True
-						sideproc.start()
+						if not self.loading:
+							self.loading=1
+							self.menudraw(frameobj)
+							sideproc=Thread(target = self.menurefresh, args = [frameobj])
+							sideproc.daemon=True
+							sideproc.start()
 					if self.rootrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 						if self.selector!="/" and self.selector!="":
 							self.loading=1

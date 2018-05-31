@@ -242,15 +242,12 @@ class gopherpane:
 		self.nextbtn_inact=nextbtn_inact.convert()
 		self.upbtn=upbtn.convert()
 		self.upbtn_inact=upbtn_inact.convert()
-		if self.gtype!="0":
-			self.loading=1
-		else:
-			self.loading=0
+		self.loading=1
 	#menu get routine
 	def menuget(self):
 		
 		
-		self.data=pathfigure(self.host, self.port, self.selector)
+		self.data=pathfigure(self.host, self.port, self.selector, self.gtype)
 		self.menu=libgop.menudecode(self.data)
 		for item in self.renderdict:
 			del item
@@ -267,7 +264,7 @@ class gopherpane:
 	def menuget_nohist(self):
 		
 		
-		self.data=pathfigure(self.host, self.port, self.selector)
+		self.data=pathfigure(self.host, self.port, self.selector, self.gtype)
 		self.menu=libgop.menudecode(self.data)
 		for item in self.renderdict:
 			del item
@@ -464,7 +461,10 @@ class gopherpane:
 		self.port=histitem.port
 		self.selector=histitem.selector
 		self.gtype=histitem.gtype
-		self.prefix="menu: gopher://"
+		if histitem.gtype=="0":
+			self.prefix="text: gopher://"
+		else:
+			self.prefix="menu: gopher://"
 		self.shortprefix="menu: "
 		if self.host.startswith("about:"):
 			frameobj.name=(self.shortprefix+str(self.host))
@@ -546,7 +546,7 @@ class gopherpane:
 				self.menudraw(frameobj)
 			if data.key==pygame.K_m:
 				newgop=bookmadded(url=libzox.gurlencode(self.host, self.selector, self.gtype, self.port))
-				framesc.add_frame(stz.framex(350, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
+				framesc.add_frame(stz.framex(500, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
 				
 
 		if frameobj.statflg==4:
@@ -575,7 +575,7 @@ class gopherpane:
 							sideproc.start()
 					if self.bookrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 						newgop=bookmadded(url=libzox.gurlencode(self.host, self.selector, self.gtype, self.port))
-						framesc.add_frame(stz.framex(350, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
+						framesc.add_frame(stz.framex(500, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
 					if self.backrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 						if self.histpoint>0:
 							self.histpoint-=1
@@ -602,7 +602,7 @@ class gopherpane:
 							if item.gtype in "10gpI7":
 								if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 									newgop=bookmadded(url=libzox.gurlencode(item.hostname, item.selector, item.gtype, item.port), name=item.name)
-									framesc.add_frame(stz.framex(350, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
+									framesc.add_frame(stz.framex(500, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
 
 					else:
 						
@@ -617,7 +617,16 @@ class gopherpane:
 								break
 						if item.gtype=="0":
 							if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
-								sideproc=Thread(target = textshow, args = [item.hostname, item.port, item.selector])
+								#sideproc=Thread(target = textshow, args = [item.hostname, item.port, item.selector])
+								#sideproc.daemon=True
+								#sideproc.start()
+								#break
+								self.menu=[]
+								self.loading=1
+								self.gtype="0"
+								self.prefix="text: gopher://"
+								self.menudraw(frameobj)
+								sideproc=Thread(target = self.menuchange, args = [item, frameobj])
 								sideproc.daemon=True
 								sideproc.start()
 								break
@@ -631,12 +640,16 @@ class gopherpane:
 						if item.gtype=="7":
 							if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 								newgop=querypane(host=item.hostname, port=item.port, selector=item.selector)
-								framesc.add_frame(stz.framex(350, 100, "Gopher Query", resizable=1, pumpcall=newgop.pumpcall1))
+								framesc.add_frame(stz.framex(500, 100, "Gopher Query", resizable=1, pumpcall=newgop.pumpcall1))
 			elif data.button==3 and not self.linkdisable:
 				for item in self.menu:
 					if item.gtype=="1":
 						if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 							newgop=gopherpane(host=item.hostname, port=item.port, selector=item.selector)
+							framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
+					if item.gtype=="0":
+						if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
+							newgop=gopherpane(host=item.hostname, port=item.port, selector=item.selector, gtype="0", prefix="text: gopher://")
 							framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 			elif data.button==4:
 				self.yoff+=self.yjump*2
@@ -749,17 +762,13 @@ class bookmarks:
 		self.bmprev=None
 		self.offset=0
 	def loaderg1(self, frameobj):
-		try:
-			data=pathfigure(self.host, self.port, self.selector)
-		except Exception:
-			data=open(os.path.join("vgop", "gaierror"))
-		menu=libgop.menudecode(data)
-		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, preload=menu)
+		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector)
 		framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 		#close self
 		self.offset=0
 	def loaderg0(self, frameobj):
-		textshow(self.host, self.port, self.selector)
+		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, gtype="0", prefix="text: gopher://")
+		framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 	def renderdisp(self, frameobj):
 		
 		if self.offset>0:
@@ -815,7 +824,7 @@ class bookmarks:
 			sideproc.start()
 		elif self.gtype=="7":
 			newgop=querypane(host=self.host, port=self.port, selector=self.selector)
-			framesc.add_frame(stz.framex(350, 100, "Gopher Query", resizable=1, pumpcall=newgop.pumpcall1))
+			framesc.add_frame(stz.framex(500, 100, "Gopher Query", resizable=1, pumpcall=newgop.pumpcall1))
 		elif self.gtype=="g" or self.gtype=="p" or self.gtype=="I":
 			newgop=imgview(host=self.host, port=self.port, selector=self.selector, gtype=self.gtype)
 			framesc.add_frame(stz.framex(500, 400, "Image", resizable=1, pumpcall=newgop.pumpcall1))
@@ -860,7 +869,7 @@ class bookmarks:
 			if data.button==1:
 				if self.newrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 					newgop=bookmadded()
-					framesc.add_frame(stz.framex(350, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
+					framesc.add_frame(stz.framex(500, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
 				if self.editrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 					self.funct=2
 					self.renderdisp(frameobj)
@@ -877,10 +886,10 @@ class bookmarks:
 							self.rotarylaunch(item.url, frameobj)
 						if self.funct==1:
 							newgop=bookdel(item)
-							framesc.add_frame(stz.framex(350, 100, "Please Confirm:", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
+							framesc.add_frame(stz.framex(500, 100, "Please Confirm:", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
 						if self.funct==2:
 							newgop=bookmadded(bookm=item)
-							framesc.add_frame(stz.framex(350, 100, "Edit Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
+							framesc.add_frame(stz.framex(500, 100, "Edit Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
 		
 
 
@@ -995,19 +1004,13 @@ class urlgo:
 		textitem("Please Type URL", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*2, {}, xoff=0)
 		textitem("gopher://"+self.stringblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*4, {}, xoff=0)
 	def loaderg1(self, frameobj):
-		frameobj.name="Loading: gopher://"+self.stringblob+" ..." 
-		try:
-			data=pathfigure(self.host, self.port, self.selector, self.gtype)
-		except Exception:
-			data=open(os.path.join("vgop", "gaierror"))
-		menu=libgop.menudecode(data)
-		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, preload=menu)
+		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector)
 		framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 		#close self
-		framesc.close_pid(frameobj.pid)
+		self.offset=0
 	def loaderg0(self, frameobj):
-		textshow(self.host, self.port, self.selector)
-		framesc.close_pid(frameobj.pid)
+		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, gtype="0", prefix="text: gopher://")
+		framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 	def pumpcall1(self, frameobj, data=None):
 		#if frameobj.statflg==0:
 		#	#show hint in hover text area

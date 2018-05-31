@@ -47,7 +47,7 @@ hudfont = pygame.font.SysFont(None, 22)
 
 maximages=int(libzox.cnfdict["imgpreview"])
 bmlist=libzox.bmload()
-#
+#menu window graphics
 bookbtn=pygame.image.load(os.path.join("vgop", "bookbtn.png"))
 menucorner=pygame.image.load(os.path.join("vgop", "menucorner.png"))
 menucorner_wait=pygame.image.load(os.path.join("vgop", "menucorner_wait.png"))
@@ -61,6 +61,15 @@ upbtn=pygame.image.load(os.path.join("vgop", "upbtn.png"))
 upbtn_inact=pygame.image.load(os.path.join("vgop", "upbtn_inact.png"))
 rootbtn=pygame.image.load(os.path.join("vgop", "rootbtn.png"))
 rootbtn_inact=pygame.image.load(os.path.join("vgop", "rootbtn_inact.png"))
+#bookmark window graphics
+bookm_del0=pygame.image.load(os.path.join("vgop", "delinact.png"))
+bookm_del1=pygame.image.load(os.path.join("vgop", "delact.png"))
+bookm_go0=pygame.image.load(os.path.join("vgop", "goinact.png"))
+bookm_go1=pygame.image.load(os.path.join("vgop", "goact.png"))
+bookm_edit0=pygame.image.load(os.path.join("vgop", "editinact.png"))
+bookm_edit1=pygame.image.load(os.path.join("vgop", "editact.png"))
+bookm_newbm=pygame.image.load(os.path.join("vgop", "newbm.png"))
+menucorner_book=pygame.image.load(os.path.join("vgop", "menucorner_book.png"))
 
 #
 #virtual desktop
@@ -482,15 +491,15 @@ class gopherpane:
 			if self.loadrect.collidepoint(mpos):
 				deskt.hovertext="Reload this menu."
 			elif self.rootrect.collidepoint(mpos):
-				deskt.hovertext="Goto server root."
+				deskt.hovertext="Goto server root. (ALT+down)"
 			elif self.bookrect.collidepoint(mpos):
-				deskt.hovertext="Bookmark this menu."
+				deskt.hovertext="Bookmark this menu. (m)"
 			elif self.backrect.collidepoint(mpos):
-				deskt.hovertext="Previous menu in history."
+				deskt.hovertext="Previous menu in history. (ALT+left)"
 			elif self.nextrect.collidepoint(mpos):
-				deskt.hovertext="Next menu in history."
+				deskt.hovertext="Next menu in history. (ALT+right)"
 			elif self.uprect.collidepoint(mpos):
-				deskt.hovertext="Go up a level."
+				deskt.hovertext="Go up a level. (ALT+up)"
 			elif not self.hudrect.collidepoint(mpos):
 				for item in self.menu:
 					if item.gtype!=None:
@@ -547,7 +556,30 @@ class gopherpane:
 			if data.key==pygame.K_m:
 				newgop=bookmadded(url=libzox.gurlencode(self.host, self.selector, self.gtype, self.port))
 				framesc.add_frame(stz.framex(500, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
-				
+			mods=pygame.key.get_mods()
+			if mods & pygame.KMOD_ALT:
+				if data.key==pygame.K_LEFT:
+					if self.histpoint>0:
+						self.histpoint-=1
+						self.histchange(self.histlist[self.histpoint], frameobj)
+				elif data.key==pygame.K_RIGHT:
+					if self.histpoint<len(self.histlist)-1:
+						self.histpoint+=1
+						self.histchange(self.histlist[self.histpoint], frameobj)
+				elif data.key==pygame.K_UP:
+					if "/" in self.selector and self.selector!="/":
+						self.loading=1
+						self.menudraw(frameobj)
+						sideproc=Thread(target = self.menuup, args = [frameobj])
+						sideproc.daemon=True
+						sideproc.start()
+				elif data.key==pygame.K_DOWN:
+					if self.selector!="/" and self.selector!="":
+						self.loading=1
+						self.menudraw(frameobj)
+						sideproc=Thread(target = self.menuroot, args = [frameobj])
+						sideproc.daemon=True
+						sideproc.start()
 
 		if frameobj.statflg==4:
 			if self.hudrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
@@ -733,6 +765,9 @@ class querypane:
 				
 		
 
+
+
+
 #bookmark creator/editor dialog.
 class bookmarks:
 	def __init__(self, url="", bookm=None):
@@ -751,13 +786,14 @@ class bookmarks:
 		if self.bookm!=None:
 			self.urlblob=self.bookm.url
 			self.nameblob=self.bookm.name
-		self.del0=pygame.image.load(os.path.join("vgop", "delinact.png")).convert()
-		self.del1=pygame.image.load(os.path.join("vgop", "delact.png")).convert()
-		self.go0=pygame.image.load(os.path.join("vgop", "goinact.png")).convert()
-		self.go1=pygame.image.load(os.path.join("vgop", "goact.png")).convert()
-		self.edit0=pygame.image.load(os.path.join("vgop", "editinact.png")).convert()
-		self.edit1=pygame.image.load(os.path.join("vgop", "editact.png")).convert()
-		self.newbm=pygame.image.load(os.path.join("vgop", "newbm.png")).convert()
+		self.del0=bookm_del0.convert()
+		self.del1=bookm_del1.convert()
+		self.go0=bookm_go0.convert()
+		self.go1=bookm_go1.convert()
+		self.edit0=bookm_edit0.convert()
+		self.edit1=bookm_edit1.convert()
+		self.newbm=bookm_newbm.convert()
+		self.menucorner_book=menucorner_book.convert()
 		self.funct=0
 		self.bmprev=None
 		self.offset=0
@@ -780,20 +816,21 @@ class bookmarks:
 		#pygame.draw.rect(frameobj.surface, (185, 195, 255), self.siderect)
 		pygame.draw.rect(frameobj.surface, (223, 223, 223), self.siderect)
 		pygame.draw.line(frameobj.surface, (0, 0, 0), (25, 0), (25, frameobj.surface.get_height()), 1)
-		pygame.draw.rect(frameobj.surface, (60, 60, 120), pygame.Rect(0, 0, frameobj.surface.get_width(), 25))
-		self.newrect=frameobj.surface.blit(self.newbm, (150, 3))
+		pygame.draw.rect(frameobj.surface, (60, 60, 120), pygame.Rect(0, 0, frameobj.surface.get_width(), 22))
+		frameobj.surface.blit(self.menucorner_book, (0, 0))
+		self.newrect=frameobj.surface.blit(self.newbm, (176, 1))
 		if self.funct==0:
-			self.gorect=frameobj.surface.blit(self.go1, (0, 3))
-			self.delrect=frameobj.surface.blit(self.del0, (50, 3))
-			self.editrect=frameobj.surface.blit(self.edit0, (100, 3))
+			self.gorect=frameobj.surface.blit(self.go1, (26, 1))
+			self.delrect=frameobj.surface.blit(self.del0, (76, 1))
+			self.editrect=frameobj.surface.blit(self.edit0, (126, 1))
 		elif self.funct==1:
-			self.gorect=frameobj.surface.blit(self.go0, (0, 3))
-			self.delrect=frameobj.surface.blit(self.del1, (50, 3))
-			self.editrect=frameobj.surface.blit(self.edit0, (100, 3))
+			self.gorect=frameobj.surface.blit(self.go0, (26, 1))
+			self.delrect=frameobj.surface.blit(self.del1, (76, 1))
+			self.editrect=frameobj.surface.blit(self.edit0, (126, 1))
 		else:
-			self.gorect=frameobj.surface.blit(self.go0, (0, 3))
-			self.delrect=frameobj.surface.blit(self.del0, (50, 3))
-			self.editrect=frameobj.surface.blit(self.edit1, (100, 3))
+			self.gorect=frameobj.surface.blit(self.go0, (26, 1))
+			self.delrect=frameobj.surface.blit(self.del0, (76, 1))
+			self.editrect=frameobj.surface.blit(self.edit1, (126, 1))
 		self.ypos=25
 		for item in xlist:
 			item.rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, itemicn=self.getitemtypeicn(item.url), link=1)

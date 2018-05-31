@@ -1,12 +1,16 @@
 Keys and Usage help
 
 Gopher menu Controls:
- - leftclick: open menu in same window (or any other link in new window)
- - rightclick: open menu in new window.
+ - leftclick: open menu/text in same window (or any other link in new window)
+ - rightclick: open menu/text in new window.
  - mouse wheel: scroll menu up/down
  - up/down arrow keys: scroll menu up/down
  - m: bookmark page (will open dialog for label and confirmation)
  - SHIFT+leftclick: bookmark link. (will open dialog for label and confirmation)
+ - ALT+up: go up a level. (same as 'up' button)
+ - ALT+down: goto server root menu if not alreay there.
+ - ALT+left: goto previous menu in history.
+ - ALT+right: goto next menu in history.
 
 Image viewer:
  - leftclick+drag: pan image

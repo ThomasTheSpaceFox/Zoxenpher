@@ -211,7 +211,7 @@ def textshow(host, port, selector):
 
 #gopher menu class. also used for text documents
 class gopherpane:
-	def __init__(self, host='about:splash', port=70, selector="", prefix="menu: gopher://", preload=None, forceimage=0, linkdisable=0, gtype="1", shortprefix="menu: "):
+	def __init__(self, host='about:splash', port=70, selector="", prefix="menu: gopher://", preload=None, forceimage=0, linkdisable=0, gtype="1", shortprefix="menu: ", loading=1):
 		self.host=host
 		self.port=port
 		self.selector=selector
@@ -242,7 +242,7 @@ class gopherpane:
 		self.nextbtn_inact=nextbtn_inact.convert()
 		self.upbtn=upbtn.convert()
 		self.upbtn_inact=upbtn_inact.convert()
-		self.loading=1
+		self.loading=loading
 	#menu get routine
 	def menuget(self):
 		
@@ -693,7 +693,7 @@ class querypane:
 			print(err)
 			data=open(os.path.join("vgop", "gaierror"))
 		menu=libgop.menudecode(data)
-		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, preload=menu)
+		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, preload=menu, loading=0)
 		framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 		#close self
 		framesc.close_pid(frameobj.pid)

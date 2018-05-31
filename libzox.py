@@ -132,7 +132,7 @@ class pathprogobj:
 		return self.classrefx(host=self.host, port=self.port, selector=self.selector)
 
 #image loader routine. (runs in separate thread when needed)
-def imgget(items, uptref, frameobj):
+def imgget(items, uptref, frameobj, gopherwindow):
 	for mitem in items:
 		data=pathfigure(mitem.hostname, mitem.port, mitem.selector, gtype=mitem.gtype)
 		try:
@@ -145,9 +145,12 @@ def imgget(items, uptref, frameobj):
 			imagefx.convert()
 			mitem.image=imagefx
 		except pygame.error:
+			gopherwindow.loading=0
 			return
+	gopherwindow.loading=0
 	if uptref!=None:
 		uptref(frameobj)
+	
 
 def gurlencode(host, selector, gtype, port=70):
 	if int(port)==70:

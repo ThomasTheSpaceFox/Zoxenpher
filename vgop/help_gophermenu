@@ -5,10 +5,16 @@ Here is a quick guide to navigating gopher in zoxenpher.
 For more information, and an overview of the gopher types zoxenpher supports,
 1     See: "help: gopher types" for more information.	/	about:help_gtypes	70
 
-You will also notice the buttons above.  These in order of left to right are:
 
-p-root:	/	about:rootbtn.png	70
-This will return to the root menu of a server if you are not already there.  rightclick this to open server root in a new window.
+where the grey and blue bars meet, you'll see a gopher icon. When the menu is accessing a server, it will become an hour glass:
+p-normal:	/	about:menucorner.png	70
+p-loading:	/	about:menucorner_wait.png	70
+
+Note: When you click the new button, you are presented with a splash page with some helpful links to documentation, and some common gopher servers, for your convienence. 
+
+You will also notice the buttons above.  These, sorted by their function, are:
+
+--- Misc. Buttons ---
 
 p-book:	/	about:bookbtn.png	70
 This will open an add bookmark menu. Yes! Zoxenpher has a complete bookmarks system!
@@ -16,6 +22,16 @@ This will open an add bookmark menu. Yes! Zoxenpher has a complete bookmarks sys
 
 p-load:	/	about:loadbtn.png	70
 This will reload the current gopher menu.
+
+
+--- navigation buttons ---
+
+p-root:	/	about:rootbtn.png	70
+This will return to the root menu of a server if you are not already there.  rightclick this to open server root in a new window.
+If you are already at the server root, this button will be greyed out.
+
+p-up:	/	about:upbtn.png	70
+This will let you go up a level. i.e. from '/foo/bar' to '/foo'. this will be greyed out when at the server root.
 
 
 --- History function ---
@@ -30,7 +46,7 @@ Go to next page in menu history. unavailable when greyed out. opening a new goph
 
 
 
-When you click the new button, you are presented with a splash page with some helpful links  to documentation, and some common gopher servers, for your convienence. 
+
 
 --- Basics of gopher ---
 

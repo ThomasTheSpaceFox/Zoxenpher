@@ -49,14 +49,18 @@ maximages=int(libzox.cnfdict["imgpreview"])
 bmlist=libzox.bmload()
 #
 bookbtn=pygame.image.load(os.path.join("vgop", "bookbtn.png"))
-rootbtn=pygame.image.load(os.path.join("vgop", "rootbtn.png"))
+menucorner=pygame.image.load(os.path.join("vgop", "menucorner.png"))
+menucorner_wait=pygame.image.load(os.path.join("vgop", "menucorner_wait.png"))
 loadbtn=pygame.image.load(os.path.join("vgop", "loadbtn.png"))
 
 backbtn=pygame.image.load(os.path.join("vgop", "backbtn.png"))
 backbtn_inact=pygame.image.load(os.path.join("vgop", "backbtn_inact.png"))
 nextbtn=pygame.image.load(os.path.join("vgop", "nextbtn.png"))
 nextbtn_inact=pygame.image.load(os.path.join("vgop", "nextbtn_inact.png"))
-
+upbtn=pygame.image.load(os.path.join("vgop", "upbtn.png"))
+upbtn_inact=pygame.image.load(os.path.join("vgop", "upbtn_inact.png"))
+rootbtn=pygame.image.load(os.path.join("vgop", "rootbtn.png"))
+rootbtn_inact=pygame.image.load(os.path.join("vgop", "rootbtn_inact.png"))
 
 #
 #virtual desktop
@@ -223,7 +227,10 @@ class gopherpane:
 		self.gtype=gtype
 		self.shortprefix=shortprefix
 		self.bookbtn=bookbtn.convert()
+		self.menucorner=menucorner.convert()
+		self.menucorner_wait=menucorner_wait.convert()
 		self.rootbtn=rootbtn.convert()
+		self.rootbtn_inact=rootbtn_inact.convert()
 		self.loadbtn=loadbtn.convert()
 		
 		self.histlist=[]
@@ -233,6 +240,12 @@ class gopherpane:
 		self.backbtn_inact=backbtn_inact.convert()
 		self.nextbtn=nextbtn.convert()
 		self.nextbtn_inact=nextbtn_inact.convert()
+		self.upbtn=upbtn.convert()
+		self.upbtn_inact=upbtn_inact.convert()
+		if self.gtype!="0":
+			self.loading=1
+		else:
+			self.loading=0
 	#menu get routine
 	def menuget(self):
 		
@@ -338,23 +351,45 @@ class gopherpane:
 				#print(item.gtype)
 		#launch image loader thread if needed
 		if imageset!=[]:
-			sideproc=Thread(target = imgget, args = [imageset, self.menudraw, frameobj])
+			self.loading=1
+			sideproc=Thread(target = imgget, args = [imageset, self.menudraw, frameobj, self])
 			sideproc.daemon=True
 			sideproc.start()
-		self.hudrect=pygame.Rect(0, 0, frameobj.surface.get_width(), 25)
+		self.hudrect=pygame.Rect(0, 0, frameobj.surface.get_width(), 22)
 		pygame.draw.rect(frameobj.surface, (60, 60, 120), self.hudrect)
-		self.rootrect=frameobj.surface.blit(self.rootbtn, (0, 3))
-		self.bookrect=frameobj.surface.blit(self.bookbtn, (60, 3))
-		self.loadrect=frameobj.surface.blit(self.loadbtn, (120, 3))
-		
+		#self.hudcorner=pygame.Rect(0, 0, 25, 22)
+		#pygame.draw.rect(frameobj.surface, (255, 255, 255), self.hudcorner)
+		if self.loading:
+			frameobj.surface.blit(self.menucorner_wait, (0, 0))
+		else:
+			frameobj.surface.blit(self.menucorner, (0, 0))
+		xpos=27
 		if self.histpoint>0:
-			self.backrect=frameobj.surface.blit(self.backbtn, (180, 3))
+			self.backrect=frameobj.surface.blit(self.backbtn, (xpos, 1))
 		else:
-			self.backrect=frameobj.surface.blit(self.backbtn_inact, (180, 3))
+			self.backrect=frameobj.surface.blit(self.backbtn_inact, (xpos, 1))
+		xpos+=60
 		if self.histpoint<len(self.histlist)-1:
-			self.nextrect=frameobj.surface.blit(self.nextbtn, (240, 3))
+			self.nextrect=frameobj.surface.blit(self.nextbtn, (xpos, 1))
 		else:
-			self.nextrect=frameobj.surface.blit(self.nextbtn_inact, (240, 3))
+			self.nextrect=frameobj.surface.blit(self.nextbtn_inact, (xpos, 1))
+		xpos+=60
+		if "/" in self.selector and self.selector!="/":
+			self.uprect=frameobj.surface.blit(self.upbtn, (xpos, 1))
+		else:
+			self.uprect=frameobj.surface.blit(self.upbtn_inact, (xpos, 1))
+		xpos+=60
+		if self.selector!="/" and self.selector!="":
+			self.rootrect=frameobj.surface.blit(self.rootbtn, (xpos, 1))
+		else:
+			self.rootrect=frameobj.surface.blit(self.rootbtn_inact, (xpos, 1))
+		xpos+=62
+		pygame.draw.line(frameobj.surface, (255, 255, 255), (xpos, 0), (xpos, 25), 2)
+		xpos+=8
+		self.bookrect=frameobj.surface.blit(self.bookbtn, (xpos, 1))
+		xpos+=60
+		self.loadrect=frameobj.surface.blit(self.loadbtn, (xpos, 1))
+		
 	#menu change loader
 	def menuchange(self, item, frameobj):
 		self.host=item.hostname
@@ -366,6 +401,7 @@ class gopherpane:
 			frameobj.name=(self.prefix+str(item.hostname) + "/" + self.gtype + str(item.selector))
 		self.menuget()
 		self.yoff=25
+		self.loading=0
 		self.menudraw(frameobj)
 		return
 	def menurefresh(self, frameobj):
@@ -376,6 +412,7 @@ class gopherpane:
 		histref.menu=self.menu
 		histref.data=self.data
 		self.yoff=25
+		self.loading=0
 		self.menudraw(frameobj)
 	def menuroot(self, frameobj):
 		self.selector="/"
@@ -389,6 +426,26 @@ class gopherpane:
 			frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
 		self.menuget()
 		self.yoff=25
+		self.loading=0
+		self.menudraw(frameobj)
+	def menuup(self, frameobj):
+		if self.selector.count("/")>1 and not self.selector.endswith("/"):
+			self.selector=self.selector.rsplit("/", 1)[0]
+		elif self.selector.count("/")>2 and self.selector.endswith("/"):
+			self.selector=self.selector.rsplit("/", 2)[0]
+		else:
+			self.selector="/"
+		self.gtype="1"
+		#reset prefixes in case of text document being the current.
+		self.prefix="menu: gopher://"
+		self.shortprefix="menu: "
+		if self.host.startswith("about:"):
+			frameobj.name=(self.shortprefix+str(self.host))
+		else:
+			frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
+		self.menuget()
+		self.yoff=25
+		self.loading=0
 		self.menudraw(frameobj)
 	#menu initalization loader
 	def menuinital(self, frameobj):
@@ -398,6 +455,7 @@ class gopherpane:
 			frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
 		self.menuget()
 		self.yoff=25
+		self.loading=0
 		self.menudraw(frameobj)
 	def histchange(self, histitem, frameobj):
 		self.data=histitem.data
@@ -431,6 +489,8 @@ class gopherpane:
 				deskt.hovertext="Previous menu in history."
 			elif self.nextrect.collidepoint(mpos):
 				deskt.hovertext="Next menu in history."
+			elif self.uprect.collidepoint(mpos):
+				deskt.hovertext="Go up a level."
 			elif not self.hudrect.collidepoint(mpos):
 				for item in self.menu:
 					if item.gtype!=None:
@@ -493,17 +553,26 @@ class gopherpane:
 			if self.hudrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 				#print("Blocked")
 				if data.button==3:
-					newgop=gopherpane(host=self.host, port=self.port, selector="/")
-					framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
+					if self.rootrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
+						if self.selector!="/" and self.selector!="":
+							self.loading=1
+							self.menudraw(frameobj)
+							newgop=gopherpane(host=self.host, port=self.port, selector="/")
+							framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 				if data.button==1:
 					if self.loadrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
+						self.loading=1
+						self.menudraw(frameobj)
 						sideproc=Thread(target = self.menurefresh, args = [frameobj])
 						sideproc.daemon=True
 						sideproc.start()
 					if self.rootrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
-						sideproc=Thread(target = self.menuroot, args = [frameobj])
-						sideproc.daemon=True
-						sideproc.start()
+						if self.selector!="/" and self.selector!="":
+							self.loading=1
+							self.menudraw(frameobj)
+							sideproc=Thread(target = self.menuroot, args = [frameobj])
+							sideproc.daemon=True
+							sideproc.start()
 					if self.bookrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 						newgop=bookmadded(url=libzox.gurlencode(self.host, self.selector, self.gtype, self.port))
 						framesc.add_frame(stz.framex(350, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
@@ -515,6 +584,13 @@ class gopherpane:
 						if self.histpoint<len(self.histlist)-1:
 							self.histpoint+=1
 							self.histchange(self.histlist[self.histpoint], frameobj)
+					if self.uprect.collidepoint(stz.mousehelper(data.pos, frameobj)):
+						if "/" in self.selector and self.selector!="/":
+							self.loading=1
+							self.menudraw(frameobj)
+							sideproc=Thread(target = self.menuup, args = [frameobj])
+							sideproc.daemon=True
+							sideproc.start()
 							
 						
 			elif data.button==1 and not self.linkdisable:
@@ -533,6 +609,8 @@ class gopherpane:
 						if item.gtype=="1":
 							if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 								self.menu=[]
+								self.loading=1
+								self.menudraw(frameobj)
 								sideproc=Thread(target = self.menuchange, args = [item, frameobj])
 								sideproc.daemon=True
 								sideproc.start()

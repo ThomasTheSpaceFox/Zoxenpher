@@ -62,8 +62,9 @@ def gopherget(host, port, selector, query=None):
 	print("GopherGet: \"" + host + ":" + str(port) + " " + selector + "\"")
 	gsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	socketlist.extend([gsocket])
-	gsocket.connect((host, int(port)))
 	gsocket.settimeout(20.0)
+	gsocket.connect((host, int(port)))
+	gsocket.settimeout(None)
 	if query!=None:
 		query="\t"+query
 	else:

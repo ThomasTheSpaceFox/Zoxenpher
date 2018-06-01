@@ -4,6 +4,7 @@ import os
 import libgop
 import pygame
 from threading import Thread
+import socket
 #import copy
 #import sys
 
@@ -27,6 +28,16 @@ def pathfigure(host, port, selector, gtype="0"):
 	else:
 		try:
 			data=libgop.gopherget(host, port, selector)
+		except socket.timeout as err:
+			print(err)
+			if gtype=="1":
+				data=open(os.path.join("vgop", "timeout"))
+			if gtype=="0":
+				data=open(os.path.join("vgop", "timeout.txt"))
+			if gtype=="p":
+				data=open(os.path.join("vgop", "gaierror.png"))
+			if gtype=="I" or gtype=="g":
+				data=open(os.path.join("vgop", "gaierror.gif"))
 		except Exception as err:
 			print(err)
 			if gtype=="1":

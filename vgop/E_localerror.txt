@@ -1,0 +1,3 @@
+An error occured while trying to access local documentation.
+
+Zoxenpher error code: 's3'

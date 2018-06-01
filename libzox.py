@@ -18,9 +18,9 @@ def pathfigure(host, port, selector, gtype="0"):
 			data=open(os.path.join("vgop", hoststripped))
 		else:
 			if gtype=="1":
-				data=open(os.path.join("vgop", "gaierror"))
+				data=open(os.path.join("vgop", "E_localerror"))
 			if gtype=="0":
-				data=open(os.path.join("vgop", "gaierror.txt"))
+				data=open(os.path.join("vgop", "E_localerror.txt"))
 			if gtype=="p":
 				data=open(os.path.join("vgop", "gaierror.png"))
 			if gtype=="I" or gtype=="g":
@@ -31,9 +31,39 @@ def pathfigure(host, port, selector, gtype="0"):
 		except socket.timeout as err:
 			print(err)
 			if gtype=="1":
-				data=open(os.path.join("vgop", "timeout"))
+				data=open(os.path.join("vgop", "E_timeout"))
 			if gtype=="0":
-				data=open(os.path.join("vgop", "timeout.txt"))
+				data=open(os.path.join("vgop", "E_timeout.txt"))
+			if gtype=="p":
+				data=open(os.path.join("vgop", "gaierror.png"))
+			if gtype=="I" or gtype=="g":
+				data=open(os.path.join("vgop", "gaierror.gif"))
+		except socket.error as err:
+			print(err)
+			if gtype=="1":
+				data=open(os.path.join("vgop", "E_serror"))
+			if gtype=="0":
+				data=open(os.path.join("vgop", "E_serror.txt"))
+			if gtype=="p":
+				data=open(os.path.join("vgop", "gaierror.png"))
+			if gtype=="I" or gtype=="g":
+				data=open(os.path.join("vgop", "gaierror.gif"))
+		except socket.gaierror as err:
+			print(err)
+			if gtype=="1":
+				data=open(os.path.join("vgop", "E_gaierror"))
+			if gtype=="0":
+				data=open(os.path.join("vgop", "E_gaierror.txt"))
+			if gtype=="p":
+				data=open(os.path.join("vgop", "gaierror.png"))
+			if gtype=="I" or gtype=="g":
+				data=open(os.path.join("vgop", "gaierror.gif"))
+		except socket.herror as err:
+			print(err)
+			if gtype=="1":
+				data=open(os.path.join("vgop", "E_herror"))
+			if gtype=="0":
+				data=open(os.path.join("vgop", "E_herror.txt"))
 			if gtype=="p":
 				data=open(os.path.join("vgop", "gaierror.png"))
 			if gtype=="I" or gtype=="g":
@@ -41,9 +71,9 @@ def pathfigure(host, port, selector, gtype="0"):
 		except Exception as err:
 			print(err)
 			if gtype=="1":
-				data=open(os.path.join("vgop", "gaierror"))
+				data=open(os.path.join("vgop", "E_undeferror"))
 			if gtype=="0":
-				data=open(os.path.join("vgop", "gaierror.txt"))
+				data=open(os.path.join("vgop", "E_undeferror.txt"))
 			if gtype=="p":
 				data=open(os.path.join("vgop", "gaierror.png"))
 			if gtype=="I" or gtype=="g":

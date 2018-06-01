@@ -1,0 +1,3 @@
+The connection timed out while Zoxenpher was trying to establish a connection to the server.
+(timeout)
+Zoxenpher error code: 's1'

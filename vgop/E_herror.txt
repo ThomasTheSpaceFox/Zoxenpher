@@ -1,0 +1,3 @@
+Zoxenpher was unable to load the specified gopher address!
+(herror)
+Zoxenpher error code: 's4'

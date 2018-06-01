@@ -1,0 +1,12 @@
+Zoxenpher Error codes:
+
+--- Socket errors/connection errors ---
+
+s0 - socket.gaierror: an address-related error. A caught 'socket.gaierror' exception.
+s1 - Timeout while trying to connect to server. A caught 'socket.timeout' exception.
+s2 - Undefined socket error.
+s3 - Local documentation error. (if you get this from a link in the local documentation, report this error!)
+s4 - socket.herror: an address-related error. A caught 'socket.herror' exception.
+s5 - socket.error: a generic socket error. A caught 'socket.error' exception.
+
+1Return to help menu	/	about:help	70

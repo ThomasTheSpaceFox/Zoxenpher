@@ -3,9 +3,13 @@ In this document, q=question and a=awnser
 q: I'm seeing alot of lines with "[NS]" or "[NS:x]" (where x is some random symbol), at the beginning. what do they mean?
 a: This is Zoxenpher's way of showing a gopher item type its unable to use, or in the latter case, doesn't even recognize.
 
-q: i see "Zoxenpher was unable to load the specified gopher address!" or
+q: i see:
 pErrorImage	/	about:gaierror.png	70
 a: This means Zoxenpher wasn't able to load that content.  This can be for a variety of reasons, ranging from dead links to server bugs to bugs in Zoxenpher itself.
+
+q: i see some sort of error page/error window with a 'zoxenpher error code':
+a: You can look up the error code here:
+1Error Codes	/	about:help_errorcodes	70
 
 q: A connection seems to have hanged.
 a: wait 20 seconds. this is the default timeout pereod for the connection. OR, close down zoxenpher. Zoxenpher is written in such a way that a hanged connection SHOULD NOT stop it from exiting.

@@ -5,15 +5,31 @@ import time
 import math
 pygame.display.init()
 pygame.font.init()
-#ui stiling globals
+#ui styling globals
 framepad=8
 hudsize=20
 fontsize=25
 
 resizebar=10
+#0=plain, 1=3D
+framestyle=1
 
 titlecache={}
 titlecacheact={}
+#maximum size of titlecache and titlecacheact before clearing them.
+titlecachelimit=40
+
+def cachesizecheck():
+	global titlecache
+	global titlecacheact
+	if len(titlecache)>titlecachelimit:
+		del titlecache
+		titlecache={}
+		#print("StrazoloidWM: clear title cache inact")
+	if len(titlecacheact)>titlecachelimit:
+		del titlecacheact
+		titlecacheact={}
+		#print("StrazoloidWM: clear title cache act")
 
 
 def mousehelper(mpos, frameobj):
@@ -25,10 +41,18 @@ def getframe(surfrect, resize=0):
 	framerect.h+=hudsize
 	if resize:
 		framerect.h+=resizebar
+	if framestyle==1:
+		framerect.h+=2
+		framerect.w+=2
+		framerect.x-=1
+		framerect.y-=1
 	return framerect
 
 def getclose(framerect):
-	closebtn=pygame.Rect(framerect.x, framerect.y, hudsize, hudsize)
+	if framestyle:
+		closebtn=pygame.Rect(framerect.x+framerect.w-1-hudsize, framerect.y, hudsize, hudsize)
+	else:
+		closebtn=pygame.Rect(framerect.x, framerect.y, hudsize, hudsize)
 	return closebtn
 
 class framex:
@@ -207,10 +231,26 @@ class desktop:
 			self.pumpcall(self)
 		self.statflg=0
 		
+
+color3d=pygame.Color(70, 70, 70)
+
+def draw3Dbox(surface, rect, color, size=3):
+	try:
+		color.r
+	except AttributeError:
+		color=pygame.Color(color[0], color[1], color[2])
+	subcolor=(color-color3d)
+	supercolor=(color+color3d)
+	
+	pygame.draw.line(surface, supercolor, (rect.left, rect.top), (rect.right, rect.top), size)
+	pygame.draw.line(surface, supercolor, (rect.left, rect.top), (rect.left, rect.bottom), size)
+	pygame.draw.line(surface, subcolor, (rect.right, rect.top), (rect.right, rect.bottom), size)
+	pygame.draw.line(surface, subcolor, (rect.left, rect.bottom), (rect.right, rect.bottom), size)
+	
+
 def framedraw(frame, dispsurf, fg, bg, textcolor, font, abg, atxt, afg):
 	framerect=getframe(frame.SurfRect, frame.resizable)
 	closerect=getclose(framerect)
-	
 	if frame.wo==0:
 		qfg=afg
 		qbg=abg
@@ -219,29 +259,49 @@ def framedraw(frame, dispsurf, fg, bg, textcolor, font, abg, atxt, afg):
 		qfg=fg
 		qbg=bg
 		qtxt=textcolor
-	pygame.draw.rect(dispsurf, qbg, framerect, 0)
-	pygame.draw.rect(dispsurf, qfg, framerect, 1)
-	pygame.draw.rect(dispsurf, qbg, closerect, 0)
-	pygame.draw.rect(dispsurf, qfg, closerect, 1)
-	
-	
-	if frame.resizable:
-		pygame.draw.line(dispsurf, qfg, (framerect.x, framerect.y+framerect.h-(resizebar//2)-(resizebar//3)), (framerect.x+(framerect.w-1), framerect.y+framerect.h-(resizebar//2)-(resizebar//3)))
-		pygame.draw.line(dispsurf, qfg, (framerect.x+(framerect.w//2), framerect.y+framerect.h-(resizebar)-framepad), (framerect.x+(framerect.w//2), framerect.y+framerect.h-1), 2)
-		pygame.draw.line(dispsurf, qfg, (framerect.x, framerect.y+framerect.h-(resizebar//2)), (framerect.x+(framerect.w-1), framerect.y+framerect.h-(resizebar//2)), 2)
+	if not framestyle:
+		pygame.draw.rect(dispsurf, qbg, framerect, 0)
+		pygame.draw.rect(dispsurf, qfg, framerect, 1)
+		pygame.draw.rect(dispsurf, qbg, closerect, 0)
+		pygame.draw.rect(dispsurf, qfg, closerect, 1)
+		if frame.resizable:
+			pygame.draw.line(dispsurf, qfg, (framerect.x, framerect.y+framerect.h-(resizebar//2)-(resizebar//3)), (framerect.x+(framerect.w-1), framerect.y+framerect.h-(resizebar//2)-(resizebar//3)))
+			pygame.draw.line(dispsurf, qfg, (framerect.x+(framerect.w//2), framerect.y+framerect.h-(resizebar)-framepad), (framerect.x+(framerect.w//2), framerect.y+framerect.h-1), 2)
+			pygame.draw.line(dispsurf, qfg, (framerect.x, framerect.y+framerect.h-(resizebar//2)), (framerect.x+(framerect.w-1), framerect.y+framerect.h-(resizebar//2)), 2)
+
+	else:
+		#3D frame style
+		pygame.draw.rect(dispsurf, qbg, framerect, 0)
+		if frame.resizable:
+			pygame.draw.line(dispsurf, qfg, (framerect.x, framerect.y+framerect.h-(resizebar//2)-(resizebar//3)), (framerect.x+(framerect.w-1), framerect.y+framerect.h-(resizebar//2)-(resizebar//3)))
+			pygame.draw.line(dispsurf, qfg, (framerect.x+(framerect.w//2), framerect.y+framerect.h-(resizebar)-framepad), (framerect.x+(framerect.w//2), framerect.y+framerect.h-1), 2)
+			pygame.draw.line(dispsurf, qfg, (framerect.x, framerect.y+framerect.h-(resizebar//2)), (framerect.x+(framerect.w-1), framerect.y+framerect.h-(resizebar//2)), 2)
+		draw3Dbox(dispsurf, framerect, qbg)
+		pygame.draw.rect(dispsurf, qbg, closerect, 0)
+		pygame.draw.line(dispsurf, qfg, closerect.topleft, closerect.bottomright, 2)
+		pygame.draw.line(dispsurf, qfg, closerect.topright, closerect.bottomleft, 2)
+		draw3Dbox(dispsurf, closerect, qbg, 2)
 	if frame.wo==0:
 		if frame.name not in titlecacheact:
-			namex=font.render(frame.name, True, atxt, abg)
+			namex=font.render(frame.name, True, atxt, abg).convert()
 			titlecacheact[frame.name]=namex
 		else:
 			namex=titlecacheact[frame.name]
 	else:
 		if frame.name not in titlecache:
-			namex=font.render(frame.name, True, textcolor, bg)
+			namex=font.render(frame.name, True, textcolor, bg).convert()
 			titlecache[frame.name]=namex
 		else:
 			namex=titlecache[frame.name]
-	dispsurf.blit(namex, (framerect.x+hudsize+2, framerect.y+1))
+	namexrect=namex.get_rect()
+	if namexrect.w>framerect.w-8-hudsize:
+		namexrect.w=framerect.w-8-hudsize
+	else:
+		namexrect=None
+	if framestyle:
+		dispsurf.blit(namex, (framerect.x+2, framerect.y+2), area=namexrect)
+	else:
+		dispsurf.blit(namex, (framerect.x+hudsize+2, framerect.y+2), area=namexrect)
 	dispsurf.blit(frame.surface, frame.SurfRect)
 
 class framescape:
@@ -271,7 +331,7 @@ class framescape:
 		self.resizedesk=0
 		self.activeframe=None
 		self.simplefont = pygame.font.SysFont(None, fontsize)
-		print("Strazoloid Window Manager v1.0.2")
+		print("Strazoloid Window Manager v1.0.3")
 	def close_pid(self, pid):
 		try:
 			frame=self.idlook[pid]
@@ -297,6 +357,8 @@ class framescape:
 		self.idlook[frame.pid]=frame
 	def process(self):
 		while self.runflg:
+			cachesizecheck()
+			
 			if self.resizedesk==1:
 				self.resizedesk=2
 			elif self.resizedesk==2:

@@ -493,7 +493,7 @@ class gopherpane:
 		if frameobj.statflg==0 and frameobj.wo==0:
 			mpos=stz.mousehelper(pygame.mouse.get_pos(), frameobj)
 			if self.loadrect.collidepoint(mpos):
-				deskt.hovertext="Reload this menu."
+				deskt.hovertext="Reload this menu. (CTRL+r)"
 			elif self.rootrect.collidepoint(mpos):
 				deskt.hovertext="Goto server root. (ALT+down)"
 			elif self.bookrect.collidepoint(mpos):

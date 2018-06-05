@@ -18,6 +18,8 @@ from libzox import textitem
 from libzox import progobj
 from libzox import pathprogobj
 from libzox import imgget
+
+stz.framestyle=int(libzox.cnfdict["framestyle"])
 simplefont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
 linkfont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
 linkfont.set_underline(1)
@@ -86,13 +88,19 @@ class deskclass:
 		self.mattesurf=None
 		return
 	def process(self):
-		
+		#check stz's framestyle setting and adjust frame ypos limit accordingly.
+		if stz.framestyle==0:
+			offsetconf=70
+		elif stz.framestyle==1:
+			offsetconf=72
+		else:
+			offsetconf=76
 		while self.active:
 			self.clock.tick(10)
 			#yes i know its a bit of a wonky solution.
 			for frame in framesc.proclist:
-				if frame.ypos<70:
-					frame.move(0, (frame.ypos-70))
+				if frame.ypos<offsetconf:
+					frame.move(0, (frame.ypos-offsetconf))
 					#frame.move(0, (-22))
 		print("done.")
 	def pumpcall1(self, frameobj, data=None):
@@ -1263,7 +1271,7 @@ pygame.font.init()
 deskframe=stz.desktop(int(libzox.cnfdict["deskw"]), int(libzox.cnfdict["deskh"]), "Zoxenpher", pumpcall=deskt.pumpcall1, resizable=1)
 
 windowicon=pygame.image.load(os.path.join("vgop", "icon32.png"))
-framesc=stz.framescape(deskframe, deskicon=windowicon)
+framesc=stz.framescape(deskframe, deskicon=windowicon, actbevel=(230, 230, 230), inactbevel=(200, 200, 200))
 
 gtmenu=pygame.image.load(os.path.join("vgop", "menuicn.png")).convert()
 gtmenuremote=pygame.image.load(os.path.join("vgop", "menuremoteicn.png")).convert()

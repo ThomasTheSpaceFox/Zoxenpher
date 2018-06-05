@@ -282,7 +282,8 @@ cnfdef={"imgpreview" : "10",
 "menutextjump" : "15",
 "menufont" : "mono",
 "menuheight" : "460",
-"bgtile" : "diagbg.png"}
+"bgtile" : "diagbg.png",
+"framestyle" : "2"}
 
 
 

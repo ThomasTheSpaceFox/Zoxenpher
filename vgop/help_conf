@@ -56,5 +56,12 @@ deskw=800
 deskh=600
 
 
+--- Strazoloidwm frame style ---
+
+choose what builtin frame style strazoloidwm should use.
+(0=plain, 1=3D (without bevels), 2=3D (with bevels, default)
+plain is a sparse theme, and is based on strazoloid's original frame look, hence the different placement of buttons.
+
+framestyle=2
 
 1Return to help menu	/	about:help	70

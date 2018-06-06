@@ -30,6 +30,8 @@ menuheight=460
 #plain is a sparse theme, and is based on strazoloid's original frame look, hence the different placement of buttons.
 framestyle=2
 
+#strazoloid's fps setting. Lower values will not seem as smooth, but can help performance on older hardware.
+wmfps=30
 
 #wallpaper (tiled automatically, should either be in 'usr' or 'vgop' directories)
 bgtile=none

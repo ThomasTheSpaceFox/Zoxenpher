@@ -5,10 +5,9 @@ import libgop
 import pygame
 from threading import Thread
 import strazoloidwm as stz
-#import copy
+
 print("Zoxenpher v2.0.1")
-#configuration (TODO: build options menu and config file)
-#number of images loaded for preview. (images not previewed will be shown as links)
+#configuration (TODO: build options menu)
 
 
 
@@ -20,6 +19,7 @@ from libzox import pathprogobj
 from libzox import imgget
 
 stz.framestyle=int(libzox.cnfdict["framestyle"])
+stz.wmfps=int(libzox.cnfdict["wmfps"])
 simplefont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
 linkfont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
 linkfont.set_underline(1)
@@ -39,8 +39,8 @@ else:
 histsize=int(libzox.cnfdict["histsize"])
 
 
-gopherwidth=((simplefont.size("_")[0])*80)+25
-#too tall!
+gopherwidth=((simplefont.size("_")[0])*81)+25
+
 gfontjump=int(libzox.cnfdict["menutextjump"])
 
 gopherheight=int(libzox.cnfdict["menuheight"])
@@ -87,22 +87,10 @@ class deskclass:
 		self.hoverprev=""
 		self.mattesurf=None
 		return
-	def process(self):
-		#check stz's framestyle setting and adjust frame ypos limit accordingly.
-		if stz.framestyle==0:
-			offsetconf=70
-		elif stz.framestyle==1:
-			offsetconf=72
-		else:
-			offsetconf=76
-		while self.active:
-			self.clock.tick(10)
-			#yes i know its a bit of a wonky solution.
-			for frame in framesc.proclist:
-				if frame.ypos<offsetconf:
-					frame.move(0, (frame.ypos-offsetconf))
-					#frame.move(0, (-22))
-		print("done.")
+	#def process(self):
+	#	while self.active:
+	#		self.clock.tick(1)
+	#	print("done.")
 	def pumpcall1(self, frameobj, data=None):
 		if frameobj.statflg==0:
 			#status area routine. (works via routines setting deskt.hovertext on an active basis.
@@ -124,6 +112,7 @@ class deskclass:
 				self.hovertext="About Zoxenpher."
 		#init code
 		if frameobj.statflg==1:
+			stz.setminy(46)
 			self.drawdesk(frameobj.surface)
 		#shutdown code
 		if frameobj.statflg==3:
@@ -379,12 +368,12 @@ class gopherpane:
 		else:
 			frameobj.surface.blit(self.menucorner, (0, 0))
 		xpos=27
-		if self.histpoint>0:
+		if self.histpoint>0 and self.loading==0:
 			self.backrect=frameobj.surface.blit(self.backbtn, (xpos, 1))
 		else:
 			self.backrect=frameobj.surface.blit(self.backbtn_inact, (xpos, 1))
 		xpos+=60
-		if self.histpoint<len(self.histlist)-1:
+		if self.histpoint<len(self.histlist)-1 and self.loading==0:
 			self.nextrect=frameobj.surface.blit(self.nextbtn, (xpos, 1))
 		else:
 			self.nextrect=frameobj.surface.blit(self.nextbtn_inact, (xpos, 1))
@@ -630,11 +619,11 @@ class gopherpane:
 						newgop=bookmadded(url=libzox.gurlencode(self.host, self.selector, self.gtype, self.port))
 						framesc.add_frame(stz.framex(500, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
 					if self.backrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
-						if self.histpoint>0:
+						if self.histpoint>0 and self.loading==0:
 							self.histpoint-=1
 							self.histchange(self.histlist[self.histpoint], frameobj)
 					if self.nextrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
-						if self.histpoint<len(self.histlist)-1:
+						if self.histpoint<len(self.histlist)-1 and self.loading==0:
 							self.histpoint+=1
 							self.histchange(self.histlist[self.histpoint], frameobj)
 					if self.uprect.collidepoint(stz.mousehelper(data.pos, frameobj)):
@@ -1288,13 +1277,13 @@ gtweb=pygame.image.load(os.path.join("vgop", "webicn.png")).convert()
 gterror=pygame.image.load(os.path.join("vgop", "erroricn.png")).convert()
 
 #start auxilary desktop thread.
-sideproc=Thread(target = deskt.process, args = [])
-sideproc.start()
+#sideproc=Thread(target = deskt.process, args = [])
+#sideproc.start()
 
 
 #start wm (takes over main thread)
 framesc.process()
-
+print("done.")
 
 
 

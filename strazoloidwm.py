@@ -13,6 +13,32 @@ fontsize=25
 resizebar=10
 #0=plain, 1=3D, 2=3D2
 framestyle=2
+#window manager speed in fps.
+wmfps=30
+
+#lower ypos limit (for toolbars/taskbars/etc on top of main window.)
+#offset constants for each frame style.
+minyoffset0=25
+minyoffset1=27
+minyoffset2=31
+#helpful offset setting for desktop taskbars/toolbars on top of main window.
+miny=0
+
+
+def setminy(newminy):
+	global miny
+	
+	if framestyle==0:
+		miny=newminy+minyoffset0-1
+		return
+	elif framestyle==1:
+		miny=newminy+minyoffset1-1
+		return
+	elif framestyle==2:
+		miny=newminy+minyoffset2-1
+		return
+		
+setminy(0)
 
 titlecache={}
 titlecacheact={}
@@ -83,18 +109,22 @@ def getframe(surfrect, resize=0):
 	return framerect
 
 def getclose(framerect):
-	if framestyle==1 or framestyle==2:
-		closebtn=pygame.Rect(framerect.x+framerect.w-2-hudsize, framerect.y+2, hudsize, hudsize)
-	else:
-		closebtn=pygame.Rect(framerect.x, framerect.y, hudsize, hudsize)
+	closebtn=pygame.Rect(framerect.x+framerect.w-2-hudsize, framerect.y+2, hudsize, hudsize)
 	return closebtn
 
 def getshade(framerect):
-	if framestyle==1 or framestyle==2:
-		closebtn=pygame.Rect(framerect.x+framerect.w-2-hudsize-hudsize-2, framerect.y+2, hudsize, hudsize)
-	else:
-		closebtn=pygame.Rect(framerect.x+hudsize+1, framerect.y, hudsize, hudsize)
+	closebtn=pygame.Rect(framerect.x+framerect.w-2-hudsize-hudsize-2, framerect.y+2, hudsize, hudsize)
 	return closebtn
+
+
+def getpop(framerect):
+	poprect=framerect.copy()
+	poprect.x-=2
+	poprect.y-=2
+	poprect.w+=4
+	poprect.h+=4
+	return poprect
+
 
 class framex:
 	def __init__(self, sizex, sizey, name, xpos=10, ypos=30, resizable=0, sizeminx=140, sizeminy=140, pumpcall=None):
@@ -107,9 +137,15 @@ class framex:
 		self.xpos=xpos
 		self.ypos=ypos
 		self.name=name
+		if self.ypos<miny:
+			self.ypos=miny
 		self.wo=None
 		self.pid=None
-		self.SurfRect=pygame.Rect(xpos, ypos, sizex, sizey)
+		self.SurfRect=pygame.Rect(self.xpos, self.ypos, sizex, sizey)
+		self.framerect=getframe_shadeaware(self, self.SurfRect, self.resizable)
+		self.closerect=getclose(self.framerect)
+		self.shadrect=getshade(self.framerect)
+		self.poprect=getpop(self.framerect)
 		self.surface=pygame.Surface((sizex, sizey))
 		self.sizeminx=sizeminx
 		self.sizeminy=sizeminy
@@ -128,6 +164,7 @@ class framex:
 	def move(self, xoff, yoff, resetlocks=0):
 		self.SurfRect.x-=xoff
 		self.SurfRect.y-=yoff
+		
 		self.xpos-=xoff
 		self.ypos-=yoff
 		if self.tr_lock_reset!=None:
@@ -136,6 +173,13 @@ class framex:
 			else:	
 				self.SurfRect.topright=self.tr_lock_reset
 				self.xpos=self.SurfRect.x
+		if self.ypos<miny:
+			self.ypos=miny
+			self.SurfRect.y=miny
+		self.framerect=getframe_shadeaware(self, self.SurfRect, self.resizable)
+		self.closerect=getclose(self.framerect)
+		self.shadrect=getshade(self.framerect)
+		self.poprect=getpop(self.framerect)
 		return
 	def resize(self, xoff, yoff, toprightlock=0):
 		if toprightlock:
@@ -152,6 +196,10 @@ class framex:
 		self.SurfRect.w=self.sizex
 		self.SurfRect.h=self.sizey
 		self.surface=pygame.Surface((self.sizex, self.sizey)).convert()
+		self.framerect=getframe_shadeaware(self, self.SurfRect, self.resizable)
+		self.closerect=getclose(self.framerect)
+		self.shadrect=getshade(self.framerect)
+		self.poprect=getpop(self.framerect)
 		return
 	def click(self, event):
 		self.statflg=4
@@ -209,11 +257,19 @@ class framex:
 		if self.pumpcall!=None:
 			self.pumpcall(self)
 		self.statflg=0
+		self.framerect=getframe_shadeaware(self, self.SurfRect, self.resizable)
+		self.closerect=getclose(self.framerect)
+		self.shadrect=getshade(self.framerect)
+		self.poprect=getpop(self.framerect)
 	def unshade(self):
 		self.statflg=10
 		if self.pumpcall!=None:
 			self.pumpcall(self)
 		self.statflg=0
+		self.framerect=getframe_shadeaware(self, self.SurfRect, self.resizable)
+		self.closerect=getclose(self.framerect)
+		self.shadrect=getshade(self.framerect)
+		self.poprect=getpop(self.framerect)
 class desktop:
 	def __init__(self, sizex, sizey, name="desktop", bgcolor=(200, 200, 255), pumpcall=None, resizable=0):
 		#dummy values
@@ -313,16 +369,10 @@ def coloradd(color, mod=color3d):
 
 
 def framedraw(frame, dispsurf, fg, bg, textcolor, font, abg, atxt, afg, abev, ibev, sub_abev, sub_ibev, sub_bg, add_bg, sub_abg, add_abg):
-	framerect=getframe(frame.SurfRect, frame.resizable)
-	if framestyle==2:
-		poprect=framerect.copy()
-		poprect.x-=2
-		poprect.y-=2
-		poprect.w+=4
-		poprect.h+=4
-		
-	closerect=getclose(framerect)
-	shaderect=getshade(framerect)
+	framerect=frame.framerect
+	poprect=frame.poprect
+	closerect=frame.closerect
+	shaderect=frame.shadrect
 	if frame.wo==0:
 		qfg=afg
 		qbg=abg
@@ -403,24 +453,15 @@ def framedraw(frame, dispsurf, fg, bg, textcolor, font, abg, atxt, afg, abev, ib
 		namexrect.w=framerect.w-8-hudsize-hudsize
 	else:
 		namexrect=None
-	if framestyle==1 or framestyle==2:
-		dispsurf.blit(namex, (framerect.x+2, framerect.y+2), area=namexrect)
-	else:
-		dispsurf.blit(namex, (framerect.x+hudsize+hudsize+2, framerect.y+2), area=namexrect)
+	dispsurf.blit(namex, (framerect.x+2, framerect.y+2), area=namexrect)
 	dispsurf.blit(frame.surface, frame.SurfRect)
 
 
 def shadedraw(frame, dispsurf, fg, bg, textcolor, font, abg, atxt, afg, abev, ibev, sub_abev, sub_ibev, sub_bg, add_bg, sub_abg, add_abg):
-	framerect=getframe_shadeaware(frame, frame.SurfRect, frame.resizable)
-	if framestyle==2:
-		poprect=framerect.copy()
-		poprect.x-=2
-		poprect.y-=2
-		poprect.w+=4
-		poprect.h+=4
-		
-	closerect=getclose(framerect)
-	shaderect=getshade(framerect)
+	framerect=frame.framerect
+	poprect=frame.poprect
+	closerect=frame.closerect
+	shaderect=frame.shadrect
 	if frame.wo==0:
 		qfg=afg
 		qbg=abg
@@ -501,10 +542,7 @@ def shadedraw(frame, dispsurf, fg, bg, textcolor, font, abg, atxt, afg, abev, ib
 		namexrect.w=framerect.w-8-hudsize-hudsize
 	else:
 		namexrect=None
-	if framestyle==1 or framestyle==2:
-		dispsurf.blit(namex, (framerect.x+2, framerect.y+2), area=namexrect)
-	else:
-		dispsurf.blit(namex, (framerect.x+hudsize+hudsize+2, framerect.y+2), area=namexrect)
+	dispsurf.blit(namex, (framerect.x+2, framerect.y+2), area=namexrect)
 	#dispsurf.blit(frame.surface, frame.SurfRect)
 
 class framescape:
@@ -542,7 +580,7 @@ class framescape:
 		self.resizedesk=0
 		self.activeframe=None
 		self.simplefont = pygame.font.SysFont(None, fontsize)
-		print("Strazoloid Window Manager v1.1.0")
+		print("Strazoloid Window Manager v1.1.1")
 	def close_pid(self, pid):
 		try:
 			frame=self.idlook[pid]
@@ -568,6 +606,7 @@ class framescape:
 		self.activeframe=frame
 		self.proclist.extend([frame])
 		self.idlook[frame.pid]=frame
+		
 	def process(self):
 		while self.runflg:
 			cachesizecheck()
@@ -583,7 +622,7 @@ class framescape:
 				self.desktop.resize(resw, resh)
 				self.surface=pygame.display.set_mode((self.desktop.sizex, self.desktop.sizey), pygame.RESIZABLE)
 				self.desktop.post_resize()
-			self.clock.tick(30)
+			self.clock.tick(wmfps)
 			#pump calls
 			self.desktop.pump()
 			for frame in self.proclist:

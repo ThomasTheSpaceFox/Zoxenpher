@@ -100,7 +100,7 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 			#print buffstring
 			if word==None:
 				if ypos>=(-30-yjump) and ypos<=surface.get_height():
-					dictkey=str(textcolx[0])+str(textcolx[1])+str(textcolx[2])+buffstring
+					dictkey=str(textcolx[0])+"\t"+str(textcolx[1])+"\t"+str(textcolx[2])+"\t"+buffstring
 					if dictkey in renderdict:
 						namelabel=renderdict[dictkey]
 					else:
@@ -116,7 +116,7 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 				buffstring+=word+" "
 			else:
 				if ypos>=(-30-yjump) and ypos<=surface.get_height():
-					dictkey=str(textcolx[0])+str(textcolx[1])+str(textcolx[2])+buffstring
+					dictkey=str(textcolx[0])+"\t"+str(textcolx[1])+"\t"+str(textcolx[2])+"\t"+buffstring
 					if dictkey in renderdict:
 						namelabel=renderdict[dictkey]
 					else:
@@ -283,7 +283,8 @@ cnfdef={"imgpreview" : "10",
 "menufont" : "mono",
 "menuheight" : "460",
 "bgtile" : "diagbg.png",
-"framestyle" : "2"}
+"framestyle" : "2",
+"wmfps" : "30"}
 
 
 

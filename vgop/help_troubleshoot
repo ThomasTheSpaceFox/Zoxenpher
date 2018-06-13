@@ -17,6 +17,17 @@ a: wait 20 seconds. this is the default timeout pereod for the connection. OR, c
 q: A menu or text document is scrolling slowly
 a: Unfortunately, Zoxenpher does not handle massive text documents and menus that well. So, you will run into the odd situation where zoxenpher runs rather poorly when displaying alot of text at once.
 
+--- Sound type playback ---
+
+q: sound playback stops when i close a sound player window, even when its not the one playing.
+a: this is a known bug, which is due to the sound player using pygame's music playback. This should be fixed in the future.
+
+q: it takes a bit before sound starts playing in the sound player sometimes.
+a: the sound player currently doesn't play the data as its being downloaded. This should be fixed in the future.
+
+q: mp3s don't play.
+a: mp3 support is notoriously patchy and unpredictable when it comes to pygame, sadly.
+
 --- Configuration file ---
 1See: Configuration help for how to set up a cnf.dat file.	/	about:help_conf	70
 

@@ -9,4 +9,7 @@ s3 - Local documentation error. (if you get this from a link in the local docume
 s4 - socket.herror: an address-related error. A caught 'socket.herror' exception.
 s5 - socket.error: a generic socket error. A caught 'socket.error' exception.
 
+--- Sound player errors ---
+aud0 - failed to load sound type data into mixer. (may be caused by corrupt data, unsupported format, invalid selector, mistyped data, etc.)
+aud1 - failed to load sound type data due to network/socket error.
 1Return to help menu	/	about:help	70

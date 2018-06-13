@@ -1,0 +1,6 @@
+Test page:
+--sound--
+Click the following link to test sound playback. a "sound:" window should
+appear and shortly start playing some music.
+sSound Test	/	about:testsnd.ogg	70
+1Return to help menu	/	about:help	70

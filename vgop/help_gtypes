@@ -23,6 +23,12 @@ type 7: index search. Clicking on these will bring up a query box. Enter your qu
 pimage	/	about:imageicon.png	70
 type g/p/I: This is an image, though when preview is enabled (first 10 images by default), the image itself will appear instead, otherwise, you can click on the image links to open them in a dedicated image viewer window.
 
+psound	/	about:soundicn.png	70
+type s: Sound file. Sounds are played using pygame's music support.
+Note: zoxenpher will only play ONE sound at a time, but you may have multiple sound players open.
+Note: the music will stop when you close a sound player window.
+Note: The sound player must download the FILE /before/ it can play it. This may be fixed in the future.
+Note: format support will vary depending on what music/sound formats your pygame instalation supports.
 
 perror	/	about:erroricn.png	70
 type 3: Oops... This special type is not one your supposed to see. That is, it only appears when the gopher server has an error, as it is an error code. The accompanying text might help discern what happened.
@@ -35,8 +41,6 @@ Not yet supported:
 These gopher types have support of some sort planned, but this support isn't yet working. Their labels will be prefixed with "[NS]"
 In addition, unknown gopher types will be prefixed with "[NS:x]" where x is the gopher type.
 
-psound	/	about:soundicn.png	70
-type s: Sound file. planned support for a sound player based upon pygame's music support.
 
 pweb	/	about:webicn.png	70
 type h: basic support for opening a web browser specified in configuration, is planned.

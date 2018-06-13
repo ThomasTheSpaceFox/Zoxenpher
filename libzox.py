@@ -11,6 +11,7 @@ import socket
 #determines if a host-port-selector location is one of zoxenpher's special "about:" paths or a normal gopher location.
 #also brings up appropiate error pages and images in the event of load failures.
 def pathfigure(host, port, selector, gtype="0"):
+	data=None
 	if host.startswith("about:"):
 		hoststripped=host.replace('\\', "").replace("/", "").replace("..", "")
 		hoststripped=hoststripped[6:]

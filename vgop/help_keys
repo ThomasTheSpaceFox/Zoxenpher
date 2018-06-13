@@ -20,6 +20,10 @@ Image viewer:
    Note: image viewer will calculate optimal zoom automatically upon load and window resize.
  - m: bookmark image (will open dialog for label and confirmation)
 
+Sound Player:
+ - p: play sound
+ - s: stop sound. (sound will also stop if player window is closed.)
+
 Global:
  - CTRL+n: new gopher window
  - CTRL+g: open go dialog

@@ -10,7 +10,6 @@ print("Zoxenpher v2.0.1")
 #configuration (TODO: build options menu)
 
 
-
 import libzox
 from libzox import pathfigure
 from libzox import textitem
@@ -46,7 +45,7 @@ gfontjump=int(libzox.cnfdict["menutextjump"])
 gopherheight=int(libzox.cnfdict["menuheight"])
 
 hudfont = pygame.font.SysFont(None, 22)
-
+pygame.mixer.init()
 maximages=int(libzox.cnfdict["imgpreview"])
 bmlist=libzox.bmload()
 #menu window graphics
@@ -338,15 +337,14 @@ class gopherpane:
 					if imagecount<maximages or (imagecount<2 and self.forceimage) or self.host.startswith("about:"):
 						imageset.extend([item])
 					item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
-
-					
-						
-				
-					
+			elif item.gtype=="s":
+				item.rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtsound, 1)
+			
+			
+			
 			elif item.gtype=="9":
 				rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gtbin, 1)
-			elif item.gtype=="s":
-				rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gtsound, 1)
+			
 			elif item.gtype=="h":
 				rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gtweb, 1)
 
@@ -504,7 +502,7 @@ class gopherpane:
 			elif not self.hudrect.collidepoint(mpos):
 				for item in self.menu:
 					if item.gtype!=None:
-						if item.gtype in "01pgI7":
+						if item.gtype in "01pgI7s":
 							try:
 								if item.rect.collidepoint(mpos):
 									if item.hostname.startswith("about:"):
@@ -641,7 +639,7 @@ class gopherpane:
 					
 					if mods & pygame.KMOD_SHIFT:
 						if item.gtype!=None:
-							if item.gtype in "10gpI7":
+							if item.gtype in "10gpI7s":
 								if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 									newgop=bookmadded(url=libzox.gurlencode(item.hostname, item.selector, item.gtype, item.port), name=item.name)
 									framesc.add_frame(stz.framex(500, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
@@ -683,6 +681,10 @@ class gopherpane:
 							if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 								newgop=querypane(host=item.hostname, port=item.port, selector=item.selector)
 								framesc.add_frame(stz.framex(500, 100, "Gopher Query", resizable=1, pumpcall=newgop.pumpcall1))
+						if item.gtype=="s":
+							if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
+								newgop=sndplay(item.hostname, item.port, item.selector)
+								framesc.add_frame(stz.framex(500, 100, "Sound", resizable=1, pumpcall=newgop.pumpcall1))
 			elif data.button==3 and not self.linkdisable:
 				for item in self.menu:
 					if item.gtype=="1":
@@ -856,6 +858,8 @@ class bookmarks:
 			return gttext
 		if gtype=="7":
 			return gtquery
+		if gtype=="s":
+			return gtsound
 		if gtype=="g" or gtype=="p" or gtype=="I":
 			return gtimage
 		return None
@@ -875,6 +879,9 @@ class bookmarks:
 		elif self.gtype=="g" or self.gtype=="p" or self.gtype=="I":
 			newgop=imgview(host=self.host, port=self.port, selector=self.selector, gtype=self.gtype)
 			framesc.add_frame(stz.framex(500, 400, "Image", resizable=1, pumpcall=newgop.pumpcall1))
+		elif self.gtype=="s":
+			newgop=sndplay(self.host, self.port, self.selector)
+			framesc.add_frame(stz.framex(500, 100, "Sound", resizable=1, pumpcall=newgop.pumpcall1))
 	def pumpcall1(self, frameobj, data=None):
 		if frameobj.statflg==2:
 			self.offset=0
@@ -1114,6 +1121,9 @@ class urlgo:
 						newgop=querypane(host=self.host, port=self.port, selector=self.selector)
 						framesc.add_frame(stz.framex(350, 100, "Gopher Query", resizable=1, pumpcall=newgop.pumpcall1))
 						framesc.close_pid(frameobj.pid)
+					elif self.gtype=="s":
+						newgop=sndplay(self.host, self.port, self.selector)
+						framesc.add_frame(stz.framex(500, 100, "Sound", resizable=1, pumpcall=newgop.pumpcall1))
 					elif self.gtype=="g" or self.gtype=="p" or self.gtype=="I":
 						newgop=imgview(host=self.host, port=self.port, selector=self.selector, gtype=self.gtype)
 						framesc.add_frame(stz.framex(500, 400, "Image", resizable=1, pumpcall=newgop.pumpcall1))
@@ -1171,8 +1181,8 @@ class imgview:
 			self.surftran=pygame.transform.scale(self.surf, ((int(self.imgx * self.scf)), (int(self.imgy * self.scf))))
 			self.pscf=self.scf
 		self.imgbox = self.surftran.get_rect()
-		self.imgbox.centerx = self.xoff
-		self.imgbox.centery = self.yoff
+		self.imgbox.centerx = int(self.xoff)
+		self.imgbox.centery = int(self.yoff)
 		frameobj.surface.fill((255, 255, 255))
 		frameobj.surface.blit(self.surftran, self.imgbox)
 	def pumpcall1(self, frameobj, data=None):
@@ -1211,12 +1221,20 @@ class imgview:
 			self.scf=scf
 			self.updatedisp(frameobj)
 		if frameobj.statflg==4:
+			
 			if data.button==5:
-				self.scf-=0.3
+				self.scf/=1.1
 				if self.scf<0.1:
 					self.scf=0.1
+				#print(self.scf)
+				
+				
 			if data.button==4:
-				self.scf+=0.3
+				self.scf*=1.1
+				if self.scf>20.0:
+					self.scf=20.0
+				#print(self.scf)
+				
 			if data.button==1:
 				self.ppos=data.pos
 				self.pan=1
@@ -1233,7 +1251,6 @@ class imgview:
 			if data.key==pygame.K_m:
 				newgop=bookmadded(url=libzox.gurlencode(self.host, self.selector, self.gtype, self.port))
 				framesc.add_frame(stz.framex(350, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
-
 		return
 
 #basic routine for quitting.
@@ -1244,6 +1261,67 @@ class quitx:
 		if frameobj.statflg==0:
 			pygame.event.clear()
 			pygame.event.post(pygame.event.Event(pygame.QUIT))
+
+
+class sndplay:
+	def __init__(self, host, port, selector):
+		self.yoff=0
+		self.yjump=int(libzox.cnfdict["menutextjump"])
+		self.host=host
+		self.port=port
+		self.selector=selector
+		self.gtype='s'
+		self.data=0
+	def renderdisp(self, frameobj):
+		frameobj.surface.fill((255, 255, 255))
+		textitem("[p] play/restart, [s] stop", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*2, {}, xoff=0)
+		textitem("sound: gopher://"+libzox.gurlencode(self.host, self.selector, self.gtype, self.port), simplefont, self.yjump, (0, 0, 0), frameobj.surface, 0, {}, xoff=0)
+	def loader(self, frameobj):
+		try:
+			data=pathfigure(self.host, self.port, self.selector, gtype='s')
+			if data!=None and data!=0:
+				pygame.mixer.music.load(data)
+				pygame.mixer.music.play(-1)
+				frameobj.name="sound: playing"
+				self.data=data
+			if data==None:
+				frameobj.name="sound: ZERROR: aud1"
+		except pygame.error:
+			frameobj.name="sound: ZERROR: aud0"
+			return
+	def pumpcall1(self, frameobj, data=None):
+		if frameobj.statflg==2:
+			self.renderdisp(frameobj)
+		if frameobj.statflg==1:
+			frameobj.name="sound: loading... Please wait."
+			self.renderdisp(frameobj)
+			sideproc=Thread(target = self.loader, args = [frameobj])
+			sideproc.daemon=True
+			sideproc.start()
+		if frameobj.statflg==3:
+			try:
+				pygame.mixer.music.stop()
+			except pygame.error:
+				return
+		if frameobj.statflg==6:
+			if data.key==pygame.K_p:
+				try:
+					self.data.seek(0)
+					
+					pygame.mixer.music.load(self.data)
+					pygame.mixer.music.play(-1)
+					frameobj.name="sound: playing"
+				except pygame.error:
+					return
+			if data.key==pygame.K_s:
+				try:
+					frameobj.name="sound: stopped"
+					pygame.mixer.music.stop()
+					
+				except pygame.error:
+					return
+				
+
 
 #desktop icons
 progs=[progobj(gopherpane, pygame.image.load(os.path.join("vgop", "newwindow.png")), "goppane", "Gopher Menu", "GOPHER", gopherwidth, gopherheight, 1, key=pygame.K_n, mod=pygame.KMOD_CTRL, hint="Open a new gopher window. (CTRL+n)"),

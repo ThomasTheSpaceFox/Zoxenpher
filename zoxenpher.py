@@ -485,7 +485,7 @@ class gopherpane:
 	def pumpcall1(self, frameobj, data=None):
 		
 		#link destination preview routine. 
-		if frameobj.statflg==0 and frameobj.wo==0:
+		if frameobj.statflg==0 and frameobj.wo==0 and frameobj.shade==0:
 			mpos=stz.mousehelper(pygame.mouse.get_pos(), frameobj)
 			if self.loadrect.collidepoint(mpos):
 				deskt.hovertext="Reload this menu. (CTRL+r)"
@@ -890,7 +890,7 @@ class bookmarks:
 			self.bmprev=list(bmlist)
 			self.offset=0
 			self.renderdisp(frameobj)
-		if frameobj.statflg==0 and frameobj.wo==0:
+		if frameobj.statflg==0 and frameobj.wo==0 and frameobj.shade==0:
 			mpos=pygame.mouse.get_pos()
 			for item in bmlist:
 				if item.rect.collidepoint(stz.mousehelper(mpos, frameobj)):

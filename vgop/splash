@@ -1,6 +1,6 @@
 welcome to Zoxenpher! A python graphical gopher client!
 
-Zoxenpher v2.0.1
+Zoxenpher v2.1.0
 
 1Start here	/	about:start_here	70
 1Help	/	about:help	70
@@ -20,4 +20,5 @@ How do i gopher?
 1floodgap's nice introduction	/gopher/	gopher.floodgap.com	70
 1gopherproject.org	/	gopherproject.org	70
 
-
+Web links (REQUIRES HAVING BROWSER SETTING CONFIGURED:
+hzoxenpher github repository	URL:https://github.com/ThomasTheSpaceFox/Zoxenpher	null	70

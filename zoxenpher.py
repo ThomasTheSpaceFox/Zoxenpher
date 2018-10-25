@@ -4,9 +4,11 @@ import os
 import libgop
 import pygame
 from threading import Thread
+import subprocess
+from subprocess import Popen
 import strazoloidwm as stz
 
-print("Zoxenpher v2.0.1")
+print("Zoxenpher v2.1.0")
 #configuration (TODO: build options menu)
 
 
@@ -63,6 +65,13 @@ upbtn=pygame.image.load(os.path.join("vgop", "upbtn.png"))
 upbtn_inact=pygame.image.load(os.path.join("vgop", "upbtn_inact.png"))
 rootbtn=pygame.image.load(os.path.join("vgop", "rootbtn.png"))
 rootbtn_inact=pygame.image.load(os.path.join("vgop", "rootbtn_inact.png"))
+
+#common:
+scrollup=pygame.image.load(os.path.join("vgop", "scrollu.png"))
+scrolldn=pygame.image.load(os.path.join("vgop", "scrolld.png"))
+scrollup_no=pygame.image.load(os.path.join("vgop", "scrollu_no.png"))
+scrolldn_no=pygame.image.load(os.path.join("vgop", "scrolld_no.png"))
+
 #bookmark window graphics
 bookm_del0=pygame.image.load(os.path.join("vgop", "delinact.png"))
 bookm_del1=pygame.image.load(os.path.join("vgop", "delact.png"))
@@ -72,6 +81,8 @@ bookm_edit0=pygame.image.load(os.path.join("vgop", "editinact.png"))
 bookm_edit1=pygame.image.load(os.path.join("vgop", "editact.png"))
 bookm_newbm=pygame.image.load(os.path.join("vgop", "newbm.png"))
 menucorner_book=pygame.image.load(os.path.join("vgop", "menucorner_book.png"))
+
+
 
 #
 #virtual desktop
@@ -224,6 +235,7 @@ class gopherpane:
 		self.yoff=25
 		self.yjump=int(libzox.cnfdict["menutextjump"])
 		self.menu=[]
+		self.images=[]
 		self.data=None
 		self.prefix=prefix
 		self.preload=preload
@@ -241,7 +253,10 @@ class gopherpane:
 		self.loadbtn_inact=loadbtn_inact.convert()
 		self.histlist=[]
 		self.histpoint=-1
-		
+		self.scrollup=scrollup.convert()
+		self.scrolldn=scrolldn.convert()
+		self.scrollup_no=scrollup_no.convert()
+		self.scrolldn_no=scrolldn_no.convert()
 		self.backbtn=backbtn.convert()
 		self.backbtn_inact=backbtn_inact.convert()
 		self.nextbtn=nextbtn.convert()
@@ -286,6 +301,7 @@ class gopherpane:
 			self.histlist.pop(0)
 			self.histpoint-=1
 	#render routine
+			
 	def menudraw(self, frameobj):
 		imageset=[]
 		imagecount=0
@@ -319,10 +335,12 @@ class gopherpane:
 				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gttext, 1)
 				item.rect=rect
 			#image preview routine
+			
 			elif item.gtype=="g" or item.gtype=="p" or item.gtype=="I":
 				imagecount+=1
 				try:
 					if item.image!=None:
+						
 						rectia, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
 						rectib=frameobj.surface.blit(item.image, (26, self.ypos))
 						item.rect=rectia.unionall([rectib])
@@ -346,13 +364,19 @@ class gopherpane:
 				rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gtbin, 1)
 			
 			elif item.gtype=="h":
-				rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gtweb, 1)
+				item.rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtweb, 1)
 
 			else:
 				rects, self.ypos, self.renderdict = textitem("[NS:" + item.gtype + "]" + item.name, simplefont, 15, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
 				#print(item.gtype)
+			if libzox.itemdebug:
+				try:
+					pygame.draw.rect(frameobj.surface, (255, 0, 0), item.rect, 1)
+				except AttributeError:
+					pass
 		#launch image loader thread if needed
 		if imageset!=[]:
+			self.images=imageset
 			self.loading=1
 			sideproc=Thread(target = imgget, args = [imageset, self.menudraw, frameobj, self])
 			sideproc.daemon=True
@@ -395,12 +419,24 @@ class gopherpane:
 		else:
 			self.loadrect=frameobj.surface.blit(self.loadbtn, (xpos, 1))
 		
+		
+		if self.yoff<25:
+			self.scuprect=frameobj.surface.blit(self.scrollup, (frameobj.surface.get_width()-44, 0))
+		else:
+			self.scuprect=frameobj.surface.blit(self.scrollup_no, (frameobj.surface.get_width()-44, 0))
+		if self.ypos>frameobj.sizey:
+			self.scdnrect=frameobj.surface.blit(self.scrolldn, (frameobj.surface.get_width()-88, 0))
+		else:
+			self.scdnrect=frameobj.surface.blit(self.scrolldn_no, (frameobj.surface.get_width()-88, 0))
+		
 	#menu change loader
 	def menuchange(self, item, frameobj):
 		self.host=item.hostname
 		self.port=item.port
 		self.selector=item.selector
-		if item.hostname.startswith("about:"):
+		if self.host.startswith("about:help"):
+			frameobj.name=("help: "+str(self.host))
+		elif item.hostname.startswith("about:"):
 			frameobj.name=(self.shortprefix+str(item.hostname))
 		else:
 			frameobj.name=(self.prefix+str(item.hostname) + "/" + self.gtype + str(item.selector))
@@ -454,7 +490,9 @@ class gopherpane:
 		self.menudraw(frameobj)
 	#menu initalization loader
 	def menuinital(self, frameobj):
-		if self.host.startswith("about:"):
+		if self.host.startswith("about:help"):
+			frameobj.name=("help: "+str(self.host))
+		elif self.host.startswith("about:"):
 			frameobj.name=(self.shortprefix+str(self.host))
 		else:
 			frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
@@ -474,7 +512,9 @@ class gopherpane:
 		else:
 			self.prefix="menu: gopher://"
 		self.shortprefix="menu: "
-		if self.host.startswith("about:"):
+		if self.host.startswith("about:help"):
+			frameobj.name=("help: "+str(self.host))
+		elif self.host.startswith("about:"):
 			frameobj.name=(self.shortprefix+str(self.host))
 		else:
 			frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
@@ -499,6 +539,10 @@ class gopherpane:
 				deskt.hovertext="Next menu in history. (ALT+right)"
 			elif self.uprect.collidepoint(mpos):
 				deskt.hovertext="Go up a level. (ALT+up)"
+			elif self.scuprect.collidepoint(mpos):
+				deskt.hovertext="If not greyed out, you may scroll up."
+			elif self.scdnrect.collidepoint(mpos):
+				deskt.hovertext="If not greyed out, you may scroll down."
 			elif not self.hudrect.collidepoint(mpos):
 				for item in self.menu:
 					if item.gtype!=None:
@@ -510,6 +554,12 @@ class gopherpane:
 									else:
 										deskt.hovertext=("gopher://" + item.hostname + "/" + item.gtype + item.selector)
 									break
+							except AttributeError:
+								continue
+						if item.gtype=="h":
+							try:
+								if item.rect.collidepoint(mpos):
+									deskt.hovertext=item.selector
 							except AttributeError:
 								continue
 		#delete some of the larger things upon close
@@ -529,7 +579,9 @@ class gopherpane:
 			else:
 				self.menu=self.preload
 				self.menudraw(frameobj)
-				if self.host.startswith("about:"):
+				if self.host.startswith("about:help"):
+					frameobj.name=("help: "+str(self.host))
+				elif self.host.startswith("about:"):
 					frameobj.name=(self.shortprefix+str(self.host))
 				else:
 					frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
@@ -541,8 +593,9 @@ class gopherpane:
 				del item
 			del self.renderdict
 			self.renderdict={}
+			libzox.reshrinkimages(self.images, frameobj)
 			self.menudraw(frameobj)
-		#mouse button down
+		
 		if frameobj.statflg==6:
 			if data.key==pygame.K_UP:
 				self.yoff+=self.yjump*2
@@ -587,7 +640,7 @@ class gopherpane:
 						sideproc=Thread(target = self.menuroot, args = [frameobj])
 						sideproc.daemon=True
 						sideproc.start()
-
+		#mouse button down
 		if frameobj.statflg==4:
 			if self.hudrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 				#print("Blocked")
@@ -675,7 +728,7 @@ class gopherpane:
 								#itemcopy=copy.deepcopy(item)
 								#del itemcopy.image
 								#newgop=gopherpane(host=itemcopy.hostname, port=itemcopy.port, selector=itemcopy.selector, prefix="image: gopher://", preload=[itemcopy], forceimage=1, linkdisable=1, gtype=item.gtype, shortprefix="image: ")
-								newgop=imgview(host=item.hostname, port=item.port, selector=item.selector, gtype=item.gtype, imagesurf=item.image)
+								newgop=imgview(host=item.hostname, port=item.port, selector=item.selector, gtype=item.gtype, imagesurf=item.fullimage)
 								framesc.add_frame(stz.framex(500, 400, "Image", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
 						if item.gtype=="7":
 							if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
@@ -685,6 +738,18 @@ class gopherpane:
 							if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 								newgop=sndplay(item.hostname, item.port, item.selector)
 								framesc.add_frame(stz.framex(500, 100, "Sound", resizable=1, pumpcall=newgop.pumpcall1))
+						if item.gtype=="h":
+							if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
+								print(item.selector)
+								browscmd=libzox.cnfdict["browser"]
+								if browscmd not in ["", "none"]:
+									try:
+										Popen([browscmd, item.selector.replace("URL:", "")])
+									except OSError:
+										print("Can't open web browser!")
+								else:
+									print("Web browser not configured!")
+
 			elif data.button==3 and not self.linkdisable:
 				for item in self.menu:
 					if item.gtype=="1":
@@ -795,6 +860,10 @@ class bookmarks:
 		self.renderdict={}
 		self.urlblob=url
 		self.nameblob=""
+		self.scrollup=scrollup.convert()
+		self.scrolldn=scrolldn.convert()
+		self.scrollup_no=scrollup_no.convert()
+		self.scrolldn_no=scrolldn_no.convert()
 		if self.bookm!=None:
 			self.urlblob=self.bookm.url
 			self.nameblob=self.bookm.name
@@ -846,6 +915,19 @@ class bookmarks:
 		self.ypos=25
 		for item in xlist:
 			item.rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, itemicn=self.getitemtypeicn(item.url), link=1)
+			if libzox.itemdebug:
+				try:
+					pygame.draw.rect(frameobj.surface, (255, 0, 0), item.rect, 1)
+				except AttributeError:
+					pass
+		if self.offset>0:
+			self.scuprect=frameobj.surface.blit(self.scrollup, (frameobj.surface.get_width()-44, 0))
+		else:
+			self.scuprect=frameobj.surface.blit(self.scrollup_no, (frameobj.surface.get_width()-44, 0))
+		if self.ypos>frameobj.sizey:
+			self.scdnrect=frameobj.surface.blit(self.scrolldn, (frameobj.surface.get_width()-88, 0))
+		else:
+			self.scdnrect=frameobj.surface.blit(self.scrolldn_no, (frameobj.surface.get_width()-88, 0))
 	def getitemtypeicn(self, url):
 		gtype=libzox.gurldecode(url)[3]
 		selector=libzox.gurldecode(url)[2]
@@ -906,6 +988,10 @@ class bookmarks:
 				deskt.hovertext="Delete a bookmark."
 			if self.gorect.collidepoint(stz.mousehelper(mpos, frameobj)):
 				deskt.hovertext="Open a bookmark in a new window."
+			elif self.scuprect.collidepoint(stz.mousehelper(mpos, frameobj)):
+				deskt.hovertext="If not greyed out, you may scroll up."
+			elif self.scdnrect.collidepoint(stz.mousehelper(mpos, frameobj)):
+				deskt.hovertext="If not greyed out, you may scroll down."
 		if frameobj.statflg==1:
 			frameobj.name="Bookmarks"
 			self.renderdisp(frameobj)
@@ -916,10 +1002,11 @@ class bookmarks:
 					self.offset=0
 				self.renderdisp(frameobj)
 			if data.button==5:
-				self.offset+=1
-				if self.offset>len(bmlist)-1 and len(bmlist)>0:
-					self.offset=len(bmlist)-1
-				self.renderdisp(frameobj)
+				if self.ypos>frameobj.sizey:
+					self.offset+=1
+					if self.offset>len(bmlist)-1 and len(bmlist)>0:
+						self.offset=len(bmlist)-1
+					self.renderdisp(frameobj)
 			if data.button==1:
 				if self.newrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 					newgop=bookmadded()
@@ -1152,6 +1239,7 @@ class imgview:
 		self.pscf=None
 		self.pan=0
 		self.loaderupt=0
+		self.maxsize=int(libzox.cnfdict["viewzoom"])
 		self.dummysurf=pygame.image.load(os.path.join("vgop", "loadingimage.png"))
 		if self.imagesurf==None:
 			self.surf=self.dummysurf
@@ -1159,7 +1247,8 @@ class imgview:
 			sideproc.daemon=True
 			sideproc.start()
 		else:
-			self.surf=self.imagesurf
+			self.surf=libzox.imagelimit(self.imagesurf, self.maxsize)
+	
 	def imageload(self):
 		data=pathfigure(self.host, self.port, self.selector, gtype=self.gtype)
 		try:
@@ -1171,14 +1260,17 @@ class imgview:
 				imagefx=pygame.image.load(data)
 			imagefx.convert()
 			self.surf=imagefx
+			self.surf=libzox.imagelimit(self.surf, self.maxsize)
 		except pygame.error:
 			self.surf=pygame.image.load(os.path.join("vgop", "giaerror.png"))
 			print("imgview: Failed to load.")
+			
 		self.loaderupt=1
 		
 	def updatedisp(self, frameobj):
 		if self.pscf!=self.scf:
 			self.surftran=pygame.transform.scale(self.surf, ((int(self.imgx * self.scf)), (int(self.imgy * self.scf))))
+			self.surftran.convert_alpha()
 			self.pscf=self.scf
 		self.imgbox = self.surftran.get_rect()
 		self.imgbox.centerx = int(self.xoff)
@@ -1210,13 +1302,15 @@ class imgview:
 			self.imgy=self.surf.get_height()
 			scfx=(float(self.surfx) / self.imgx)
 			scfy=(self.surfy) / float(self.imgy)
-			self.xoff=self.surfx//2
-			self.yoff=self.surfy//2
+			self.xoff=self.surfx/2.0
+			self.yoff=self.surfy/2.0
 			if scfx>scfy:
 				scf=scfy
 			else:
 				scf=scfx
-			
+			#limit default zoom to maxsize
+			while scf*self.imgx>self.maxsize or scf*self.imgx>self.maxsize:
+				scf/=1.1
 			self.scfdef=scf
 			self.scf=scf
 			self.updatedisp(frameobj)
@@ -1226,14 +1320,22 @@ class imgview:
 				self.scf/=1.1
 				if self.scf<0.1:
 					self.scf=0.1
-				#print(self.scf)
-				
+				else:
+					gpos=stz.mousehelper(data.pos, frameobj)
+					self.yoff=((self.yoff-gpos[1])/1.1)+gpos[1]
+					self.xoff=((self.xoff-gpos[0])/1.1)+gpos[0]
 				
 			if data.button==4:
-				self.scf*=1.1
-				if self.scf>20.0:
-					self.scf=20.0
-				#print(self.scf)
+				#ensure new zoom level doesn't exceed maxsize setting.
+				if not (self.scf*1.1*self.imgx>self.maxsize or self.scf*1.1*self.imgx>self.maxsize):
+					self.scf*=1.1
+					if self.scf>20.0:
+						self.scf=20.0
+					
+					else:
+						gpos=stz.mousehelper(data.pos, frameobj)
+						self.yoff=((self.yoff-gpos[1])*1.1)+gpos[1]
+						self.xoff=((self.xoff-gpos[0])*1.1)+gpos[0]
 				
 			if data.button==1:
 				self.ppos=data.pos

@@ -2,6 +2,7 @@ Keys and Usage help
 
 Gopher menu Controls:
  - leftclick: open menu/text in same window (or any other link in new window)
+ - leftclick (on image): open image in image viewer.
  - rightclick: open menu/text in new window.
  - mouse wheel: scroll menu up/down
  - up/down arrow keys: scroll menu up/down
@@ -16,7 +17,7 @@ Gopher menu Controls:
 Image viewer:
  - leftclick+drag: pan image
  - rightclick: reset pan and zoom
- - mouse wheel: zoom image in and out.
+ - mouse wheel: zoom image in and out. (max zoom size set to viewzoom setting. default 2400)
    Note: image viewer will calculate optimal zoom automatically upon load and window resize.
  - m: bookmark image (will open dialog for label and confirmation)
 

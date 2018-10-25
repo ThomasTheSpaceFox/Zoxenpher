@@ -4,36 +4,51 @@
 #options. not all options must be specified.
 #examples shown here are using the default parameters.
 
-#number of images to show in-line in menus. 0=disable
+#cnf types:
+#[BOOL] yes/no, on/off, true/false, 1/0 are acceptable for these.
+#[int] must specify a decimal integer.
+#[string] specify a string with no enclosing marks. i.e. setting=string NOT setting="string"
+
+
+#number of images to show in-line in menus. [int] 0=disable
 imgpreview=10
 
-#max number of history items in menu windows
+#max number of history items in menu windows [int]
 histsize=10
 
-#desk width
+#desk width [int]
 deskw=800
 
-#desk height
+#desk height [int]
 deskh=600
 
+#Max zoom/image size for viewer [int] (larger images will be pre-shrunk down.)
+viewzoom=2400
 
-#font size for menus
+#webbrowser for 'h' types (web URLs) [string]
+browser=none
+#####examples
+#browser=firefox
+#browser=chrome
+
+
+#font size for menus [int]
 menufontsize=15
-#font jump for menus
+#font jump for menus [int]
 menujump=15
-#system font for menus. a monospace font is HIGHLY recommended.
+#system font for menus. a monospace font is HIGHLY recommended. [string]
 menufont=mono
-
+#height for gopher menu windows [int]
 menuheight=460
 
 #strazoloid frame style: (0=plain, 1=3D (without bevels), 2=3D (with bevels, default)
 #plain is a sparse theme, and is based on strazoloid's original frame look, hence the different placement of buttons.
 framestyle=2
 
-#strazoloid's fps setting. Lower values will not seem as smooth, but can help performance on older hardware.
+#strazoloid's fps setting. Lower values will not seem as smooth, but can help performance on older hardware. [int]
 wmfps=30
 
-#wallpaper (tiled automatically, should either be in 'usr' or 'vgop' directories)
+#wallpaper (tiled automatically, should either be in 'usr' or 'vgop' directories) [string]
 bgtile=none
 #included examples
 #bgtile=tilebg.png
@@ -41,3 +56,10 @@ bgtile=none
 #bgtile=mascotbg.png
 default wallpaper:
 #bgtile=diagbg.png
+
+
+###Debug Settings###
+
+#trace clickable menu/bookmark item rects [BOOL]
+itemdebug=False
+#setting to 'True' will cause clickable item rects in bookmarks/gopher menus to be traced in red.

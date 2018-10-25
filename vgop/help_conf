@@ -10,6 +10,18 @@ copy cnf.example as cnf.dat and open it in a code editor, or very basic text edi
 
 Now, refer to the sections below to find the setting you wish to change.
 
+--- SETTING WEB BROWSER ---
+pweb	/	about:webicn.png	70
+Web URL links. These can't be opened by zoxenpher directly. You see, Zoxenpher is a GOPHER Client, not a WEB browser.
+worry not! You can open these in your favorite browser like so:
+
+ -Default setting. AKA no browser configured.
+browser=none
+
+ -Set the 'browser' setting to the executable name of your favorite browser.
+browser=firefox
+browser=chrome
+
 
 --- Setting wallpaper ---
 1see: wallpaper help	/	about:help_wallpaper	70

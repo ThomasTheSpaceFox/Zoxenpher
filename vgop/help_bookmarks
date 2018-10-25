@@ -6,6 +6,14 @@ Bookmarks manager:
 To open the bookmarks manager, use CTRL+b or click the "book" icon.
 pbookmarks manager button	/	about:bookmarks.png	70
 
+Upwards scrolling indicator
+p-Can Scroll UP:	/	about:scrollu.png	70
+p-CAN NOT scroll UP:	/	about:scrollu_no.png	70
+
+Downwards scrolling indicator
+p-Can Scroll DOWN:	/	about:scrolld.png	70
+p-CAN NOT scroll DOWN:	/	about:scrolld_no.png	70
+
 Opening Bookmarks:
 pselected:	/	about:goact.png	70
 pnot selected:	/	about:goinact.png	70

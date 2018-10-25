@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #import time
 import os
+import sys
 import libgop
 import pygame
 from threading import Thread
@@ -80,6 +81,38 @@ def pathfigure(host, port, selector, gtype="0"):
 			if gtype=="I" or gtype=="g":
 				data=open(os.path.join("vgop", "gaierror.gif"))
 	return data
+
+#ratio-preserving image shrinker
+def imagelimit(surf, maxsize):
+
+	if surf.get_width()>maxsize or surf.get_height()>maxsize:
+		xsize=surf.get_width()
+		ysize=surf.get_height()
+		
+		yscale=float(maxsize)/ysize
+		xscale=float(maxsize)/xsize
+		if xscale<yscale:
+			scale=xscale
+		else:
+			scale=yscale
+			
+		return pygame.transform.scale(surf, (int(xsize*scale), int(ysize*scale)))
+	return surf
+	
+
+
+def imagelimit_gwindow(surf, maxsize, heightmax):
+
+	if surf.get_width()>maxsize or surf.get_height()>maxsize:
+		xsize=surf.get_width()
+		ysize=surf.get_height()
+		
+		scale=float(maxsize)/xsize
+			
+		return imagelimit(pygame.transform.scale(surf, (int(xsize*scale), int(ysize*scale))), heightmax)
+	return imagelimit(surf, heightmax)
+
+
 
 
 #displays text and links with automatic word wrap.
@@ -185,7 +218,8 @@ def imgget(items, uptref, frameobj, gopherwindow):
 			if mitem.gtype=="I":
 				imagefx=pygame.image.load(data)
 			imagefx.convert()
-			mitem.image=imagefx
+			mitem.fullimage=imagefx
+			mitem.image=imagelimit_gwindow(imagefx, frameobj.surface.get_width()-30, 1800)
 		except pygame.error:
 			gopherwindow.loading=0
 			return
@@ -193,6 +227,12 @@ def imgget(items, uptref, frameobj, gopherwindow):
 	if uptref!=None:
 		uptref(frameobj)
 	
+
+def reshrinkimages(items, frameobj):
+	for mitem in items:
+		if mitem.image!=None:
+			mitem.image=imagelimit_gwindow(mitem.fullimage, frameobj.surface.get_width()-30, 1800)
+
 
 def gurlencode(host, selector, gtype, port=70):
 	if int(port)==70:
@@ -274,6 +314,9 @@ def bmsave(bmlist):
 #bmlist.extend([bmitem("about:splash", "Splash page")])
 #bmsave(bmlist)
 
+#syntax check lists
+cnfbools=["itemdebug"]
+cnfints=["imgpreview", "histsize", "deskw", "deskh", "menufontsize", "menutextjump", "menuheight", "framestyle", "wmfps", "viewzoom"]
 
 cnfdef={"imgpreview" : "10",
 "histsize" : "10",
@@ -285,14 +328,26 @@ cnfdef={"imgpreview" : "10",
 "menuheight" : "460",
 "bgtile" : "diagbg.png",
 "framestyle" : "2",
-"wmfps" : "30"}
+"wmfps" : "30",
+"itemdebug" : "0",
+"viewzoom" : "2400",
+"browser" : "none"}
+
+itemdebug=0
 
 
-
-
-
-
+def cnfbool(cvalue):
+	if cvalue.lower() in ["1", "true", "on", "yes"]:
+		return 1
+	else:
+		return 0
+def cnfint(cvalue):
+	try:
+		return int(cvalue)
+	except ValueError:
+		return None
 def cnfload():
+	global itemdebug
 	cnfdict=cnfdef.copy()
 	try:
 		cnffile=open(os.path.join("usr", "cnf.dat"))
@@ -301,9 +356,21 @@ def cnfload():
 				line=line.replace("\n", "").replace("\r", "")
 				item, data = line.split("=")
 				if item in cnfdict:
-					cnfdict[item]=data
+					
+					if item in cnfbools:
+						cnfdict[item]=cnfbool(data)
+					elif item in cnfints:
+						retval=cnfint(data)
+						if retval==None:
+							sys.exit("ERROR: invalid syntax in configuration file. config setting: '" + item + "' requires an integer.")
+						cnfdict[item]=retval
+					else:
+						cnfdict[item]=data
+						
 	except IOError:
 		return cnfdict
+	#set debug option vars.
+	itemdebug=int(cnfdict["itemdebug"])
 	return cnfdict
 print("Libzox: loading configuration data.")
 cnfdict=cnfload()

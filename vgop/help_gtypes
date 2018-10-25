@@ -34,6 +34,11 @@ perror	/	about:erroricn.png	70
 type 3: Oops... This special type is not one your supposed to see. That is, it only appears when the gopher server has an error, as it is an error code. The accompanying text might help discern what happened.
 
 
+pweb	/	about:webicn.png	70
+type h: Link to web URL. If you have configured a web browser for zoxenpher to launch, you can open these web links in said browser by clicking on them.
+1Configuration help (see here on how to configure browser and other settings)	/	about:help_conf	70
+
+
 1Return to help menu	/	about:help	70
 
 Not yet supported:
@@ -42,8 +47,7 @@ These gopher types have support of some sort planned, but this support isn't yet
 In addition, unknown gopher types will be prefixed with "[NS:x]" where x is the gopher type.
 
 
-pweb	/	about:webicn.png	70
-type h: basic support for opening a web browser specified in configuration, is planned.
+
 
 pbinary	/	about:binicn.png	70
 type 9: downloading support will be added when a suitable solution is found. such as a configuration option to use a dedicated downloader.

@@ -2,7 +2,7 @@
 #import time
 import os
 import sys
-import libgop
+from . import libgop
 import pygame
 from threading import Thread
 from . import strazoloidwm as stz

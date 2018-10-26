@@ -7,6 +7,17 @@ zoxenpher has tiled wallpaper support. You can choose a wallpaper using a cnf.da
  -Set to 'none' for no wallpaper.
 bgtile=none
 
+
+Wallpaper Display modes:
+
+ - centered mode
+bgmode=0
+ - tiled mode (default)
+bgmode=1
+ - centered mode
+bgmode=2
+
+
 using your own wallpaper:
 place the wallpaper image in the 'usr' directory (where cnf.example and cnf.dat are)
 then set bgtile to the filename of the image. i.e. bgtile=example.jpg

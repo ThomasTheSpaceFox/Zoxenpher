@@ -16,6 +16,8 @@ from . import libzoxui
 
 simplefont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
 linkfont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
+morefonthead = pygame.font.SysFont(None, 22)
+morefontcomment = pygame.font.SysFont(None, 19)
 linkfont.set_underline(1)
 tilestr=libzox.cnfdict["bgtile"]
 if tilestr=="none":
@@ -1439,4 +1441,97 @@ class sndplay:
 				
 				
 
+class xmitm:
+	def __init__(self, icon, label, mtype, data1=None, data2=None, data3=None, comment="", width=350, height=100):
+		if isinstance(icon, pygame.Surface):
+			self.icon=icon
+		else:
+			self.icon=pygame.image.load(os.path.join("vgop", icon))
+		self.label=label
+		self.mtype=mtype
+		self.data1=data1
+		self.data2=data2
+		self.data3=data3
+		self.comment=comment
+		self.width=width
+		self.height=height
+	def action(self):
+		if self.mtype==1:
+			newgop=self.data1()
+			framesc.add_frame(stz.framex(self.width, self.height, self.label, resizable=1, pumpcall=newgop.pumpcall1))
+	def render(self, frameobj, ypos):
+		ystart=ypos
+		iconrect=frameobj.surface.blit(self.icon, (5, ypos+1))
+		textrect1, ypos, bar = textitem(self.label, morefonthead, 24, (0, 0, 0), frameobj.surface, ypos, {}, xoff=77)
+		textrect2, ypos, bar = textitem(self.comment, morefontcomment, 20, (50, 50, 50), frameobj.surface, ypos, {}, xoff=77)
+		
+		iconrect.w=frameobj.sizex-9
+		iconrect.x-=1
+		iconrect.y=ystart
+		iconrect.h=72
+		
+		pygame.draw.rect(frameobj.surface, (0, 0, 0), iconrect, 1)
+		
+		ypos=72+ystart
+		ypos+=10
+		return (ypos, iconrect)
+		
+
+defaultlist=[xmitm("more_dummy.png", "TEST ITEM 01", 1, data1=gopherpane, comment="Hello", width=gopherwidth, height=gopherheight),
+xmitm("more_dummy.png", "TEST ITEM 02", 1, data1=gopherpane, comment="Hello", width=gopherwidth, height=gopherheight),
+xmitm("more_dummy.png", "TEST ITEM 03", 1, data1=gopherpane, comment="Hello", width=gopherwidth, height=gopherheight),]
+
+class morethings:
+	def __init__(self, appselect=defaultlist):
+		self.yoff=25
+		self.yjump=int(libzox.cnfdict["menutextjump"])
+		self.data=0
+		self.appselect=appselect
+		self.scrollup=scrollup.convert()
+		self.scrolldn=scrolldn.convert()
+		self.scrollup_no=scrollup_no.convert()
+		self.scrolldn_no=scrolldn_no.convert()
+	def renderdisp(self, frameobj):
+		frameobj.surface.fill((255, 255, 255))
+		self.ypos=self.yoff
+		self.rectlist=[]
+		for item in self.appselect:
+			self.ypos, retrect = item.render(frameobj, self.ypos)
+			self.rectlist.extend([[retrect, item]])
+			
+		self.hudrect=pygame.Rect(0, 0, frameobj.surface.get_width(), 22)
+		pygame.draw.rect(frameobj.surface, (60, 60, 120), self.hudrect)
+		if self.yoff<25:
+			self.scuprect=frameobj.surface.blit(self.scrollup, (frameobj.surface.get_width()-44, 0))
+		else:
+			self.scuprect=frameobj.surface.blit(self.scrollup_no, (frameobj.surface.get_width()-44, 0))
+		if self.ypos>frameobj.sizey:
+			self.scdnrect=frameobj.surface.blit(self.scrolldn, (frameobj.surface.get_width()-88, 0))
+		else:
+			self.scdnrect=frameobj.surface.blit(self.scrolldn_no, (frameobj.surface.get_width()-88, 0))
+		
+		
+	def pumpcall1(self, frameobj, data=None):
+		if frameobj.statflg==2:
+			self.renderdisp(frameobj)
+		if frameobj.statflg==1:
+			frameobj.name="More Things..."
+			self.renderdisp(frameobj)
+		if frameobj.statflg==4:
+			mpos=stz.mousehelper(data.pos, frameobj)
+			if not self.hudrect.collidepoint(mpos):
+				if data.button==1:
+					for item in self.rectlist:
+						if item[0].collidepoint(mpos):
+							item[1].action()
+				elif data.button==4:
+					self.yoff+=self.yjump*2
+					if self.yoff>25:
+						self.yoff=25
+					self.renderdisp(frameobj)
+				elif data.button==5 and self.ypos>frameobj.sizey:
+					self.yoff-=self.yjump*2
+					self.renderdisp(frameobj)
+							
+				
 

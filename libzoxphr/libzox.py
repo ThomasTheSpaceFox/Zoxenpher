@@ -316,7 +316,7 @@ def bmsave(bmlist):
 
 #syntax check lists
 cnfbools=["itemdebug"]
-cnfints=["imgpreview", "histsize", "deskw", "deskh", "menufontsize", "menutextjump", "menuheight", "framestyle", "wmfps", "viewzoom"]
+cnfints=["imgpreview", "bgmode", "histsize", "deskw", "deskh", "menufontsize", "menutextjump", "menuheight", "framestyle", "wmfps", "viewzoom"]
 
 cnfdef={"imgpreview" : "10",
 "histsize" : "10",
@@ -331,7 +331,8 @@ cnfdef={"imgpreview" : "10",
 "wmfps" : "30",
 "itemdebug" : "0",
 "viewzoom" : "2400",
-"browser" : "none"}
+"browser" : "none",
+"bgmode" : "1"}
 
 itemdebug=0
 
@@ -377,17 +378,29 @@ cnfdict=cnfload()
 
 #draw tiles (tilesurf) on a copy of a surface (drawsurf)
 def tiledraw(drawsurf, tilesurf):
+	bgmode=int(cnfdict["bgmode"])
 	drawsurf=drawsurf.copy()
-	destwidth=drawsurf.get_width()
-	destheight=drawsurf.get_height()
-	sourcewidth=tilesurf.get_width()
-	sourceheight=tilesurf.get_height()
-	ywid=0
-	while ywid<=destheight:
-		xwid=0
-		while xwid<=destwidth:
-			drawsurf.blit(tilesurf, (xwid, ywid))
-			xwid+=sourcewidth
-		ywid+=sourceheight
-	return drawsurf
+	if bgmode==1:
+		destwidth=drawsurf.get_width()
+		destheight=drawsurf.get_height()
+		sourcewidth=tilesurf.get_width()
+		sourceheight=tilesurf.get_height()
+		ywid=0
+		while ywid<=destheight:
+			xwid=0
+			while xwid<=destwidth:
+				drawsurf.blit(tilesurf, (xwid, ywid))
+				xwid+=sourcewidth
+			ywid+=sourceheight
+		return drawsurf
+	if bgmode==0:
+		xpos=drawsurf.get_width()//2-tilesurf.get_width()//2
+		ypos=drawsurf.get_height()//2-tilesurf.get_height()//2
+		drawsurf.blit(tilesurf, (xpos, ypos))
+		return drawsurf
+	else:
+		destwidth=drawsurf.get_width()
+		destheight=drawsurf.get_height()
+		pygame.transform.scale(tilesurf, (destwidth, destheight), drawsurf)
+		return drawsurf
 

@@ -50,6 +50,10 @@ wmfps=30
 
 #wallpaper (tiled automatically, should either be in 'usr' or 'vgop' directories) [string]
 bgtile=none
+
+#wallpaper mode (0 for 'centered', 1 for 'tiled', 2 for 'stretched')
+bgmode=1
+
 #included examples
 #bgtile=tilebg.png
 #bgtile=tilebg2.png

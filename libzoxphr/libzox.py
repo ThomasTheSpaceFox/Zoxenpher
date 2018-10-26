@@ -2,7 +2,7 @@
 #import time
 import os
 import sys
-import libgop
+from . import libgop
 import pygame
 from threading import Thread
 import socket
@@ -116,7 +116,7 @@ def imagelimit_gwindow(surf, maxsize, heightmax):
 
 
 #displays text and links with automatic word wrap.
-def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=None, link=0, xoff=26):
+def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=None, link=0, xoff=26, textcoly=(255, 255, 255)):
 	xpos=0
 	rectlist=[]
 	words=text.split(" ")
@@ -139,9 +139,9 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 						namelabel=renderdict[dictkey]
 					else:
 						if link:
-							namelabel=xfont.render(buffstring.strip(), True, textcolx, (255, 255, 255))
+							namelabel=xfont.render(buffstring.strip(), True, textcolx, textcoly)
 						else:
-							namelabel=xfont.render(buffstring, True, textcolx, (255, 255, 255))
+							namelabel=xfont.render(buffstring, True, textcolx, textcoly)
 						renderdict[dictkey]=namelabel
 					rectlist.extend([surface.blit(namelabel, (xpos, ypos))])
 					
@@ -155,9 +155,9 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 						namelabel=renderdict[dictkey]
 					else:
 						if link:
-							namelabel=xfont.render(buffstring.strip(), True, textcolx, (255, 255, 255))
+							namelabel=xfont.render(buffstring.strip(), True, textcolx, textcoly)
 						else:
-							namelabel=xfont.render(buffstring, True, textcolx, (255, 255, 255))
+							namelabel=xfont.render(buffstring, True, textcolx, textcoly)
 						renderdict[dictkey]=namelabel
 					rectlist.extend([surface.blit(namelabel, (xpos, ypos))])
 				

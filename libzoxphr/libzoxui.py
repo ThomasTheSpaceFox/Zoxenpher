@@ -94,7 +94,10 @@ class clock:
 	def renderdisp(self, frameobj):
 		frameobj.surface.fill((223, 223, 223))
 		self.ypos=0
-		timetx=self.fonttime.render(self.timest, True, (0, 0, 0), (223, 223, 223))
+		if self.timest.startswith("0"):
+			timetx=self.fonttime.render(self.timest[1:], True, (0, 0, 0), (223, 223, 223))
+		else:
+			timetx=self.fonttime.render(self.timest, True, (0, 0, 0), (223, 223, 223))
 		datetx=self.font.render(self.datest, True, (0, 0, 0), (223, 223, 223))
 		timexpos=frameobj.surface.get_width()//2 - timetx.get_width()//2
 		datexpos=frameobj.surface.get_width()//2 - datetx.get_width()//2
@@ -135,10 +138,23 @@ class sinfo:
 	def renderdisp(self, frameobj):
 		frameobj.surface.fill((223, 223, 223))
 		self.ypos=0
-		for item in ["Open Windows : " + str(len(framesc.proclist)), "gopher-gets: " + str(len(libgop.socketlist))]:
-			itemtx=self.font.render(item, True, (0, 0, 0), (223, 223, 223))
-			itemxpos=frameobj.surface.get_width()//2 - itemtx.get_width()//2
-			frameobj.surface.blit(itemtx, (itemxpos, self.ypos))
+		sv=sys.version_info
+		items=["Open Windows : " + str(len(framesc.proclist)),
+		"gopher-gets: " + str(len(libgop.socketlist)),
+		"------:------",
+		"python ver: v" + str(sv[0]) + "." + str(sv[1]) + "." + str(sv[2]) + "." + str(sv[3]) + "." + str(sv[4]),
+		"pygame ver: v" + pygame.version.ver,
+		"OS Family: " + os.name,
+		"OS: " + sys.platform]
+		for item in items:
+			itema, itemb = item.split(":", 1)
+			
+			itemtxA=self.font.render(itema+":", True, (0, 0, 0), (223, 223, 223))
+			itemtxB=self.font.render(itemb, True, (0, 0, 0), (223, 223, 223))
+			itemxposB=frameobj.surface.get_width()- itemtxB.get_width()
+			frameobj.surface.blit(itemtxA, (0, self.ypos))
+			frameobj.surface.blit(itemtxB, (itemxposB, self.ypos))
+			
 			self.ypos+=22
 	def pumpcall1(self, frameobj, data=None):
 		if frameobj.statflg==1:

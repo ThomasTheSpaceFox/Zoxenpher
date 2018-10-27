@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#import time
+import time
 import os
 import sys
 from . import libgop
@@ -79,3 +79,72 @@ class yndialog:
 			elif data.key==pygame.K_n:
 				self.callback(0, self.carrydata)
 				framesc.close_frame(frameobj)
+
+
+class clock:
+	def __init__(self):
+		self.ypos=0
+		self.hourding=pygame.mixer.Sound(os.path.join("vgop", "clockhour.ogg"))
+		self.minding=pygame.mixer.Sound(os.path.join("vgop", "clockmin.ogg"))
+		self.tform="%I:%M %p"
+		self.dform="%A, %B %H, %Y"
+		self.fonttime=pygame.font.SysFont(None, 30)
+		self.font=pygame.font.SysFont(None, 22)
+		
+	def renderdisp(self, frameobj):
+		frameobj.surface.fill((223, 223, 223))
+		self.ypos=0
+		timetx=self.fonttime.render(self.timest, True, (0, 0, 0), (223, 223, 223))
+		datetx=self.font.render(self.datest, True, (0, 0, 0), (223, 223, 223))
+		timexpos=frameobj.surface.get_width()//2 - timetx.get_width()//2
+		datexpos=frameobj.surface.get_width()//2 - datetx.get_width()//2
+		frameobj.surface.blit(timetx, (timexpos, 2))
+		frameobj.surface.blit(datetx, (datexpos, 34))
+	def pumpcall1(self, frameobj, data=None):
+		if frameobj.statflg==1:
+			frameobj.name="Clock"
+			self.time=time.localtime()
+			self.hour=self.time.tm_hour
+			self.minu=self.time.tm_min
+			self.timest=time.strftime(self.tform, self.time)
+			self.datest=time.strftime(self.dform, self.time)
+			self.renderdisp(frameobj)
+		if frameobj.statflg==0:
+			self.time=time.localtime()
+			if self.time.tm_hour!=self.hour and self.time.tm_min==0:
+				self.hourding.play()
+			if self.time.tm_min!=self.minu:
+				self.minding.play()
+			if self.time.tm_min!=self.minu:
+				self.hour=self.time.tm_hour
+				self.minu=self.time.tm_min
+				self.timest=time.strftime(self.tform, self.time)
+				self.datest=time.strftime(self.dform, self.time)
+				self.renderdisp(frameobj)
+
+
+
+
+class sinfo:
+	def __init__(self):
+		self.ypos=0
+		self.hourding=pygame.mixer.Sound(os.path.join("vgop", "clockhour.ogg"))
+		self.minding=pygame.mixer.Sound(os.path.join("vgop", "clockmin.ogg"))
+		self.font=pygame.font.SysFont(None, 22)
+		
+	def renderdisp(self, frameobj):
+		frameobj.surface.fill((223, 223, 223))
+		self.ypos=0
+		for item in ["Open Windows : " + str(len(framesc.proclist)), "gopher-gets: " + str(len(libgop.socketlist))]:
+			itemtx=self.font.render(item, True, (0, 0, 0), (223, 223, 223))
+			itemxpos=frameobj.surface.get_width()//2 - itemtx.get_width()//2
+			frameobj.surface.blit(itemtx, (itemxpos, self.ypos))
+			self.ypos+=22
+	def pumpcall1(self, frameobj, data=None):
+		if frameobj.statflg==1:
+			frameobj.name="System Info"
+			self.renderdisp(frameobj)
+			self.ticker=libzox.tickdo(5)
+		if frameobj.statflg==0:
+			if self.ticker.tick():
+				self.renderdisp(frameobj)

@@ -32,7 +32,7 @@ progobj(lza.urlgo, pygame.image.load(os.path.join("vgop", "go.png")), "urlgo", "
 progobj(lza.bookmarks, pygame.image.load(os.path.join("vgop", "bookmarks.png")), "bookmarks", "Bookmarks", "bookmarks", gopherwidth, gopherheight, 1, key=pygame.K_b, mod=pygame.KMOD_CTRL, hint="Open bookmarks. (CTRL+b)"),
 progobj(lza.quitx, pygame.image.load(os.path.join("vgop", "exit.png")), "quit", "quit", "quit", gopherwidth, gopherheight, 1, key=pygame.K_q, mod=pygame.KMOD_CTRL, hint="quit. (CTRL+q)", side=1),
 pathprogobj(lza.gopherpane, pygame.image.load(os.path.join("vgop", "help.png")), "goppane_HELP", "Gopher Menu", "GOPHER_HELP", gopherwidth, gopherheight, 1, host="about:help", key=pygame.K_F1, hint="Bring up a help menu. (F1)"),
-progobj(lza.morethings, pygame.image.load(os.path.join("vgop", "more.png")), "more", "More", "MORE", 250, 400, 1, key=pygame.K_F2, hint="More things. (F2)")]
+progobj(lza.morethings, pygame.image.load(os.path.join("vgop", "more.png")), "more", "More", "MORE", 300, 400, 1, key=pygame.K_F2, hint="More things. (F2)")]
 
 deskt=lza.deskclass(progs)
 pygame.font.init()

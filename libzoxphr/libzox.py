@@ -404,3 +404,16 @@ def tiledraw(drawsurf, tilesurf):
 		pygame.transform.scale(tilesurf, (destwidth, destheight), drawsurf)
 		return drawsurf
 
+### timer for pumpcalls
+class tickdo:
+	def __init__(self, ticks):
+		self.tickend=ticks
+		self.ticks=0
+	def tick(self):
+		self.ticks+=1
+		if self.tickend==self.ticks:
+			self.ticks=0
+			return 1
+		else:
+			return 0
+

@@ -10,6 +10,10 @@ pbook	/	about:bookmarks.png	70
 This will bring up the bookmarks menu. 
 1See Bookmarks help for more information.	/	about:help_bookmarks	70
 
+pmore	/	about:more.png	70
+This will bring Up a selection of assorted widgets and things.
+1See widgets & 'more things'  help for more information.	/	about:help_widgets	70
+
 pquit	/	about:exit.png	70
 Exit zoxenpher.
 

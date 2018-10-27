@@ -1442,7 +1442,7 @@ class sndplay:
 				
 
 class xmitm:
-	def __init__(self, icon, label, mtype, data1=None, data2=None, data3=None, comment="", width=350, height=100):
+	def __init__(self, icon, label, mtype, data1=None, data2=None, data3=None, comment="", width=350, height=100, resize=1):
 		if isinstance(icon, pygame.Surface):
 			self.icon=icon
 		else:
@@ -1455,10 +1455,11 @@ class xmitm:
 		self.comment=comment
 		self.width=width
 		self.height=height
+		self.resize=resize
 	def action(self):
 		if self.mtype==1:
 			newgop=self.data1()
-			framesc.add_frame(stz.framex(self.width, self.height, self.label, resizable=1, pumpcall=newgop.pumpcall1))
+			framesc.add_frame(stz.framex(self.width, self.height, self.label, resizable=self.resize, pumpcall=newgop.pumpcall1))
 	def render(self, frameobj, ypos):
 		ystart=ypos
 		iconrect=frameobj.surface.blit(self.icon, (5, ypos+1))
@@ -1468,17 +1469,23 @@ class xmitm:
 		iconrect.w=frameobj.sizex-9
 		iconrect.x-=1
 		iconrect.y=ystart
-		iconrect.h=72
+		if ypos-ystart<72:
+			iconrect.h=72
+		else:
+			iconrect.h=ypos-ystart
 		
 		pygame.draw.rect(frameobj.surface, (0, 0, 0), iconrect, 1)
 		
-		ypos=72+ystart
+		if ypos<72+ystart:
+			ypos=72+ystart
 		ypos+=10
 		return (ypos, iconrect)
 		
 
-defaultlist=[xmitm("more_dummy.png", "TEST ITEM 01", 1, data1=gopherpane, comment="Hello", width=gopherwidth, height=gopherheight),
-xmitm("more_dummy.png", "TEST ITEM 02", 1, data1=gopherpane, comment="Hello", width=gopherwidth, height=gopherheight),
+defaultlist=[xmitm("more_clock.png", "Clock", 1, data1=libzoxui.clock, comment="An on-screen clock with date and sound.", width=220, height=60, resize=0),
+xmitm("more_sinfo.png", "System Info", 1, data1=libzoxui.sinfo, comment="Shows various stats on zoxenpher's runtime.", width=150, height=60, resize=0)]
+
+testmenu=[xmitm("more_dummy.png", "TEST ITEM 02", 1, data1=gopherpane, comment="Hello", width=gopherwidth, height=gopherheight),
 xmitm("more_dummy.png", "TEST ITEM 03", 1, data1=gopherpane, comment="Hello", width=gopherwidth, height=gopherheight),]
 
 class morethings:

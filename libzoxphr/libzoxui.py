@@ -9,6 +9,7 @@ from . import strazoloidwm as stz
 from . import libzox
 from .libzox import progobj
 from .libzox import textitem
+import random
 
 simplefont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
 
@@ -163,4 +164,40 @@ class sinfo:
 			self.ticker=libzox.tickdo(5)
 		if frameobj.statflg==0:
 			if self.ticker.tick():
+				self.renderdisp(frameobj)
+
+class tipofday:
+	def __init__(self):
+		self.font=pygame.font.SysFont(None, 22)
+		self.tips=[]
+		self.tipload()
+	def tipload(self):
+		pathis=["libzoxphr", "dat", "tipofday.dat"]
+		t=open(os.path.join(*pathis), "r")
+		for line in t:
+			self.tips.extend([line.replace("\n", "")])
+		self.tipmax=len(self.tips)-1
+	def renderdisp(self, frameobj):
+		frameobj.name="Tip Of The Day #" + str(self.tindex+1)
+		frameobj.surface.fill((223, 223, 255))
+		textitem(self.tips[self.tindex], self.font, 22, (0, 0, 0), frameobj.surface, 0, {}, xoff=0, textcoly=(223, 223, 255))
+
+	def pumpcall1(self, frameobj, data=None):
+		if frameobj.statflg==0 and frameobj.wo==0:
+			mpos=pygame.mouse.get_pos()
+			if frameobj.SurfRect.collidepoint(mpos):
+				deskt.hovertext="Leftclick for next tip. Rightclick for previous tip."
+		if frameobj.statflg==1:
+			self.tindex=random.randint(0, self.tipmax)
+			self.renderdisp(frameobj)
+		if frameobj.statflg==4:
+			if data.button==1:
+				self.tindex+=1
+				if self.tindex>self.tipmax:
+					self.tindex=0
+				self.renderdisp(frameobj)
+			if data.button==3:
+				self.tindex-=1
+				if self.tindex<0:
+					self.tindex=self.tipmax
 				self.renderdisp(frameobj)

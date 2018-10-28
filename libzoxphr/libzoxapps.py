@@ -1483,6 +1483,7 @@ class xmitm:
 		
 
 defaultlist=[xmitm("more_clock.png", "Clock", 1, data1=libzoxui.clock, comment="An on-screen clock with date and sound.", width=220, height=60, resize=0),
+xmitm("more_tipofday.png", "Tip Of The Day", 1, data1=libzoxui.tipofday, comment="Get a random tip from a set of Zoxenpher-related tips.", width=350, height=120, resize=0),
 xmitm("more_sinfo.png", "System Info", 1, data1=libzoxui.sinfo, comment="Info on Zoxenpher's runtime, and host OS.", width=200, height=240, resize=0)]
 
 testmenu=[xmitm("more_dummy.png", "TEST ITEM 02", 1, data1=gopherpane, comment="Hello", width=gopherwidth, height=gopherheight),

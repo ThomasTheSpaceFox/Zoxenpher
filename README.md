@@ -4,7 +4,7 @@ v2.1.1
          
 powered by:      
  - libgop gopher library v0.1      
- - strazoloid virtual window manager framework v1.1.1             
+ - strazoloid virtual window manager framework v1.2.1             
           
 Copyright (c) 2018 Thomas Leathers and contributors       
 

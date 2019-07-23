@@ -14,12 +14,13 @@ import libzoxphr.libzox as libzox
 from libzoxphr.libzox import progobj
 from libzoxphr.libzox import pathprogobj
 
-print("Zoxenpher v2.1.1")
+print("Zoxenpher v2.2.0")
 
 
 #set some option variables inside strazoloidwm based upon cnf.dat settings.
 stz.framestyle=int(libzox.cnfdict["framestyle"])
 stz.wmfps=int(libzox.cnfdict["wmfps"])
+stz.hudsize=25
 #calculate gopher menu window width and height. (needed by desktop class)
 simplefont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
 gopherwidth=((simplefont.size("_")[0])*81)+25

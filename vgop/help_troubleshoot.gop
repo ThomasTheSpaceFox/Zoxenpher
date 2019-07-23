@@ -1,0 +1,56 @@
+iTroubleshooting	null	null	70
+iIn this document, q=question and a=awnser	null	null	70
+i	null	null	70
+p	/	about:help_part1.png	70
+iGeneral	null	null	70
+p	/	about:hbar2.png	70
+i	null	null	70
+iq: I'm seeing alot of lines with "[NS]" or "[NS:x]" (where x is some random symbol), at the beginning. what do they mean?	null	null	70
+ia: This is Zoxenpher's way of showing a gopher item type its unable to use, or in the latter case, doesn't even recognize.	null	null	70
+i	null	null	70
+iq: I see a red-ish line of text that begins with "[LINE ERROR]:". what went wrong?	null	null	70
+ia: Most likely faulty formatting in a gophermap document. If this line even was a selector, it certainly didn't look like it to the parser.	null	null	70
+i	null	null	70
+iq: i see:	null	null	70
+pErrorImage	/	about:gaierror.png	70
+ia: This means Zoxenpher wasn't able to load that content.  This can be for a variety of reasons, ranging from dead links to server bugs to bugs in Zoxenpher itself.	null	null	70
+i	null	null	70
+iq: i see some sort of error page/error window with a 'zoxenpher error code':	null	null	70
+ia: You can look up the error code here:	null	null	70
+1Error Codes	/	about:help_errorcodes	70
+i	null	null	70
+iq: A connection seems to have hanged.	null	null	70
+ia: wait 20 seconds. this is the default timeout pereod for the connection. OR, close down zoxenpher. Zoxenpher is written in such a way that a hanged connection SHOULD NOT stop it from exiting.	null	null	70
+i	null	null	70
+iq: A menu or text document is scrolling slowly	null	null	70
+ia: Unfortunately, Zoxenpher does not handle massive text documents and menus that well. So, you will run into the odd situation where zoxenpher runs rather poorly when displaying alot of text at once.	null	null	70
+i	null	null	70
+i	null	null	70
+p	/	about:help_part2.png	70
+i--- Sound type playback ---	null	null	70
+p	/	about:hbar2.png	70
+i	null	null	70
+i	null	null	70
+iq: sound playback stops when i close a sound player window, even when its not the one playing.	null	null	70
+ia: this is a known bug, which is due to the sound player using pygame's music playback. This should be fixed in the future.	null	null	70
+i	null	null	70
+iq: it takes a bit before sound starts playing in the sound player sometimes.	null	null	70
+ia: the sound player currently doesn't play the data as its being downloaded. This should be fixed in the future.	null	null	70
+i	null	null	70
+iq: mp3s don't play.	null	null	70
+ia: mp3 support is notoriously patchy and unpredictable when it comes to pygame, sadly.	null	null	70
+i	null	null	70
+p	/	about:help_part3.png	70
+i--- Configuration file ---	null	null	70
+p	/	about:hbar2.png	70
+i	null	null	70
+1See: Configuration help for how to set up a cnf.dat file.	/	about:help_conf	70
+i	null	null	70
+iq: the text is too small/too big in menus.	null	null	70
+ia: you can change the font size and vertical spacing via the cnf.dat file.	null	null	70
+i	null	null	70
+iq: the menus are not using a monospace font!	null	null	70
+ia: this means you will need to manually set a system font to be used via the cnf.dat file.	null	null	70
+i	null	null	70
+1Return to help menu	/	about:help	70
+.

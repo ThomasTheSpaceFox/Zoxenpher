@@ -127,8 +127,11 @@ def getpop(framerect):
 
 
 class framex:
-	def __init__(self, sizex, sizey, name, xpos=10, ypos=30, resizable=0, sizeminx=140, sizeminy=140, pumpcall=None):
-		
+	def __init__(self, sizex, sizey, name, xpos=10, ypos=30, resizable=0, sizeminx=140, sizeminy=140, pumpcall=None, icon=None):
+		self.icon=None
+		self.iconsrc=None
+		if icon!=None:
+			self.seticon(icon)
 		self.shade=0
 		#---Required---
 		self.resizable=resizable
@@ -157,6 +160,11 @@ class framex:
 		self.statflg=0
 		self.tr_lock_reset=None
 		#--------------
+		#"icon" is required by framex instances, set to "None" if you wish not to have a "window icon" for said frame.
+		
+	def seticon(self, icon):
+		self.iconsrc=icon.copy()
+		self.icon=pygame.transform.scale(icon, (hudsize, hudsize))
 	def pump(self):
 		if self.pumpcall!=None:
 			self.pumpcall(self)
@@ -358,6 +366,7 @@ class desktop:
 		self.statflg=0
 		
 		self.resizable
+		
 	def pump(self):
 		if self.pumpcall!=None:
 			self.pumpcall(self)
@@ -515,11 +524,20 @@ def framedraw(frame, dispsurf, fg, bg, textcolor, font, abg, atxt, afg, abev, ib
 		else:
 			namex=titlecache[frame.name]
 	namexrect=namex.get_rect()
-	if namexrect.w>framerect.w-8-hudsize-hudsize:
-		namexrect.w=framerect.w-8-hudsize-hudsize
+	if frame.icon!=None:
+		if namexrect.w>framerect.w-8-hudsize-hudsize-hudsize:
+			namexrect.w=framerect.w-8-hudsize-hudsize-hudsize
+		else:
+			namexrect=None
+		dispsurf.blit(namex, (framerect.x+2+hudsize, framerect.y+2), area=namexrect)
+		dispsurf.blit(frame.icon, (framerect.x+2, framerect.y+2))
 	else:
-		namexrect=None
-	dispsurf.blit(namex, (framerect.x+2, framerect.y+2), area=namexrect)
+		
+		if namexrect.w>framerect.w-8-hudsize-hudsize:
+			namexrect.w=framerect.w-8-hudsize-hudsize
+		else:
+			namexrect=None
+		dispsurf.blit(namex, (framerect.x+2, framerect.y+2), area=namexrect)
 	dispsurf.blit(frame.surface, frame.SurfRect)
 
 
@@ -604,11 +622,20 @@ def shadedraw(frame, dispsurf, fg, bg, textcolor, font, abg, atxt, afg, abev, ib
 		else:
 			namex=titlecache[frame.name]
 	namexrect=namex.get_rect()
-	if namexrect.w>framerect.w-8-hudsize-hudsize:
-		namexrect.w=framerect.w-8-hudsize-hudsize
+	if frame.icon!=None:
+		if namexrect.w>framerect.w-8-hudsize-hudsize-hudsize:
+			namexrect.w=framerect.w-8-hudsize-hudsize-hudsize
+		else:
+			namexrect=None
+		dispsurf.blit(namex, (framerect.x+2+hudsize, framerect.y+2), area=namexrect)
+		dispsurf.blit(frame.icon, (framerect.x+2, framerect.y+2))
 	else:
-		namexrect=None
-	dispsurf.blit(namex, (framerect.x+2, framerect.y+2), area=namexrect)
+		
+		if namexrect.w>framerect.w-8-hudsize-hudsize:
+			namexrect.w=framerect.w-8-hudsize-hudsize
+		else:
+			namexrect=None
+		dispsurf.blit(namex, (framerect.x+2, framerect.y+2), area=namexrect)
 	#dispsurf.blit(frame.surface, frame.SurfRect)
 
 class framescape:
@@ -646,7 +673,7 @@ class framescape:
 		self.resizedesk=0
 		self.activeframe=None
 		self.simplefont = pygame.font.SysFont(None, fontsize)
-		print("Strazoloid Window Manager v1.2.1")
+		print("Strazoloid Window Manager v1.3.0")
 	def close_pid(self, pid):
 		try:
 			frame=self.idlook[pid]
@@ -664,7 +691,7 @@ class framescape:
 				self.ghostproc.remove(frame)
 				frame.closecall()
 		except KeyError:
-			return
+			return 1
 	def close_frame(self, frame):
 		if frame in self.proclist:
 			self.proclist.remove(frame)
@@ -675,10 +702,22 @@ class framescape:
 					if framew.wo==0:
 						self.activeframe=framew
 			frame.closecall()
+		else:
+			return 1
 	def close_ghost(self, ghost):
 		if ghost in self.ghostproc:
 			self.ghostproc.remove(ghost)
 			ghost.closecall()
+		else:
+			return 1
+	def raise_frame(self, frame):
+		if frame in self.proclist:
+			for framew in self.proclist:
+				framew.wo+=1
+			frame.wo=0
+			self.activeframe=frame
+		else:
+			return 1
 	def add_frame(self, frame):
 		frame.surface.convert(self.surface)
 		frame.start_prep()
@@ -809,13 +848,14 @@ class framescape:
 									break
 							elif getclose(framerectx).collidepoint(event.pos) and event.button==1:
 								self.proclist.remove(frame)
-								frame.closecall()
+								
 								if frame==self.activeframe:
 									self.activeframe=None
 									for framew in self.proclist:
 										framew.wo-=1
 										if framew.wo==0:
 											self.activeframe=framew
+								frame.closecall()
 								break
 							elif getshade(framerectx).collidepoint(event.pos) and event.button==1:
 								if frame.shade:

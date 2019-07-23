@@ -1,24 +1,25 @@
-welcome to Zoxenpher! A python graphical gopher client!
-
-Zoxenpher v2.1.1
-
+iwelcome to Zoxenpher! A python graphical gopher client!	null	null	70
+i	null	null	70
+iZoxenpher v2.2.0	null	null	70
+i	null	null	70
 1Start here	/	about:start_here	70
 1Help	/	about:help	70
 1About	/	about:about	70
-
-Find stuff:
+i	null	null	70
+iFind stuff:	null	null	70
 1Gopherpedia - read wikipedia articles via gopher	/	gopherpedia.com	70
 1The Gopher lawn - a nice index of gopher links sorted by category.	/lawn/	bitreich.org	70
 1Veronica 2 - a gopher search engine	/v2/	gopher.floodgap.com	70
-
-more gopherspace links:
+i	null	null	70
+imore gopherspace links:	null	null	70
 1Floodgap	/	gopher.floodgap.com	70
 1SDF gopherspace	/	sdf.org	70
-
-How do i gopher?
+i	null	null	70
+iHow do i gopher?	null	null	70
 1Help on zoxenpher's gopher menu window	/	about:help_gophermenu	70
 1floodgap's nice introduction	/gopher/	gopher.floodgap.com	70
 1gopherproject.org	/	gopherproject.org	70
-
-Web links (REQUIRES HAVING BROWSER SETTING CONFIGURED:
+i	null	null	70
+iWeb links (REQUIRES HAVING BROWSER SETTING CONFIGURED):	null	null	70
 hzoxenpher github repository	URL:https://github.com/ThomasTheSpaceFox/Zoxenpher	null	70
+.

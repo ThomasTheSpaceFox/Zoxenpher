@@ -1,0 +1,57 @@
+iGopher Types	null	null	70
+i	null	null	70
+iGopher menus contain a variety of different types of content.  This help article lists which ones Zoxenpher supports and how to use them. Note that some gopher types have diffrent icons depending on context. take a moment to familiarize yourself with these.	null	null	70
+i	null	null	70
+pmenu	/	about:menuicn.png	70
+itype 1: a gopher menu. gopher menus are the lists of items (selectors) that make up the gopher world.	null	null	70
+i	null	null	70
+pmenuremote	/	about:menuremoteicn.png	70
+iThis icon is the same as the normal menu icon, but indicates a menu on a different server. hence the arrow. Its worth noting that they are the same type.	null	null	70
+i	null	null	70
+pmenuinternal	/	about:menuinticn.png	70
+iVirtual menu provided internally by zoxenpher. such as this help page, and the "about:splash" page.	null	null	70
+i	null	null	70
+pmenuhelp	/	about:menuhelpicn.png	70
+iVirtual Help menu provided internally by zoxenpher. Indicates internal zoxenpher documentation.	null	null	70
+i	null	null	70
+pmenuroot	/	about:menurooticn.png	70
+iThe current server's root menu. note that this icon in specific can also be seen in the bookmarks manager.	null	null	70
+i	null	null	70
+ptext	/	about:texticon.png	70
+itype 0: a text document. This type will behave the same as menus. leftclick=same window, rightclick=new window.	null	null	70
+i	null	null	70
+pquery	/	about:queryicon.png	70
+itype 7: index search. Clicking on these will bring up a query box. Enter your query and press return/enter, and a new gopher menu window will open when your results have been loaded from the remote server.	null	null	70
+i	null	null	70
+pimage	/	about:imageicon.png	70
+itype g/p/I: This is an image, though when preview is enabled (first 10 images by default), the image itself will appear instead, otherwise, you can click on the image links to open them in a dedicated image viewer window.	null	null	70
+i	null	null	70
+psound	/	about:soundicn.png	70
+itype s: Sound file. Sounds are played using pygame's music support.	null	null	70
+iNote: zoxenpher will only play ONE sound at a time, but you may have multiple sound players open.	null	null	70
+iNote: the music will stop when you close a sound player window.	null	null	70
+iNote: The sound player must download the FILE /before/ it can play it. This may be fixed in the future.	null	null	70
+iNote: format support will vary depending on what music/sound formats your pygame instalation supports.	null	null	70
+i	null	null	70
+perror	/	about:erroricn.png	70
+itype 3: Oops... This special type is not one your supposed to see. That is, it only appears when the gopher server has an error, as it is an error code. The accompanying text might help discern what happened.	null	null	70
+i	null	null	70
+i	null	null	70
+pweb	/	about:webicn.png	70
+itype h: Link to web URL. If you have configured a web browser for zoxenpher to launch, you can open these web links in said browser by clicking on them.	null	null	70
+1Configuration help (see here on how to configure browser and other settings)	/	about:help_conf	70
+i	null	null	70
+i	null	null	70
+1Return to help menu	/	about:help	70
+i	null	null	70
+iNot yet supported:	null	null	70
+i	null	null	70
+iThese gopher types have support of some sort planned, but this support isn't yet working. Their labels will be prefixed with "[NS]"	null	null	70
+iIn addition, unknown gopher types will be prefixed with "[NS:x]" where x is the gopher type.	null	null	70
+i	null	null	70
+i	null	null	70
+i	null	null	70
+i	null	null	70
+pbinary	/	about:binicn.png	70
+itype 9: downloading support will be added when a suitable solution is found. such as a configuration option to use a dedicated downloader.	null	null	70
+.

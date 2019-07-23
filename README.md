@@ -1,12 +1,12 @@
 # Zoxenpher    
 A python & pygame gopher client.       
-v2.1.1      
+v2.2.0      
          
 powered by:      
- - libgop gopher library v0.1      
- - strazoloid virtual window manager framework v1.2.1             
+ - libgop gopher library v0.2      
+ - strazoloid virtual window manager framework v1.3.0             
           
-Copyright (c) 2018 Thomas Leathers and contributors       
+Copyright (c) 2018-2019 Thomas Leathers and contributors       
 
       
 Zoxenpher is free software: you can redistribute it and/or modify             

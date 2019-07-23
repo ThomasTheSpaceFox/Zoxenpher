@@ -24,25 +24,30 @@ class mitem:
 			self.hostname=None
 			self.selector=None
 			self.gtype=None
+			#self.debug=data.replace("\r\n", "[CR][LF]").replace("\r", "[CR]").replace("\n", "[LF]").replace("\t", "[TAB]")
+			self.debug=""
 			data=data.replace("\r\n", "").replace("\r", "").replace("\n", "").replace("\t", "        ")
 			self.name=data
 		else:
 				
 			try:
-				data=data.replace("\r\n", "")
-				self.gtype=data[0]
-				self.datalist=data[1:].split("\t")
+				datax=data.replace("\r\n", "")
+				self.gtype=datax[0]
+				self.datalist=datax[1:].split("\t")
 				self.name=self.datalist[0]
 				self.selector=self.datalist[1]
 				self.hostname=self.datalist[2]
 				self.port=self.datalist[3]
+				self.debug=data.replace("\r\n", "[CR][LF]").replace("\r", "[CR]").replace("\n", "[LF]").replace("\t", "[TAB]")
+
 			except IndexError:
 				self.datalist=None
 				self.hostname=None
 				self.selector=None
 				self.gtype=None
-				data=data.replace("\r\n", "").replace("\r", "").replace("\n", "").replace("\t", "        ")
-				self.name=data
+				self.debug=data.replace("\r\n", "[CR][LF]").replace("\r", "[CR]").replace("\n", "[LF]").replace("\t", "[TAB]")
+				
+				self.name=data.replace("\r\n", "").replace("\r", "").replace("\n", "").replace("\t", "        ")
 
 socketlist=[]
 

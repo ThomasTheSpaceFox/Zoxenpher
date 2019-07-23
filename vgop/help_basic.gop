@@ -1,0 +1,41 @@
+iBasics	null	null	70
+iWhen you first open Zoxenpher, you will see a set of icons and a blank "desktop"  	null	null	70
+p	/	about:help_part1.png	70
+ithe zoxenpher desktop:	null	null	70
+p	/	about:hbar2.png	70
+iZoxenpher uses a desktop-style interface that features its own window manager and "apps".	null	null	70
+i	null	null	70
+iThe technology behind this is built on the strazoloid window manager framework, for those interested.	null	null	70
+p	/	about:help_part2.png	70
+iHere are some notes:	null	null	70
+p	/	about:hbar2.png	70
+i- The more windows you have open, the more CPU time zoxenpher will take to run its main thread.	null	null	70
+i- the bar at the bottom of windows thats split by a small white line, can be clicked and draged to resize the window.	null	null	70
+i- shaded windows are indicated in the taskbar buttons with an "=" on each end of the name.	null	null	70
+i- you can shade/unshade windows by clicking the [-] button or using the mouse wheel over the window title.	null	null	70
+i	null	null	70
+p	/	about:help_part3.png	70
+iThis is a breakdown of what each icon does:	null	null	70
+p	/	about:hbar2.png	70
+pnew window	/	about:newwindow.png	70
+ithis icon creates a new gopher window.  this window will start at a splash page containing some helpful links.	null	null	70
+i	null	null	70
+pgo	/	about:go.png	70
+iThis icon will bring up a prompt, asking for a gopher url.  You may enter a gopher URL here to open that url directly.	null	null	70
+i	null	null	70
+pbook	/	about:bookmarks.png	70
+iThis will bring up the bookmarks menu. 	null	null	70
+1See Bookmarks help for more information.	/	about:help_bookmarks	70
+i	null	null	70
+pmore	/	about:more.png	70
+iThis will bring Up a selection of assorted widgets and things.	null	null	70
+1See widgets & 'more things'  help for more information.	/	about:help_widgets	70
+i	null	null	70
+pquit	/	about:exit.png	70
+iExit zoxenpher.	null	null	70
+i	null	null	70
+phelp	/	about:help.png	70
+iThis icon will open the help menu directly.	null	null	70
+i	null	null	70
+1Return to help menu	/	about:help	70
+.

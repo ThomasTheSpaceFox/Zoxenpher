@@ -1,8 +1,10 @@
-welcome to Zoxenpher's live help system.
-
-Please take your time to read the topics below, if you need any help.
+iIndex	null	null	70
+iwelcome to Zoxenpher's live help system.	null	null	70
+i	null	null	70
+iPlease take your time to read the topics below, if you need any help.	null	null	70
 p 	/	about:helptitle.png	70
-Topics:
+iTopics:	null	null	70
+p	/	about:hbar2.png	70
 1Basics	/	about:help_basic	70
 1Widgets & 'more things' help	/	about:help_widgets	70
 1Browsing Gopher	/	about:help_gophermenu	70
@@ -14,3 +16,4 @@ Topics:
 1Bookmarks	/	about:help_bookmarks	70
 1Gopher Types	/	about:help_gtypes	70
 1Wallpaper help	/	about:help_wallpaper	70
+.

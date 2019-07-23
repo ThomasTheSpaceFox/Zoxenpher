@@ -17,6 +17,11 @@ framesc=None
 
 diag_yes=pygame.image.load(os.path.join("vgop", "diag_yes.png"))
 diag_no=pygame.image.load(os.path.join("vgop", "diag_no.png"))
+clock_wicon=pygame.image.load(os.path.join("vgop", "clock_wicon.png"))
+tip_wicon=pygame.image.load(os.path.join("vgop", "tip_wicon.png"))
+sinfo_wicon=pygame.image.load(os.path.join("vgop", "sinfo_wicon.png"))
+yn_wicon=pygame.image.load(os.path.join("vgop", "yn_wicon.png"))
+
 
 def init(framescape, desktop):
 	global framesc
@@ -57,6 +62,7 @@ class yndialog:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
 			frameobj.name=self.dname
+			frameobj.seticon(yn_wicon.convert())
 			self.renderdisp(frameobj)
 		if frameobj.statflg==3:
 			if frameobj.runflg==2:
@@ -88,7 +94,7 @@ class clock:
 		self.hourding=pygame.mixer.Sound(os.path.join("vgop", "clockhour.ogg"))
 		self.minding=pygame.mixer.Sound(os.path.join("vgop", "clockmin.ogg"))
 		self.tform="%I:%M %p"
-		self.dform="%A, %B %H, %Y"
+		self.dform="%A, %B %d, %Y"
 		self.fonttime=pygame.font.SysFont(None, 30)
 		self.font=pygame.font.SysFont(None, 22)
 		
@@ -97,8 +103,10 @@ class clock:
 		self.ypos=0
 		if self.timest.startswith("0"):
 			timetx=self.fonttime.render(self.timest[1:], True, (0, 0, 0), (223, 223, 223))
+			frameobj.name=self.timest[1:]+" - Clock"
 		else:
 			timetx=self.fonttime.render(self.timest, True, (0, 0, 0), (223, 223, 223))
+			frameobj.name=self.timest+" - Clock"
 		datetx=self.font.render(self.datest, True, (0, 0, 0), (223, 223, 223))
 		timexpos=frameobj.surface.get_width()//2 - timetx.get_width()//2
 		datexpos=frameobj.surface.get_width()//2 - datetx.get_width()//2
@@ -107,6 +115,7 @@ class clock:
 	def pumpcall1(self, frameobj, data=None):
 		if frameobj.statflg==1:
 			frameobj.name="Clock"
+			frameobj.seticon(clock_wicon.convert())
 			self.time=time.localtime()
 			self.hour=self.time.tm_hour
 			self.minu=self.time.tm_min
@@ -161,6 +170,7 @@ class sinfo:
 		if frameobj.statflg==1:
 			frameobj.name="System Info"
 			self.renderdisp(frameobj)
+			frameobj.seticon(sinfo_wicon.convert())
 			self.ticker=libzox.tickdo(5)
 		if frameobj.statflg==0:
 			if self.ticker.tick():
@@ -190,6 +200,7 @@ class tipofday:
 		if frameobj.statflg==1:
 			self.tindex=random.randint(0, self.tipmax)
 			self.renderdisp(frameobj)
+			frameobj.seticon(tip_wicon.convert())
 		if frameobj.statflg==4:
 			if data.button==1:
 				self.tindex+=1

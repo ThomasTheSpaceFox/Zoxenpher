@@ -1,0 +1,22 @@
+iWidgets & 'more things'	null	null	70
+i	null	null	70
+p	/	about:help_part1.png	70
+iWhat is a widget?	null	null	70
+p	/	about:hbar2.png	70
+iA widget is just that, a small, zoxenpher window with a very simple purpose, isn't that related to gopherspace, etc.	null	null	70
+i	null	null	70
+i	null	null	70
+p	/	about:help_part2.png	70
+iThe widgets:	null	null	70
+p	/	about:hbar2.png	70
+pclock	/	about:more_clock.png	70
+i	null	null	70
+iThis clock will 'tick' every minue, and 'ding' every hour. it shows the date and time.	null	null	70
+i	null	null	70
+pSystem Info	/	about:more_sinfo.png	70
+i	null	null	70
+iThis shows a few stats on zoxenpher's runtime.	null	null	70
+i	null	null	70
+1Return to basics help	/	about:help_basic	70
+1Return to help menu	/	about:help	70
+.

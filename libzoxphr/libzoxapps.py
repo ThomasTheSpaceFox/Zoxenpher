@@ -59,6 +59,11 @@ upbtn=pygame.image.load(os.path.join("vgop", "upbtn.png"))
 upbtn_inact=pygame.image.load(os.path.join("vgop", "upbtn_inact.png"))
 rootbtn=pygame.image.load(os.path.join("vgop", "rootbtn.png"))
 rootbtn_inact=pygame.image.load(os.path.join("vgop", "rootbtn_inact.png"))
+perrorbtn=pygame.image.load(os.path.join("vgop", "perrorbtn.png"))
+perrorbtn_inact=pygame.image.load(os.path.join("vgop", "perrorbtn_inact.png"))
+
+
+
 
 #common:
 scrollup=pygame.image.load(os.path.join("vgop", "scrollu.png"))
@@ -76,8 +81,13 @@ bookm_edit1=pygame.image.load(os.path.join("vgop", "editact.png"))
 bookm_newbm=pygame.image.load(os.path.join("vgop", "newbm.png"))
 menucorner_book=pygame.image.load(os.path.join("vgop", "menucorner_book.png"))
 
-
-
+go_wicon=pygame.image.load(os.path.join("vgop", "go_wicon.png"))
+book_wicon=pygame.image.load(os.path.join("vgop", "book_wicon.png"))
+bookedit_wicon=pygame.image.load(os.path.join("vgop", "bookedit_wicon.png"))
+booknew_wicon=pygame.image.load(os.path.join("vgop", "booknew_wicon.png"))
+more_wicon=pygame.image.load(os.path.join("vgop", "more_wicon.png"))
+about_wicon=pygame.image.load(os.path.join("vgop", "about_wicon.png"))
+help_wicon=pygame.image.load(os.path.join("vgop", "help_wicon.png"))
 
 framesc=None
 
@@ -87,6 +97,8 @@ def init(framescape, desktop):
 	global gtmenuremote
 	global gtmenuint
 	global gtmenuroot
+	global gthelp
+	
 	
 	global gtimage
 	global gttext
@@ -98,9 +110,11 @@ def init(framescape, desktop):
 	global gterror
 	
 	global deskt
+	global loadingimage
 	deskt=desktop
 	framesc=framescape
 	#load Gopher type icons.
+	gthelp=pygame.image.load(os.path.join("vgop", "menuhelpicn.png")).convert()	
 	gtmenu=pygame.image.load(os.path.join("vgop", "menuicn.png")).convert()
 	gtmenuremote=pygame.image.load(os.path.join("vgop", "menuremoteicn.png")).convert()
 	gtmenuint=pygame.image.load(os.path.join("vgop", "menuinticn.png")).convert()
@@ -114,6 +128,8 @@ def init(framescape, desktop):
 	gtbin=pygame.image.load(os.path.join("vgop", "binicn.png")).convert()
 	gtweb=pygame.image.load(os.path.join("vgop", "webicn.png")).convert()
 	gterror=pygame.image.load(os.path.join("vgop", "erroricn.png")).convert()
+	loadingimage=pygame.image.load(os.path.join("vgop", "loadingimage.png")).convert()
+	
 
 
 
@@ -131,7 +147,16 @@ class deskclass:
 		self.clock=pygame.time.Clock()
 		self.hovertext=""
 		self.hoverprev=""
+		self.taskrects={}
+		self.tasksorted=[]
 		self.mattesurf=None
+		self.late_init=0
+		self.prevactframe=None
+		self.prevproclen=None
+		self.actindex=None
+		self.framecount=1
+		self.frametime=15
+		self.wmbuttonfont=pygame.font.SysFont(None, 22)
 		return
 	#def process(self):
 	#	while self.active:
@@ -139,6 +164,20 @@ class deskclass:
 	#	print("done.")
 	def pumpcall1(self, frameobj, data=None):
 		if frameobj.statflg==0:
+			
+			if self.late_init==1:
+				self.late_init=0
+				self.drawdesk(frameobj.surface)
+			else:
+				if self.prevactframe!=framesc.activeframe or self.prevproclen!=len(framesc.proclist):
+					self.prevactframe=framesc.activeframe
+					self.prevproclen=len(framesc.proclist)
+					self.drawdesk(frameobj.surface)
+				if self.framecount==self.frametime:
+					self.framecount=1
+					self.drawdesk(frameobj.surface)
+				else:
+					self.framecount+=1
 			#status area routine. (works via routines setting deskt.hovertext on an active basis.
 			if self.hovertext=="" and self.hovertext!=self.hoverprev:
 				self.drawdesk(frameobj.surface)
@@ -150,15 +189,19 @@ class deskclass:
 				#print("draw")
 			self.hovertext=""
 			mpos=pygame.mouse.get_pos()
-			for prog in self.progs:
-				if prog.iconrect.collidepoint(mpos):
-					self.hovertext=prog.hint
-			
-			if self.mascotrect.collidepoint(mpos):
-				self.hovertext="About Zoxenpher."
+			if mpos[1]<50:
+				for prog in self.progs:
+					if prog.iconrect.collidepoint(mpos):
+						self.hovertext=prog.hint
+				for framex in self.taskrects:
+					if self.taskrects[framex].collidepoint(mpos):
+						self.hovertext=framex.name
+				
+				if self.mascotrect.collidepoint(mpos):
+					self.hovertext="About Zoxenpher."
 		#init code
 		if frameobj.statflg==1:
-			stz.setminy(46)
+			stz.setminy(51)
 			self.drawdesk(frameobj.surface)
 		#shutdown code
 		if frameobj.statflg==3:
@@ -167,12 +210,45 @@ class deskclass:
 			libgop.stopget=2
 			self.active=0
 		if frameobj.statflg==4:
-			if self.mascotrect.collidepoint(data.pos):
-				newgop=gopherpane(host="about:about", port=70, selector="/", shortprefix="About: ")
-				framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
-			for prog in self.progs:
-				if prog.iconrect.collidepoint(data.pos):
-					framesc.add_frame(stz.framex(prog.xsize, prog.ysize, prog.friendly_name, pumpcall=prog.classref().pumpcall1, resizable=prog.resizable))
+			if data.button==1:
+				#about button
+				if self.mascotrect.collidepoint(data.pos):
+					newgop=gopherpane(host="about:about", port=70, selector="/", shortprefix="About: ")
+					framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
+				#task switcher logic
+				for framex in self.taskrects:
+					if self.taskrects[framex].collidepoint(data.pos):
+						framesc.raise_frame(framex)
+				#launcher icons
+				for prog in self.progs:
+					if prog.iconrect.collidepoint(data.pos):
+						framesc.add_frame(stz.framex(prog.xsize, prog.ysize, prog.friendly_name, pumpcall=prog.classref().pumpcall1, resizable=prog.resizable))
+			elif data.button==4 and data.pos[1]<46:
+				try:
+					if len(self.tasksorted)>1:
+						if self.actindex==None:
+							framesc.raise_frame(self.tasksorted[0])
+						elif self.actindex==0:
+							framesc.raise_frame(self.tasksorted[-1])
+						else:
+							framesc.raise_frame(self.tasksorted[self.actindex-1])
+				except IndexError:
+					print("Index Error In back window cycle.")
+			elif data.button==5 and data.pos[1]<46:
+				try:
+					if len(self.tasksorted)>1:
+						if self.actindex==None:
+							framesc.raise_frame(self.tasksorted[0])
+						elif self.actindex==len(self.tasksorted)-1:
+							framesc.raise_frame(self.tasksorted[0])
+						else:
+							framesc.raise_frame(self.tasksorted[self.actindex+1])
+				except IndexError:
+					print("Index Error In forward window cycle.")
+			elif data.button in [4, 5]:
+				self.drawdesk(frameobj.surface)
+				
+				
 		#resize
 		if frameobj.statflg==8:
 			self.resize(frameobj.surface)
@@ -210,6 +286,9 @@ class deskclass:
 			prog.icon=prog.icon.convert(surface)
 	##
 	def drawdesk(self, surface):
+		#Save CPU time by reseting auto-render timer. 
+		#(avoids needlessly rendering the desktop via the timer when its triggered otherwise)
+		self.framecount=1
 		if not self.imgload:
 			self.imgload=1
 			self.imageloader(surface)
@@ -238,14 +317,63 @@ class deskclass:
 		
 		#urllabel=simplefont.render(self.hovertext, True, (255, 255, 255), (60, 60, 120))
 		urllabel=hudfont.render(self.hovertext, True, (255, 255, 255), (60, 60, 120))
-		surface.blit(urllabel, (icnx+10, 10))
+		surface.blit(urllabel, (icnx+10, 0))
+		#task switcher:
+		self.taskrects={}
+		icnx=icnx+1
+		
+					
+		
 		mascotx=surface.get_width()-self.mascot.get_width()
 		self.mascotrect=surface.blit(self.mascot, (mascotx, 0))
 		for prog in self.progs:
 			if prog.side:
 				mascotx-=45
 				prog.iconrect=surface.blit(prog.icon, (mascotx, icny))
-		surface.blit(self.iconbegin, (mascotx-self.iconbegin.get_width(), 0))
+		mascotx-=self.iconbegin.get_width()
+		surface.blit(self.iconbegin, (mascotx, 0))
+		
+		if framesc==None:
+			self.late_init=1
+		else:
+			try:
+				buttonsize=int(((mascotx-1)-icnx)/len(framesc.proclist))
+			except ZeroDivisionError:
+				buttonsize=25
+			buttonrect=pygame.Rect(icnx, 19, buttonsize, 27)
+			#sort the tasks via PID to keep task icons from "jumping"
+			indx=0
+			self.actindex=None
+			self.tasksorted=sorted(framesc.proclist, key=lambda x: x.pid, reverse=False)
+			for framex in self.tasksorted:
+				if framex.shade:
+					framename="="+framex.name+"="
+				else:
+					framename=framex.name
+				if framex.wo==0:
+					pygame.draw.rect(surface, (0, 100, 130), buttonrect, 0)
+					pygame.draw.rect(surface, (255, 255, 255), buttonrect, 1)
+					self.actindex=indx
+					nametx=self.wmbuttonfont.render(framename, True, (255, 255, 255), (0, 100, 130)).convert()
+				else:
+					pygame.draw.rect(surface, (110, 110, 130), buttonrect, 0)
+					pygame.draw.rect(surface, (0, 0, 0), buttonrect, 1)
+					nametx=self.wmbuttonfont.render(framename, True, (255, 255, 255), (110, 110, 130)).convert()
+				indx+=1
+				if framex.icon!=None:
+					frect=surface.blit(framex.icon, (buttonrect.x+1, 20))
+					#icnx+=framex.icon.get_width()
+					self.taskrects[framex]=buttonrect.copy()
+				else:
+					frect=surface.blit(gterror, (buttonrect.x+1, 20))
+					#icnx+=gterror.get_width()
+					self.taskrects[framex]=buttonrect.copy()
+				nametxrect=nametx.get_rect()
+				if nametxrect.w>buttonsize-25-6:
+					nametxrect.w=buttonsize-25-6
+				surface.blit(nametx, (buttonrect.x+29, 21), area=nametxrect)
+				buttonrect.x+=buttonsize
+				
 
 
 
@@ -299,7 +427,12 @@ class gopherpane:
 		self.nextbtn_inact=nextbtn_inact.convert()
 		self.upbtn=upbtn.convert()
 		self.upbtn_inact=upbtn_inact.convert()
+		self.perrorbtn=perrorbtn.convert()
+		self.perrorbtn_inact=perrorbtn_inact.convert()
 		self.loading=loading
+		self.prevtype=None
+		self.PageError=0
+		self.ServError=0
 	#menu get routine
 	def menuget(self):
 		
@@ -347,11 +480,30 @@ class gopherpane:
 		#pygame.draw.rect(frameobj.surface, (185, 195, 255), self.siderect)
 		pygame.draw.rect(frameobj.surface, (223, 223, 223), self.siderect)
 		pygame.draw.line(frameobj.surface, (0, 0, 0), (25, 0), (25, frameobj.surface.get_height()), 1)
+		count=0
 		for item in self.menu:
 			if item.gtype=="3":
-				rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict, gterror)
-			elif item.gtype=="i" or item.gtype==None:
+				self.ServError+=1
+				rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (155, 0, 0), frameobj.surface, self.ypos, self.renderdict, gterror)
+			elif item.gtype=="i":
 				rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
+			#If text, or local documentation format, show unformatted lines
+			elif item.gtype==None and (self.gtype=="0"):
+				rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
+			#else, hide them.
+			elif item.gtype==None:
+				#don't report end-stops as errors.
+				if item.name==None:
+					pass
+				elif item.name!="." and item.debug!=None:
+					rects, self.ypos, self.renderdict = textitem("[LINE ERROR]: ''" + item.debug + "''", simplefont, self.yjump, (155, 0, 0), frameobj.surface, self.ypos, self.renderdict)
+					print("Parser Error! Malformed line " + str(count) + " in document '" + str(self.selector) + "'\n   from server: '" + str(self.host) + ":" + str(self.port) + "'\n   ''" + item.debug + "''")
+					self.PageError+=1
+					item.debug=None
+				pass
+			elif item.gtype=="1" and item.hostname.startswith("about:help"):
+				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gthelp, 1)
+				item.rect=rect
 			elif item.gtype=="1" and item.hostname.startswith("about:"):
 				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenuint, 1)
 				item.rect=rect
@@ -374,23 +526,38 @@ class gopherpane:
 			
 			elif item.gtype=="g" or item.gtype=="p" or item.gtype=="I":
 				imagecount+=1
+				#check to see if image is loaded, if not, add it to image preview queue (if preview cap is not met yet/rendering local documentation.)
+				#place a placeholder "loading" image to be shown until image has loaded.
 				try:
-					if item.image!=None:
-						
-						rectia, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
-						rectib=frameobj.surface.blit(item.image, (26, self.ypos))
-						item.rect=rectia.unionall([rectib])
-						#pygame.draw.rect(frameobj.surface, (60, 60, 255), item.rect, 1)
-						self.ypos+=item.image.get_height()
-					if item.image==None:
-						item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
-					#pygame.draw.rect(frameobj.surface, (255, 255, 0), item.rect, 1)
+					foobar=item.image
+					
 				except AttributeError as err:
 					#print(err)
-					item.image=None
+					item.image=loadingimage.copy()
 					if imagecount<maximages or (imagecount<2 and self.forceimage) or self.host.startswith("about:"):
 						imageset.extend([item])
+					#item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
+
+				if item.image!=None:
+					ytemp=0
+					if item.name.strip()!="":
+						rectia, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
+					else:
+						rectia, ytemp, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
+					rectib=frameobj.surface.blit(item.image, (26, self.ypos))
+					item.rect=rectia.unionall([rectib])
+					#pygame.draw.rect(frameobj.surface, (60, 60, 255), item.rect, 1)
+					itemimagehig=item.image.get_height()
+					if ytemp!=0:
+						lsize=abs(ytemp-self.ypos)
+						if lsize<itemimagehig:
+							lsize=itemimagehig
+						self.ypos+=lsize
+					else:	
+						self.ypos+=itemimagehig
+				if item.image==None:
 					item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
+				#pygame.draw.rect(frameobj.surface, (255, 255, 0), item.rect, 1)
 			elif item.gtype=="s":
 				item.rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtsound, 1)
 			
@@ -410,6 +577,7 @@ class gopherpane:
 					pygame.draw.rect(frameobj.surface, (255, 0, 0), item.rect, 1)
 				except AttributeError:
 					pass
+			count+=1
 		#launch image loader thread if needed
 		if imageset!=[]:
 			self.images=imageset
@@ -454,7 +622,11 @@ class gopherpane:
 			self.loadrect=frameobj.surface.blit(self.loadbtn_inact, (xpos, 1))
 		else:
 			self.loadrect=frameobj.surface.blit(self.loadbtn, (xpos, 1))
-		
+		xpos+=60
+		if self.PageError!=0 or self.ServError!=0:
+			self.erroriconRect=frameobj.surface.blit(self.perrorbtn, (xpos, 1))
+		else:
+			self.erroriconRect=frameobj.surface.blit(self.perrorbtn_inact, (xpos, 1))
 		
 		if self.yoff<25:
 			self.scuprect=frameobj.surface.blit(self.scrollup, (frameobj.surface.get_width()-44, 0))
@@ -470,13 +642,9 @@ class gopherpane:
 		self.host=item.hostname
 		self.port=item.port
 		self.selector=item.selector
-		if self.host.startswith("about:help"):
-			frameobj.name=("help: "+str(self.host))
-		elif item.hostname.startswith("about:"):
-			frameobj.name=(self.shortprefix+str(item.hostname))
-		else:
-			frameobj.name=(self.prefix+str(item.hostname) + "/" + self.gtype + str(item.selector))
 		self.menuget()
+		self.set_icon_name(frameobj)
+		
 		self.yoff=25
 		self.loading=0
 		self.menudraw(frameobj)
@@ -495,13 +663,9 @@ class gopherpane:
 		self.selector="/"
 		self.gtype="1"
 		#reset prefixes in case of text document being the current.
-		self.prefix="menu: gopher://"
-		self.shortprefix="menu: "
-		if self.host.startswith("about:"):
-			frameobj.name=(self.shortprefix+str(self.host))
-		else:
-			frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
 		self.menuget()
+		self.set_icon_name(frameobj)
+		
 		self.yoff=25
 		self.loading=0
 		self.menudraw(frameobj)
@@ -514,25 +678,19 @@ class gopherpane:
 			self.selector="/"
 		self.gtype="1"
 		#reset prefixes in case of text document being the current.
-		self.prefix="menu: gopher://"
-		self.shortprefix="menu: "
-		if self.host.startswith("about:"):
-			frameobj.name=(self.shortprefix+str(self.host))
-		else:
-			frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
 		self.menuget()
+		self.set_icon_name(frameobj)
+		
 		self.yoff=25
 		self.loading=0
 		self.menudraw(frameobj)
 	#menu initalization loader
 	def menuinital(self, frameobj):
-		if self.host.startswith("about:help"):
-			frameobj.name=("help: "+str(self.host))
-		elif self.host.startswith("about:"):
-			frameobj.name=(self.shortprefix+str(self.host))
-		else:
-			frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
+		
 		self.menuget()
+		self.set_icon_name(frameobj)
+		
+		
 		self.yoff=25
 		self.loading=0
 		self.menudraw(frameobj)
@@ -543,23 +701,56 @@ class gopherpane:
 		self.port=histitem.port
 		self.selector=histitem.selector
 		self.gtype=histitem.gtype
-		if histitem.gtype=="0":
+		self.set_icon_name(frameobj)
+		
+		self.renderdict={}
+		self.yoff=25
+		self.menudraw(frameobj)
+	def set_icon_name(self, frameobj):
+		#reset page error flag-counter
+		self.PageError=0
+		#reset server error flag-counter
+		self.ServError=0
+		if self.host.startswith("about:about"):
+			self.prefix="about: "
+			self.shortprefix="about: "
+			frameobj.seticon(about_wicon.convert())
+		elif self.host.startswith("about:help"):
+			self.prefix="help: "
+			self.shortprefix="help: "
+			frameobj.seticon(help_wicon.convert())
+		elif self.host.startswith("about:"):
+			self.prefix="about: "
+			self.shortprefix="about: "
+			frameobj.seticon(gtmenuint)
+		elif self.gtype=="0":
 			self.prefix="text: gopher://"
+			self.shortprefix="text: "
+			frameobj.seticon(gttext)
 		else:
 			self.prefix="menu: gopher://"
-		self.shortprefix="menu: "
+			self.shortprefix="menu: "
+			if self.selector=="/" or self.selector=="":
+				frameobj.seticon(gtmenuroot)
+			else:
+				frameobj.seticon(gtmenu)
+		
+		if self.host.startswith("about:about"):
+			frameobj.name="About Zoxenpher"
 		if self.host.startswith("about:help"):
-			frameobj.name=("help: "+str(self.host))
+			try:
+				frameobj.name="Help: "+self.menu[0].name
+			except IndexError:
+				frameobj.name="Help"
 		elif self.host.startswith("about:"):
 			frameobj.name=(self.shortprefix+str(self.host))
 		else:
 			frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
-		self.renderdict={}
-		self.yoff=25
-		self.menudraw(frameobj)
-		
 	def pumpcall1(self, frameobj, data=None):
 		
+				
+			
+			
 		#link destination preview routine. 
 		if frameobj.statflg==0 and frameobj.wo==0 and frameobj.shade==0:
 			mpos=stz.mousehelper(pygame.mouse.get_pos(), frameobj)
@@ -579,6 +770,15 @@ class gopherpane:
 				deskt.hovertext="If not greyed out, you may scroll up."
 			elif self.scdnrect.collidepoint(mpos):
 				deskt.hovertext="If not greyed out, you may scroll down."
+			elif self.erroriconRect.collidepoint(mpos):
+				if self.PageError!=0 and self.ServError!=0:
+					deskt.hovertext=str(self.ServError) + " Server Error(s). " + str(self.PageError) + " Page Error(s)."
+				elif self.PageError!=0:
+					deskt.hovertext=str(self.PageError) + " Page Error(s)."
+				elif self.ServError!=0:
+					deskt.hovertext=str(self.ServError) + " Server Error(s)."
+				else:
+					deskt.hovertext="No Errors detected."
 			elif not self.hudrect.collidepoint(mpos):
 				for item in self.menu:
 					if item.gtype!=None:
@@ -855,6 +1055,7 @@ class querypane:
 			print(str1)
 			frameobj.name="query: "+str1
 			self.renderdisp(frameobj)
+			frameobj.seticon(gtquery)
 		#if frameobj.statflg==3:
 		#	if deskt.hovertext==self.hovmsg:
 		#		deskt.hovertext=""
@@ -1036,6 +1237,7 @@ class bookmarks:
 		if frameobj.statflg==1:
 			frameobj.name="Bookmarks"
 			self.renderdisp(frameobj)
+			frameobj.seticon(book_wicon.convert())
 		if frameobj.statflg==4:
 			if data.button==4:
 				self.offset-=1
@@ -1109,8 +1311,10 @@ class bookmadded:
 		if frameobj.statflg==1:
 			if self.bookm==None:
 				frameobj.name="New Bookmark: " + self.url
+				frameobj.seticon(booknew_wicon.convert())
 			else:
 				frameobj.name="Edit Bookmark: "
+				frameobj.seticon(bookedit_wicon.convert())
 			self.renderdisp(frameobj)
 		if frameobj.statflg==6:
 			if data.key==pygame.K_RETURN and self.nameblob.replace(" ", "")!="":
@@ -1181,6 +1385,7 @@ class urlgo:
 		if frameobj.statflg==1:
 			
 			frameobj.name="URL GO:"
+			frameobj.seticon(go_wicon.convert())
 			self.renderdisp(frameobj)
 		if frameobj.statflg==6:
 			if data.key==pygame.K_RETURN:
@@ -1304,6 +1509,7 @@ class imgview:
 			self.updatedisp(frameobj)
 			
 		if frameobj.statflg==1:
+			frameobj.seticon(gtimage)
 			if self.host.startswith("about:"):
 				frameobj.name=("Image: " + str(self.host) + "/" + self.gtype)
 			else:
@@ -1416,6 +1622,7 @@ class sndplay:
 			sideproc=Thread(target = self.loader, args = [frameobj])
 			sideproc.daemon=True
 			sideproc.start()
+			frameobj.seticon(gtsound)
 		if frameobj.statflg==3:
 			try:
 				pygame.mixer.music.stop()
@@ -1482,7 +1689,7 @@ class xmitm:
 		return (ypos, iconrect)
 		
 
-defaultlist=[xmitm("more_clock.png", "Clock", 1, data1=libzoxui.clock, comment="An on-screen clock with date and sound.", width=220, height=60, resize=0),
+defaultlist=[xmitm("more_clock.png", "Clock", 1, data1=libzoxui.clock, comment="An on-screen clock with date and sound.", width=230, height=60, resize=0),
 xmitm("more_tipofday.png", "Tip Of The Day", 1, data1=libzoxui.tipofday, comment="Get a random tip from a set of Zoxenpher-related tips.", width=350, height=120, resize=0),
 xmitm("more_sinfo.png", "System Info", 1, data1=libzoxui.sinfo, comment="Info on Zoxenpher's runtime, and host OS.", width=200, height=240, resize=0)]
 
@@ -1523,6 +1730,7 @@ class morethings:
 		if frameobj.statflg==2:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
+			frameobj.seticon(more_wicon.convert())
 			frameobj.name="More Things..."
 			self.renderdisp(frameobj)
 		if frameobj.statflg==4:

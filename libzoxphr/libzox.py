@@ -18,6 +18,8 @@ def pathfigure(host, port, selector, gtype="0"):
 		hoststripped=hoststripped[6:]
 		if os.path.isfile(os.path.join("vgop", hoststripped)):
 			data=open(os.path.join("vgop", hoststripped))
+		elif os.path.isfile(os.path.join("vgop", hoststripped+".gop")):
+			data=open(os.path.join("vgop", hoststripped+".gop"))
 		else:
 			if gtype=="1":
 				data=open(os.path.join("vgop", "E_localerror"))

@@ -441,9 +441,12 @@ class gopherpane:
 	#menu get routine
 	def menuget(self):
 		
-		
+		if self.gtype=="0":
+			txtflg=1
+		else:
+			txtflg=0
 		self.data=pathfigure(self.host, self.port, self.selector, self.gtype, self.query)
-		self.menu=libgop.menudecode(self.data)
+		self.menu=libgop.menudecode(self.data, txtflg=txtflg)
 		for item in self.renderdict:
 			del item
 		del self.renderdict
@@ -458,9 +461,12 @@ class gopherpane:
 			self.histpoint-=1
 	def menuget_nohist(self):
 		
-		
+		if self.gtype=="0":
+			txtflg=1
+		else:
+			txtflg=0
 		self.data=pathfigure(self.host, self.port, self.selector, self.gtype, self.query)
-		self.menu=libgop.menudecode(self.data)
+		self.menu=libgop.menudecode(self.data, txtflg=txtflg)
 		for item in self.renderdict:
 			del item
 		del self.renderdict

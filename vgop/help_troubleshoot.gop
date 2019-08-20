@@ -3,10 +3,13 @@ iIn this document, q=question and a=awnser	null	null	70
 i	null	null	70
 p	/	about:help_part1.png	70
 iGeneral	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 i	null	null	70
 iq: I'm seeing alot of lines with "[NS]" or "[NS:x]" (where x is some random symbol), at the beginning. what do they mean?	null	null	70
 ia: This is Zoxenpher's way of showing a gopher item type its unable to use, or in the latter case, doesn't even recognize.	null	null	70
+i	null	null	70
+iq: non-port 70 gopher server access is buggy!	null	null	70
+ia: while it wasn't intentional, zoxenpher wasn't properly tested against this. currently fixing these issues is low priority, as most gopher clients are fixed to port 70 anyways.	null	null	70
 i	null	null	70
 iq: I see a red-ish line of text that begins with "[LINE ERROR]:". what went wrong?	null	null	70
 ia: Most likely faulty formatting in a gophermap document. If this line even was a selector, it certainly didn't look like it to the parser.	null	null	70
@@ -28,7 +31,7 @@ i	null	null	70
 i	null	null	70
 p	/	about:help_part2.png	70
 i--- Sound type playback ---	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 i	null	null	70
 i	null	null	70
 iq: sound playback stops when i close a sound player window, even when its not the one playing.	null	null	70
@@ -42,7 +45,7 @@ ia: mp3 support is notoriously patchy and unpredictable when it comes to pygame,
 i	null	null	70
 p	/	about:help_part3.png	70
 i--- Configuration file ---	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 i	null	null	70
 1See: Configuration help for how to set up a cnf.dat file.	/	about:help_conf	70
 i	null	null	70

@@ -108,6 +108,7 @@ def init(framescape, desktop):
 	global gtbin
 	global gtweb
 	global gterror
+	global highlight_arrow
 	
 	global deskt
 	global loadingimage
@@ -128,6 +129,8 @@ def init(framescape, desktop):
 	gtbin=pygame.image.load(os.path.join("vgop", "binicn.png")).convert()
 	gtweb=pygame.image.load(os.path.join("vgop", "webicn.png")).convert()
 	gterror=pygame.image.load(os.path.join("vgop", "erroricn.png")).convert()
+	highlight_arrow=pygame.image.load(os.path.join("vgop", "highlight_arrow.png")).convert()
+
 	loadingimage=pygame.image.load(os.path.join("vgop", "loadingimage.png")).convert()
 	
 
@@ -392,7 +395,7 @@ def textshow(host, port, selector):
 
 #gopher menu class. also used for text documents
 class gopherpane:
-	def __init__(self, host='about:splash', port=70, selector="", prefix="menu: gopher://", preload=None, forceimage=0, linkdisable=0, gtype="1", shortprefix="menu: ", loading=1):
+	def __init__(self, host='about:splash', port=70, selector="", prefix="menu: gopher://", preload=None, forceimage=0, linkdisable=0, gtype="1", shortprefix="menu: ", loading=1, query=None):
 		self.host=host
 		self.port=port
 		self.selector=selector
@@ -433,11 +436,13 @@ class gopherpane:
 		self.prevtype=None
 		self.PageError=0
 		self.ServError=0
+		self.query=query
+		self.PageErrorList=[]
 	#menu get routine
 	def menuget(self):
 		
 		
-		self.data=pathfigure(self.host, self.port, self.selector, self.gtype)
+		self.data=pathfigure(self.host, self.port, self.selector, self.gtype, self.query)
 		self.menu=libgop.menudecode(self.data)
 		for item in self.renderdict:
 			del item
@@ -445,7 +450,7 @@ class gopherpane:
 		#print("newhist")
 		self.renderdict={}
 		self.histlist=self.histlist[:self.histpoint+1]
-		self.histlist.extend([libzox.histitem(self.host, self.port, self.selector, self.gtype, self.data, self.menu)])
+		self.histlist.extend([libzox.histitem(self.host, self.port, self.selector, self.gtype, self.data, self.menu, self.query)])
 		self.histpoint+=1
 		if len(self.histlist)==histsize+1:
 			#print("histpop")
@@ -454,7 +459,7 @@ class gopherpane:
 	def menuget_nohist(self):
 		
 		
-		self.data=pathfigure(self.host, self.port, self.selector, self.gtype)
+		self.data=pathfigure(self.host, self.port, self.selector, self.gtype, self.query)
 		self.menu=libgop.menudecode(self.data)
 		for item in self.renderdict:
 			del item
@@ -463,14 +468,29 @@ class gopherpane:
 	def newhist(self):
 		#print("newhist")
 		self.histlist=self.histlist[:self.histpoint+1]
-		self.histlist.extend([libzox.histitem(self.host, self.port, self.selector, self.gtype, self.data, self.menu)])
+		self.histlist.extend([libzox.histitem(self.host, self.port, self.selector, self.gtype, self.data, self.menu, self.query)])
 		self.histpoint+=1
 		if len(self.histlist)==histsize+1:
 			#print("histpop")
 			self.histlist.pop(0)
 			self.histpoint-=1
+	
+	#check code for whether to draw a black arrow next to an informational type.
+	#attempts to identify section dividers and section-dividing titles.
+	#i.e.
+	#-----------------------
+	#--------Example title-------
+	def highlight_check(self, itemname):
+		if itemname.startswith("--") and itemname.endswith("--"):
+			return 1
+		if itemname.startswith("__") and itemname.endswith("__"):
+			return 1
+		if itemname.startswith("==") and itemname.endswith("=="):
+			return 1
+		if itemname.startswith("**") and itemname.endswith("**"):
+			return 1
+		return 0
 	#render routine
-			
 	def menudraw(self, frameobj):
 		imageset=[]
 		imagecount=0
@@ -486,21 +506,27 @@ class gopherpane:
 				self.ServError+=1
 				rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (155, 0, 0), frameobj.surface, self.ypos, self.renderdict, gterror)
 			elif item.gtype=="i":
-				rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
+				if item.gtype=="0":
+					rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
+				elif self.highlight_check(item.name):
+					rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict, highlight_arrow, iconsize=5)
+				else:
+					rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
+
+				
+				
 			#If text, or local documentation format, show unformatted lines
 			elif item.gtype==None and (self.gtype=="0"):
 				rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
 			#else, hide them.
 			elif item.gtype==None:
 				#don't report end-stops as errors.
-				if item.name==None:
-					pass
-				elif item.name!="." and item.debug!=None:
+				if item.name!=".":
 					rects, self.ypos, self.renderdict = textitem("[LINE ERROR]: ''" + item.debug + "''", simplefont, self.yjump, (155, 0, 0), frameobj.surface, self.ypos, self.renderdict)
-					print("Parser Error! Malformed line " + str(count) + " in document '" + str(self.selector) + "'\n   from server: '" + str(self.host) + ":" + str(self.port) + "'\n   ''" + item.debug + "''")
-					self.PageError+=1
-					item.debug=None
-				pass
+					if item not in self.PageErrorList:
+						print("Parser Error! Malformed line " + str(count) + " in document '" + str(self.selector) + "'\n   from server: '" + str(self.host) + ":" + str(self.port) + "'\n   ''" + item.debug + "''")
+						self.PageError+=1
+						self.PageErrorList.extend([item])
 			elif item.gtype=="1" and item.hostname.startswith("about:help"):
 				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gthelp, 1)
 				item.rect=rect
@@ -642,6 +668,7 @@ class gopherpane:
 		self.host=item.hostname
 		self.port=item.port
 		self.selector=item.selector
+		self.query=None
 		self.menuget()
 		self.set_icon_name(frameobj)
 		
@@ -656,12 +683,19 @@ class gopherpane:
 		histref=self.histlist[self.histpoint]
 		histref.menu=self.menu
 		histref.data=self.data
+		#reset page error flag-counter
+		self.PageError=0
+		#reset server error flag-counter
+		self.ServError=0
+		self.PageErrorList=[]
+		
 		self.yoff=25
 		self.loading=0
 		self.menudraw(frameobj)
 	def menuroot(self, frameobj):
 		self.selector="/"
 		self.gtype="1"
+		self.query=None
 		#reset prefixes in case of text document being the current.
 		self.menuget()
 		self.set_icon_name(frameobj)
@@ -677,6 +711,7 @@ class gopherpane:
 		else:
 			self.selector="/"
 		self.gtype="1"
+		self.query=None
 		#reset prefixes in case of text document being the current.
 		self.menuget()
 		self.set_icon_name(frameobj)
@@ -699,6 +734,7 @@ class gopherpane:
 		self.menu=histitem.menu
 		self.host=histitem.host
 		self.port=histitem.port
+		self.query=histitem.query
 		self.selector=histitem.selector
 		self.gtype=histitem.gtype
 		self.set_icon_name(frameobj)
@@ -711,6 +747,7 @@ class gopherpane:
 		self.PageError=0
 		#reset server error flag-counter
 		self.ServError=0
+		self.PageErrorList=[]
 		if self.host.startswith("about:about"):
 			self.prefix="about: "
 			self.shortprefix="about: "
@@ -727,6 +764,10 @@ class gopherpane:
 			self.prefix="text: gopher://"
 			self.shortprefix="text: "
 			frameobj.seticon(gttext)
+		elif self.gtype=="7":
+			self.prefix="query: gopher://"
+			self.shortprefix="query: "
+			frameobj.seticon(gtquery)
 		else:
 			self.prefix="menu: gopher://"
 			self.shortprefix="menu: "
@@ -734,10 +775,13 @@ class gopherpane:
 				frameobj.seticon(gtmenuroot)
 			else:
 				frameobj.seticon(gtmenu)
-		
+		if self.query!=None:
+			querystring=" ?:" + self.query
+		else:
+			querystring=""
 		if self.host.startswith("about:about"):
 			frameobj.name="About Zoxenpher"
-		if self.host.startswith("about:help"):
+		elif self.host.startswith("about:help"):
 			try:
 				frameobj.name="Help: "+self.menu[0].name
 			except IndexError:
@@ -745,7 +789,7 @@ class gopherpane:
 		elif self.host.startswith("about:"):
 			frameobj.name=(self.shortprefix+str(self.host))
 		else:
-			frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
+			frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector) + querystring)
 	def pumpcall1(self, frameobj, data=None):
 		
 				
@@ -842,7 +886,7 @@ class gopherpane:
 				self.yoff-=self.yjump*2
 				self.menudraw(frameobj)
 			if data.key==pygame.K_m:
-				newgop=bookmadded(url=libzox.gurlencode(self.host, self.selector, self.gtype, self.port))
+				newgop=bookmadded(url=libzox.gurlencode(self.host, self.selector, self.gtype, self.port, self.query))
 				framesc.add_frame(stz.framex(500, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
 			mods=pygame.key.get_mods()
 			if mods & pygame.KMOD_CTRL:
@@ -903,7 +947,7 @@ class gopherpane:
 							sideproc.daemon=True
 							sideproc.start()
 					if self.bookrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
-						newgop=bookmadded(url=libzox.gurlencode(self.host, self.selector, self.gtype, self.port))
+						newgop=bookmadded(url=libzox.gurlencode(self.host, self.selector, self.gtype, self.port, self.query))
 						framesc.add_frame(stz.framex(500, 100, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
 					if self.backrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 						if self.histpoint>0 and self.loading==0:
@@ -1011,14 +1055,16 @@ class gopherpane:
 
 #query (gopher item type 7) dialog box
 class querypane:
-	def __init__(self, host, port, selector):
+	def __init__(self, host, port, selector, query=""):
 		self.host=host
 		self.port=port
 		self.selector=selector
 		self.yoff=0
 		#self.hovmsg="Enter your query into the serarch box"
 		self.yjump=int(libzox.cnfdict["menutextjump"])
-		self.stringblob=""
+		self.stringblob=query
+		if self.stringblob==None:
+			self.stringblob=""
 		if self.host=="QUERYTEST":
 			self.debug=1
 		else:
@@ -1032,13 +1078,13 @@ class querypane:
 		textitem(">"+self.stringblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*4, {}, xoff=0)
 	def loader(self, frameobj):
 		frameobj.name="Loading..."
-		try:
-			data=libgop.gopherget(self.host, self.port, self.selector, query=self.stringblob)
-		except Exception as err:
-			print(err)
-			data=open(os.path.join("vgop", "gaierror"))
-		menu=libgop.menudecode(data)
-		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, preload=menu, loading=0)
+		#try:
+		#	data=libgop.gopherget(self.host, self.port, self.selector, query=self.stringblob)
+		#except Exception as err:
+		#	print(err)
+		#	data=open(os.path.join("vgop", "gaierror"))
+		#menu=libgop.menudecode(data)
+		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, gtype="7", query=self.stringblob)
 		framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 		#close self
 		framesc.close_pid(frameobj.pid)
@@ -1183,7 +1229,7 @@ class bookmarks:
 			return gtimage
 		return None
 	def rotarylaunch(self, url, frameobj):
-		self.host, self.port, self.selector, self.gtype = libzox.gurldecode(url)
+		self.host, self.port, self.selector, self.gtype, self.query = libzox.gurldecode(url)
 		if self.gtype=="1":
 			sideproc=Thread(target = self.loaderg1, args = [frameobj])
 			sideproc.daemon=True
@@ -1193,7 +1239,7 @@ class bookmarks:
 			sideproc.daemon=True
 			sideproc.start()
 		elif self.gtype=="7":
-			newgop=querypane(host=self.host, port=self.port, selector=self.selector)
+			newgop=querypane(host=self.host, port=self.port, selector=self.selector, query=self.query)
 			framesc.add_frame(stz.framex(500, 100, "Gopher Query", resizable=1, pumpcall=newgop.pumpcall1))
 		elif self.gtype=="g" or self.gtype=="p" or self.gtype=="I":
 			newgop=imgview(host=self.host, port=self.port, selector=self.selector, gtype=self.gtype)

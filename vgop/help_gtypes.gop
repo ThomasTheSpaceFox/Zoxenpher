@@ -1,20 +1,23 @@
 iGopher Types	null	null	70
 i	null	null	70
-iGopher menus contain a variety of different types of content.  This help article lists which ones Zoxenpher supports and how to use them. Note that some gopher types have diffrent icons depending on context. take a moment to familiarize yourself with these.	null	null	70
+iGopher menus contain a variety of different types of content.  This help article lists which ones Zoxenpher supports and how to use them. Note that some gopher types have different icons depending on context. take a moment to familiarize yourself with these.	null	null	70
+i	null	null	70
+psection arrow	/	about:highlight_arrow.png	70
+iA special zoxenpher-specific indicator that Tries to identify section dividers & section dividing titles. (type i, which normally lacks an icon)	null	null	70
 i	null	null	70
 pmenu	/	about:menuicn.png	70
 itype 1: a gopher menu. gopher menus are the lists of items (selectors) that make up the gopher world.	null	null	70
 i	null	null	70
-pmenuremote	/	about:menuremoteicn.png	70
+pmenu-remote	/	about:menuremoteicn.png	70
 iThis icon is the same as the normal menu icon, but indicates a menu on a different server. hence the arrow. Its worth noting that they are the same type.	null	null	70
 i	null	null	70
-pmenuinternal	/	about:menuinticn.png	70
+pmenu-internal	/	about:menuinticn.png	70
 iVirtual menu provided internally by zoxenpher. such as this help page, and the "about:splash" page.	null	null	70
 i	null	null	70
-pmenuhelp	/	about:menuhelpicn.png	70
+pmenu-help	/	about:menuhelpicn.png	70
 iVirtual Help menu provided internally by zoxenpher. Indicates internal zoxenpher documentation.	null	null	70
 i	null	null	70
-pmenuroot	/	about:menurooticn.png	70
+pmenu-root	/	about:menurooticn.png	70
 iThe current server's root menu. note that this icon in specific can also be seen in the bookmarks manager.	null	null	70
 i	null	null	70
 ptext	/	about:texticon.png	70
@@ -31,7 +34,7 @@ itype s: Sound file. Sounds are played using pygame's music support.	null	null	7
 iNote: zoxenpher will only play ONE sound at a time, but you may have multiple sound players open.	null	null	70
 iNote: the music will stop when you close a sound player window.	null	null	70
 iNote: The sound player must download the FILE /before/ it can play it. This may be fixed in the future.	null	null	70
-iNote: format support will vary depending on what music/sound formats your pygame instalation supports.	null	null	70
+iNote: format support will vary depending on what music/sound formats your pygame installation supports.	null	null	70
 i	null	null	70
 perror	/	about:erroricn.png	70
 itype 3: Oops... This special type is not one your supposed to see. That is, it only appears when the gopher server has an error, as it is an error code. The accompanying text might help discern what happened.	null	null	70

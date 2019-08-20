@@ -1,7 +1,7 @@
 iWallpaper	null	null	70
 p	/	about:help_part1.png	70
 i--- wallpaper overview---	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 izoxenpher has tiled wallpaper support. You can choose a wallpaper using a cnf.dat setting.	null	null	70
 1Note: read configuration help first!	/	about:help_conf	70
 i	null	null	70
@@ -10,7 +10,7 @@ ibgtile=none	null	null	70
 i	null	null	70
 p	/	about:help_part2.png	70
 iWallpaper Display modes:	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 i - centered mode	null	null	70
 ibgmode=0	null	null	70
 i - tiled mode (default)	null	null	70
@@ -20,7 +20,7 @@ ibgmode=2	null	null	70
 i	null	null	70
 p	/	about:help_part3.png	70
 iusing your own wallpaper:	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 iplace the wallpaper image in the 'usr' directory (where cnf.example and cnf.dat are)	null	null	70
 ithen set bgtile to the filename of the image. i.e. bgtile=example.jpg	null	null	70
 i	null	null	70

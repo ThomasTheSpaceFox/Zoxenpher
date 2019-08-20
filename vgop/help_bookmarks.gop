@@ -2,7 +2,7 @@ iBookmarks how-to	null	null	70
 i	null	null	70
 p	/	about:help_part1.png	70
 iThe Zoxenpher Bookmarks manager.	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 i	null	null	70
 iZoxenpher, similar to web browsers, and unlike some, particularly older,	null	null	70
 igopher clients, has a fully functional bookmarks system.	null	null	70
@@ -12,7 +12,7 @@ pbookmarks manager button	/	about:bookmarks.png	70
 i	null	null	70
 p	/	about:help_part2.png	70
 iscrolling	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 i	null	null	70
 iUpwards scrolling indicator	null	null	70
 p-Can Scroll UP:	/	about:scrollu.png	70
@@ -24,40 +24,40 @@ p-CAN NOT scroll DOWN:	/	about:scrolld_no.png	70
 i	null	null	70
 p	/	about:help_part3.png	70
 iOpening Bookmarks:	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 pselected:	/	about:goact.png	70
 pnot selected:	/	about:goinact.png	70
 iTo open a bookmark, leftclick the "go" button in the bookmarks window. It will turn green when selected. Now leftclick the desired bookmark. The bookmark will be opened into an appropiate window.	null	null	70
 i	null	null	70
 p	/	about:help_part4.png	70
 iDeleteing Bookmarks:	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 pselected:	/	about:delact.png	70
 pnot selected:	/	about:delinact.png	70
 iTo delete a bookmark, leftclick the "del" button in the bookmarks window.  It will turn green when selected. Now leftclick the desired bookmark.  A confirmation dialog will appear. Press [Y] to confirm or [N] to cancel.	null	null	70
 i	null	null	70
 p	/	about:help_part5.png	70
 iEditing Bookmarks:	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 pselected:	/	about:editact.png	70
 pnot selected:	/	about:editinact.png	70
 iTo edit a bookmark, leftclick the "edit" button in the bookmarks window. It will turn green when selected. Now leftclick the desired bookmark. An edit dialog will appear. use [TAB] to alternate between the url and name feilds. The selected feild will have a "|" following it. modify the url and name feilds as desired. Press [Enter/Return]	null	null	70
 i	null	null	70
 p	/	about:help_part6.png	70
 iCreating Bookmarks:	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 pNew button:	/	about:newbm.png	70
 iTo create a new bookmark, leftclick the "new" button in the bookmarks window. An edit dialog will appear. This will be the same as the edit dialog described above. except the url ("gopher://") and name ("name:") feilds will be blank.	null	null	70
 i	null	null	70
 p	/	about:help_part7.png	70
 ibookmarking pages:	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 ppage bookmark button:	/	about:bookbtn.png	70
 iIn both the image viewer, and text/menu windows, pressing [m] will open a bookmark edit dialog. This will be the same as the "Editing Bookmarks" edit dialog described above,  except the url will be prefilled, and you will need to enter a label.	null	null	70
 i	null	null	70
 p	/	about:help_part8.png	70
 iBookmark a Link:	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 ihold shift and leftclick the desired link. as with "Bookmarking pages", an edit dialog with the url prefilled will appear. the name will also be prefilled by the link text.	null	null	70
 i	null	null	70
 i	null	null	70

@@ -1,7 +1,7 @@
 iZoxenpher Error Codes	null	null	70
 p	/	about:help_part1.png	70
 i--- Socket errors/connection errors ---	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 is0 - socket.gaierror: an address-related error. A caught 'socket.gaierror' exception.	null	null	70
 is1 - Timeout while trying to connect to server. A caught 'socket.timeout' exception.	null	null	70
 is2 - Undefined socket error.	null	null	70
@@ -11,7 +11,7 @@ is5 - socket.error: a generic socket error. A caught 'socket.error' exception.	n
 i	null	null	70
 p	/	about:help_part2.png	70
 i--- Sound player errors ---	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 iaud0 - failed to load sound type data into mixer. (may be caused by corrupt data, unsupported format, invalid selector, mistyped data, etc.)	null	null	70
 iaud1 - failed to load sound type data due to network/socket error.	null	null	70
 1Return to help menu	/	about:help	70

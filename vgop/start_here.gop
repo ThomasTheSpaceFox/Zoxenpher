@@ -3,7 +3,7 @@ i	null	null	70
 iZoxenpher v2.2.0	null	null	70
 i	null	null	70
 iFeatures:	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 i - automatic wordwrap & graphical gopher type icons with special	null	null	70
 i       context-aware menu type icons.	null	null	70
 i - multitasking interface based upon the Strazoloid virtual window manager	null	null	70
@@ -15,7 +15,7 @@ i - Image viewer and sound type player.	null	null	70
 i - assorted widgets. such as a clock.	null	null	70
 i	null	null	70
 iOverview:	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 iZoxenpher is built from the ground up as a gopherspace client first, unlike some other clients where gopher is an afterthought, its the key feature here.  That said, while Zoxenpher is quite a new entry to the world of the gopher, it already has support for basic browsing, images, search queries, even a bookmarks system.	null	null	70
 i	null	null	70
 iEven better, Zoxenpher is built on the portable programming language, python, as well as the ubiquitous pygame.  What this means is, Zoxenpher isn't restricted to any one operating system or CPU architecture. Its also a fully GUI client, with modern amenities like in-line images, multiple windows, obvious links, url-on-link-mouseover, launch web URLs in specified web browser and more.	null	null	70

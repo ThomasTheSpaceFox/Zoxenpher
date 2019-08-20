@@ -1,7 +1,7 @@
 iKeys and Usage	null	null	70
 p	/	about:help_part1.png	70
 iGlobal:	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 i - CTRL+n: new gopher window	null	null	70
 i - CTRL+g: open go dialog	null	null	70
 i - F1: open help menu	null	null	70
@@ -10,7 +10,7 @@ i - CTRL+q: exit zoxenpher.	null	null	70
 i 	null	null	70
 p	/	about:help_part2.png	70
 iGopher menu Controls:	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 i - leftclick: open menu/text in same window (or any other link in new window)	null	null	70
 i - leftclick (on image): open image in image viewer.	null	null	70
 i - rightclick: open menu/text in new window.	null	null	70
@@ -26,7 +26,7 @@ i - CTRL+r: reload current menu. (disabled when menu is loading data)	null	null	
 i	null	null	70
 p	/	about:help_part3.png	70
 iImage viewer:	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 i - leftclick+drag: pan image	null	null	70
 i - rightclick: reset pan and zoom	null	null	70
 i - mouse wheel: zoom image in and out. (max zoom size set to viewzoom setting. default 2400)	null	null	70
@@ -35,13 +35,13 @@ i - m: bookmark image (will open dialog for label and confirmation)	null	null	70
 i	null	null	70
 p	/	about:help_part4.png	70
 iSound Player:	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 i - p: play sound	null	null	70
 i - s: stop sound. (sound will also stop if player window is closed.)	null	null	70
 i 	null	null	70
 p	/	about:help_part5.png	70
 iBookmarks:	null	null	70
-p	/	about:hbar2.png	70
+i______________________________________________________	null	null	70
 i - choose go (open), del (delete), or edit, (active one will be green, go is picked by default)	null	null	70
 i - then, choose a bookmark to operate on via leftclicking it.	null	null	70
 i - click new to add a new bookmark	null	null	70

@@ -120,9 +120,26 @@ def imagelimit_gwindow(surf, maxsize, heightmax):
 #displays text and links with automatic word wrap.
 def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=None, link=0, xoff=26, textcoly=(255, 255, 255), iconsize=25):
 	xpos=0
+	yposstart=ypos
+	#don't bother with items beyond the end of the screen, as theres no point.
+	if ypos>surface.get_height():
+		return (pygame.Rect(0, 0, 0, 0), ypos, renderdict)
+	#upper position of rendering
+	top_offset=-30-yjump
+	#generate renderdict key for storing height, use to read cached
+	#   height and return quickly (if height cached)
+	#NOTE: its OK if the same line of text is duplicated, as it will
+	#   word-wrap the exact same way, and hence, be the same height.
+	sizekey="YSIZECACHE-" + text + "---"
+	if ypos<=top_offset:
+		if sizekey in renderdict:
+			return (pygame.Rect(0, 0, 0, 0), renderdict[sizekey]+ypos, renderdict)
+	
+	
 	rectlist=[]
 	words=text.split(" ")
-	if itemicn!=None and ypos>=(-30-yjump) and ypos<=surface.get_height():
+	
+	if itemicn!=None and ypos>=top_offset:
 		
 		rectlist.extend([surface.blit(itemicn, (xpos, ypos))])
 		if iconsize>yjump:
@@ -135,7 +152,7 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 			
 			#print buffstring
 			if word==None:
-				if ypos>=(-30-yjump) and ypos<=surface.get_height():
+				if ypos>=top_offset:# and ypos<=surface.get_height():
 					dictkey=str(textcoly[0])+"\t"+str(textcoly[1])+"\t"+str(textcoly[2])+"\t"+str(textcolx[0])+"\t"+str(textcolx[1])+"\t"+str(textcolx[2])+"\t"+buffstring
 					if dictkey in renderdict:
 						namelabel=renderdict[dictkey]
@@ -151,7 +168,7 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 			elif xfont.size(buffstring+word+" ")[0]<=(surface.get_width()-xoff):
 				buffstring+=word+" "
 			else:
-				if ypos>=(-30-yjump) and ypos<=surface.get_height():
+				if ypos>=top_offset:# and ypos<=surface.get_height():
 					dictkey=str(textcoly[0])+"\t"+str(textcoly[1])+"\t"+str(textcoly[2])+"\t"+str(textcolx[0])+"\t"+str(textcolx[1])+"\t"+str(textcolx[2])+"\t"+buffstring
 					if dictkey in renderdict:
 						namelabel=renderdict[dictkey]
@@ -165,6 +182,9 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 				
 				ypos+=yjump
 				buffstring=word+" "
+		#store size in renderdict using sizekey, if its not already present.
+		if sizekey not in renderdict:
+			renderdict[sizekey]=ypos-yposstart
 	if len(rectlist)>0:
 		return (rectlist[0].unionall(rectlist), ypos, renderdict)
 	else:

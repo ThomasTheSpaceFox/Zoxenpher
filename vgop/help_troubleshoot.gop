@@ -25,9 +25,6 @@ i	null	null	70
 iq: A connection seems to have hanged.	null	null	70
 ia: wait 20 seconds. this is the default timeout pereod for the connection. OR, close down zoxenpher. Zoxenpher is written in such a way that a hanged connection SHOULD NOT stop it from exiting.	null	null	70
 i	null	null	70
-iq: A menu or text document is scrolling slowly	null	null	70
-ia: Unfortunately, Zoxenpher does not handle massive text documents and menus that well. So, you will run into the odd situation where zoxenpher runs rather poorly when displaying alot of text at once.	null	null	70
-i	null	null	70
 i	null	null	70
 p	/	about:help_part2.png	70
 i--- Sound type playback ---	null	null	70

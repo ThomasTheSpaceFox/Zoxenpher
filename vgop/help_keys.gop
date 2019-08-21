@@ -14,8 +14,10 @@ i______________________________________________________	null	null	70
 i - leftclick: open menu/text in same window (or any other link in new window)	null	null	70
 i - leftclick (on image): open image in image viewer.	null	null	70
 i - rightclick: open menu/text in new window.	null	null	70
-i - mouse wheel: scroll menu up/down	null	null	70
-i - up/down arrow keys: scroll menu up/down	null	null	70
+i - mouse wheel: scroll menu up/down (slower)	null	null	70
+i - shift+mouse wheel: scroll menu up/down (faster)	null	null	70
+i - up/down arrow keys: scroll menu up/down (slower)	null	null	70
+i - PageUp/PageDown: scroll menu up/down (faster)	null	null	70
 i - m: bookmark page (will open dialog for label and confirmation)	null	null	70
 i - SHIFT+leftclick: bookmark link. (will open dialog for label and confirmation)	null	null	70
 i - ALT+up: go up a level. (same as 'up' button)	null	null	70

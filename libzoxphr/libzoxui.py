@@ -44,7 +44,7 @@ class yndialog:
 		self.callback=callback
 		self.carrydata=carrydata
 	def renderdisp(self, frameobj):
-		frameobj.surface.fill((223, 223, 223))
+		frameobj.surface.fill((220, 220, 220))
 		for line in self.message.split("\n"):
 			foo, self.ypos, bar = textitem(line, simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.ypos, {}, xoff=0, textcoly=(223, 223, 223))
 		

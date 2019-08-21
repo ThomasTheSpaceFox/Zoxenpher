@@ -1,6 +1,6 @@
 # Zoxenpher    
 A python & pygame gopher client.       
-v2.2.0      
+v2.2.1      
          
 powered by:      
  - libgop gopher library v0.2      

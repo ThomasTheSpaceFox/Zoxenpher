@@ -14,7 +14,7 @@ import libzoxphr.libzox as libzox
 from libzoxphr.libzox import progobj
 from libzoxphr.libzox import pathprogobj
 
-print("Zoxenpher v2.2.0")
+print("Zoxenpher v2.2.1")
 
 
 #set some option variables inside strazoloidwm based upon cnf.dat settings.

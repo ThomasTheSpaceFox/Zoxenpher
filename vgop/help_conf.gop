@@ -77,7 +77,7 @@ i--- Strazoloidwm frame style ---	null	null	70
 i______________________________________________________	null	null	70
 ichoose what builtin frame style strazoloidwm should use.	null	null	70
 i(0=plain, 1=3D (without bevels), 2=3D (with bevels, default)	null	null	70
-iframestyle=2	null	null	70
+iframestyle=1	null	null	70
 i	null	null	70
 1Return to help menu	/	about:help	70
 .

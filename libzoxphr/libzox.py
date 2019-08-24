@@ -348,7 +348,7 @@ def bmsave(bmlist):
 #bmsave(bmlist)
 
 #syntax check lists
-cnfbools=["itemdebug"]
+cnfbools=["itemdebug", "showzoxban"]
 cnfints=["imgpreview", "bgmode", "histsize", "deskw", "deskh", "menufontsize", "menutextjump", "menuheight", "framestyle", "wmfps", "viewzoom"]
 
 cnfdef={"imgpreview" : "10",
@@ -359,13 +359,14 @@ cnfdef={"imgpreview" : "10",
 "menutextjump" : "15",
 "menufont" : "mono",
 "menuheight" : "460",
-"bgtile" : "diagbg.png",
-"framestyle" : "2",
+"bgtile" : "zoxnewbg.png",
+"framestyle" : "1",
 "wmfps" : "30",
 "itemdebug" : "0",
 "viewzoom" : "2400",
 "browser" : "none",
-"bgmode" : "1"}
+"bgmode" : "1",
+"showzoxban" : "1"}
 
 itemdebug=0
 
@@ -410,8 +411,9 @@ print("Libzox: loading configuration data.")
 cnfdict=cnfload()
 
 #draw tiles (tilesurf) on a copy of a surface (drawsurf)
-def tiledraw(drawsurf, tilesurf):
+def tiledraw(drawsurf, tilesurf, zban):
 	bgmode=int(cnfdict["bgmode"])
+	zbanflag=int(cnfdict["showzoxban"])
 	drawsurf=drawsurf.copy()
 	if bgmode==1:
 		destwidth=drawsurf.get_width()
@@ -425,17 +427,21 @@ def tiledraw(drawsurf, tilesurf):
 				drawsurf.blit(tilesurf, (xwid, ywid))
 				xwid+=sourcewidth
 			ywid+=sourceheight
-		return drawsurf
-	if bgmode==0:
+		#return drawsurf
+	elif bgmode==0:
 		xpos=drawsurf.get_width()//2-tilesurf.get_width()//2
 		ypos=drawsurf.get_height()//2-tilesurf.get_height()//2
 		drawsurf.blit(tilesurf, (xpos, ypos))
-		return drawsurf
+		#return drawsurf
 	else:
 		destwidth=drawsurf.get_width()
 		destheight=drawsurf.get_height()
 		pygame.transform.scale(tilesurf, (destwidth, destheight), drawsurf)
-		return drawsurf
+	if zbanflag:
+		xpos=drawsurf.get_width()//2-zban.get_width()//2
+		ypos=drawsurf.get_height()//2-zban.get_height()//2
+		drawsurf.blit(zban, (xpos, ypos))
+	return drawsurf
 
 ### timer for pumpcalls
 class tickdo:

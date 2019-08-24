@@ -21,6 +21,8 @@ clock_wicon=pygame.image.load(os.path.join("vgop", "clock_wicon.png"))
 tip_wicon=pygame.image.load(os.path.join("vgop", "tip_wicon.png"))
 sinfo_wicon=pygame.image.load(os.path.join("vgop", "sinfo_wicon.png"))
 yn_wicon=pygame.image.load(os.path.join("vgop", "yn_wicon.png"))
+about_wicon=pygame.image.load(os.path.join("vgop", "about_wicon.png"))
+
 
 
 def init(framescape, desktop):
@@ -212,3 +214,28 @@ class tipofday:
 				if self.tindex<0:
 					self.tindex=self.tipmax
 				self.renderdisp(frameobj)
+
+versionstring='Version: v3.0.0.indev - Codename: "Par 12"'
+
+class aboutsplash:
+	def __init__(self):
+		self.font=pygame.font.SysFont(None, 22)
+		if "indev" in versionstring:
+			self.splashbg=pygame.image.load(os.path.join("vgop", "aboutsplash_indev.jpg")).convert()
+
+		else:
+			self.splashbg=pygame.image.load(os.path.join("vgop", "aboutsplash.jpg")).convert()
+	def renderdisp(self, frameobj):
+		#frameobj.surface.fill((255, 255, 255))
+		frameobj.surface.blit(self.splashbg, (0, 0))
+		frameobj.surface.blit(self.versiontext, (self.versionpos))
+	def pumpcall1(self, frameobj, data=None):
+		#if frameobj.statflg==0:
+		#	self.renderdisp(frameobj)
+		if frameobj.statflg==1:
+			self.versiontext=self.font.render(versionstring, True, (0, 0, 0))
+			self.versionpos=(frameobj.surface.get_width()-self.versiontext.get_width(), frameobj.surface.get_height()-self.versiontext.get_height())
+			frameobj.seticon(about_wicon.convert())
+			frameobj.name=versionstring
+			self.renderdisp(frameobj)
+

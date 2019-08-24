@@ -52,15 +52,18 @@ wmfps=30
 bgtile=none
 
 #wallpaper mode (0 for 'centered', 1 for 'tiled', 2 for 'stretched')
-bgmode=1
+bgmode=2
 
 #included examples
 #bgtile=tilebg.png
 #bgtile=tilebg2.png
 #bgtile=mascotbg.png
-default wallpaper:
 #bgtile=diagbg.png
+default wallpaper:
+bgtile=zoxbgblur.jpg
 
+#whether to overlay "zoxenpher" logo banner in center of background.
+showzoxban=1
 
 ###Debug Settings###
 

@@ -14,7 +14,7 @@ import libzoxphr.libzox as libzox
 from libzoxphr.libzox import progobj
 from libzoxphr.libzox import pathprogobj
 
-print("Zoxenpher v2.2.1")
+print("Zoxenpher v3.0.0.indev")
 
 
 #set some option variables inside strazoloidwm based upon cnf.dat settings.
@@ -33,19 +33,20 @@ progobj(lza.urlgo, pygame.image.load(os.path.join("vgop", "go.png")), "urlgo", "
 progobj(lza.bookmarks, pygame.image.load(os.path.join("vgop", "bookmarks.png")), "bookmarks", "Bookmarks", "bookmarks", gopherwidth, gopherheight, 1, key=pygame.K_b, mod=pygame.KMOD_CTRL, hint="Open bookmarks. (CTRL+b)"),
 progobj(lza.quitx, pygame.image.load(os.path.join("vgop", "exit.png")), "quit", "quit", "quit", gopherwidth, gopherheight, 1, key=pygame.K_q, mod=pygame.KMOD_CTRL, hint="quit. (CTRL+q)", side=1),
 pathprogobj(lza.gopherpane, pygame.image.load(os.path.join("vgop", "help.png")), "goppane_HELP", "Gopher Menu", "GOPHER_HELP", gopherwidth, gopherheight, 1, host="about:help", key=pygame.K_F1, hint="Bring up a help menu. (F1)"),
-progobj(lza.morethings, pygame.image.load(os.path.join("vgop", "more.png")), "more", "More", "MORE", 300, 400, 1, key=pygame.K_F2, hint="More things. (F2)")]
+progobj(lza.morethings, pygame.image.load(os.path.join("vgop", "more.png")), "more", "More", "MORE", 300, 400, 1, key=pygame.K_F2, hint="More things. (F2)"),
+progobj(lza.mediaplay, pygame.image.load(os.path.join("vgop", "media.png")), "media", "Media", "MEDIA", gopherwidth, gopherheight, 1, key=pygame.K_F3, hint="Media Player (F3)")]
 
 deskt=lza.deskclass(progs)
 pygame.font.init()
 
 
 #logical equivalent to the desktop's "frame"
-deskframe=stz.desktop(int(libzox.cnfdict["deskw"]), int(libzox.cnfdict["deskh"]), "Zoxenpher", pumpcall=deskt.pumpcall1, resizable=1)
+deskframe=stz.desktop(int(libzox.cnfdict["deskw"]), int(libzox.cnfdict["deskh"]), "Zoxenpher v3.0.0.indev", pumpcall=deskt.pumpcall1, resizable=1)
 
 windowicon=pygame.image.load(os.path.join("vgop", "icon32.png"))
 
 #init framescape window manager class
-framesc=stz.framescape(deskframe, deskicon=windowicon, actbevel=(230, 230, 230), inactbevel=(200, 200, 200))
+framesc=stz.framescape(deskframe, deskicon=windowicon, actbevel=(230, 230, 230), inactbevel=(200, 200, 200), framebg=(160, 160, 160), framefg=(255, 255, 255), actframebg=(60, 60, 110), actframefg=(255, 255, 255))
 
 
 #init UI and APP libraries...

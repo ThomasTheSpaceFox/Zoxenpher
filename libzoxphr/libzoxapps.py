@@ -13,6 +13,7 @@ from .libzox import imgget
 import subprocess
 from subprocess import Popen
 from . import libzoxui
+import time
 
 simplefont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
 linkfont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
@@ -112,6 +113,12 @@ def init(framescape, desktop):
 	
 	global deskt
 	global loadingimage
+	
+	global media_play
+	global media_stop
+	global media_next
+	global media_back
+	global media_pause
 	deskt=desktop
 	framesc=framescape
 	#load Gopher type icons.
@@ -132,6 +139,12 @@ def init(framescape, desktop):
 	highlight_arrow=pygame.image.load(os.path.join("vgop", "highlight_arrow.png")).convert()
 
 	loadingimage=pygame.image.load(os.path.join("vgop", "loadingimage.png")).convert()
+	
+	media_play=pygame.image.load(os.path.join("vgop", "media_play.png")).convert()
+	media_pause=pygame.image.load(os.path.join("vgop", "media_pause.png")).convert()
+	media_stop=pygame.image.load(os.path.join("vgop", "media_stop.png")).convert()
+	media_next=pygame.image.load(os.path.join("vgop", "media_next.png")).convert()
+	media_back=pygame.image.load(os.path.join("vgop", "media_back.png")).convert()
 	
 
 
@@ -160,6 +173,7 @@ class deskclass:
 		self.framecount=1
 		self.frametime=15
 		self.wmbuttonfont=pygame.font.SysFont(None, 22)
+		
 		return
 	#def process(self):
 	#	while self.active:
@@ -205,12 +219,15 @@ class deskclass:
 		#init code
 		if frameobj.statflg==1:
 			stz.setminy(51)
-			self.drawdesk(frameobj.surface)
+			self.late_init=1
+			#self.drawdesk(frameobj.surface)
 		#shutdown code
 		if frameobj.statflg==3:
 			print("shutting down...")
 			#prevent new connections.
 			libgop.stopget=2
+			print("Stopping MPE...")
+			MPE.shutdown()
 			self.active=0
 		if frameobj.statflg==4:
 			if data.button==1:
@@ -218,6 +235,8 @@ class deskclass:
 				if self.mascotrect.collidepoint(data.pos):
 					newgop=gopherpane(host="about:about", port=70, selector="/", shortprefix="About: ")
 					framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
+					abtzox=libzoxui.aboutsplash()
+					framesc.add_frame(stz.framex(600, 150, "About Zoxenpher", resizable=0, pumpcall=abtzox.pumpcall1, xpos=100, ypos=200))
 				#task switcher logic
 				for framex in self.taskrects:
 					if self.taskrects[framex].collidepoint(data.pos):
@@ -278,8 +297,10 @@ class deskclass:
 	def imageloader(self, surface):
 		#self.wallpaper=pygame.image.load("wallpaper.jpg").convert(surface)
 		self.mascot=pygame.image.load(os.path.join("vgop", "mascot45.png")).convert(surface)
-		self.iconend=pygame.image.load(os.path.join("vgop", "iconbarend.png")).convert(surface)
-		self.iconbegin=pygame.image.load(os.path.join("vgop", "iconbarbegin.png")).convert(surface)
+		#self.iconend=pygame.image.load(os.path.join("vgop", "iconbarend.png")).convert(surface)
+		#self.iconbegin=pygame.image.load(os.path.join("vgop", "iconbarbegin.png")).convert(surface)
+		#QUESTION: why does .convert_alpha(surface) need display mode set, but .convert(surface) does not? this makes zero sense!
+		self.zban=pygame.image.load(os.path.join("vgop", "zoxbanner.png"))
 		self.resize(surface)
 		if tiledraw!=None:
 			self.tilesurf=tiledraw.convert(surface)
@@ -292,13 +313,14 @@ class deskclass:
 		#Save CPU time by reseting auto-render timer. 
 		#(avoids needlessly rendering the desktop via the timer when its triggered otherwise)
 		self.framecount=1
+		
 		if not self.imgload:
 			self.imgload=1
 			self.imageloader(surface)
-			
+		surface.fill((208, 211, 224))
 		if self.tilesurf!=None:
 			if self.mattesurf==None:
-				self.mattesurf=(libzox.tiledraw(surface, self.tilesurf)).convert(surface)
+				self.mattesurf=(libzox.tiledraw(surface, self.tilesurf, self.zban)).convert(surface)
 			surface.blit(self.mattesurf, (0, 0))
 			
 			
@@ -309,17 +331,17 @@ class deskclass:
 		icny=0
 		icnxjmp=45
 		icnyjmp=50
-		pygame.draw.rect(surface, (60, 60, 120), pygame.Rect(0, 0, surface.get_width(), 45))
+		pygame.draw.rect(surface, (220, 220, 220), pygame.Rect(0, 0, surface.get_width(), 45))
 		pygame.draw.line(surface, (20, 40, 80), (0, 45), (surface.get_width(), 45), 1)
 		for prog in self.progs:
 			if not prog.side:
 				prog.iconrect=surface.blit(prog.icon, (icnx, icny))
 				icnx+=icnxjmp
-		surface.blit(self.iconend, (icnx, icny))
-		icnx+=icnxjmp//2
+		#surface.blit(self.iconend, (icnx, icny))
+		#icnx+=icnxjmp//2
 		
 		#urllabel=simplefont.render(self.hovertext, True, (255, 255, 255), (60, 60, 120))
-		urllabel=hudfont.render(self.hovertext, True, (255, 255, 255), (60, 60, 120))
+		urllabel=hudfont.render(self.hovertext, True, (0, 0, 0), (220, 220, 220))
 		surface.blit(urllabel, (icnx+10, 0))
 		#task switcher:
 		self.taskrects={}
@@ -333,8 +355,8 @@ class deskclass:
 			if prog.side:
 				mascotx-=45
 				prog.iconrect=surface.blit(prog.icon, (mascotx, icny))
-		mascotx-=self.iconbegin.get_width()
-		surface.blit(self.iconbegin, (mascotx, 0))
+		#mascotx-=self.iconbegin.get_width()
+		#surface.blit(self.iconbegin, (mascotx, 0))
 		
 		if framesc==None:
 			self.late_init=1
@@ -343,7 +365,7 @@ class deskclass:
 				buttonsize=int(((mascotx-1)-icnx)/len(framesc.proclist))
 			except ZeroDivisionError:
 				buttonsize=25
-			buttonrect=pygame.Rect(icnx, 19, buttonsize, 27)
+			buttonrect=pygame.Rect(icnx, 19, buttonsize, 25)
 			#sort the tasks via PID to keep task icons from "jumping"
 			indx=0
 			self.actindex=None
@@ -354,21 +376,21 @@ class deskclass:
 				else:
 					framename=framex.name
 				if framex.wo==0:
-					pygame.draw.rect(surface, (0, 100, 130), buttonrect, 0)
-					pygame.draw.rect(surface, (255, 255, 255), buttonrect, 1)
+					pygame.draw.rect(surface, (60, 60, 110), buttonrect, 0)
+					#pygame.draw.rect(surface, (255, 255, 255), buttonrect, 1)
 					self.actindex=indx
-					nametx=self.wmbuttonfont.render(framename, True, (255, 255, 255), (0, 100, 130)).convert()
+					nametx=self.wmbuttonfont.render(framename, True, (255, 255, 255), (60, 60, 110)).convert()
 				else:
-					pygame.draw.rect(surface, (110, 110, 130), buttonrect, 0)
-					pygame.draw.rect(surface, (0, 0, 0), buttonrect, 1)
-					nametx=self.wmbuttonfont.render(framename, True, (255, 255, 255), (110, 110, 130)).convert()
+					pygame.draw.rect(surface, (160, 160, 160), buttonrect, 0)
+					#pygame.draw.rect(surface, (0, 0, 0), buttonrect, 1)
+					nametx=self.wmbuttonfont.render(framename, True, (255, 255, 255), (160, 160, 160)).convert()
 				indx+=1
 				if framex.icon!=None:
-					frect=surface.blit(framex.icon, (buttonrect.x+1, 20))
+					frect=surface.blit(framex.icon, (buttonrect.x, 19))
 					#icnx+=framex.icon.get_width()
 					self.taskrects[framex]=buttonrect.copy()
 				else:
-					frect=surface.blit(gterror, (buttonrect.x+1, 20))
+					frect=surface.blit(gterror, (buttonrect.x, 19))
 					#icnx+=gterror.get_width()
 					self.taskrects[framex]=buttonrect.copy()
 				nametxrect=nametx.get_rect()
@@ -618,47 +640,47 @@ class gopherpane:
 			sideproc.daemon=True
 			sideproc.start()
 		self.hudrect=pygame.Rect(0, 0, frameobj.surface.get_width(), 22)
-		pygame.draw.rect(frameobj.surface, (60, 60, 120), self.hudrect)
+		pygame.draw.rect(frameobj.surface, (220, 220, 220), self.hudrect)
 		#self.hudcorner=pygame.Rect(0, 0, 25, 22)
 		#pygame.draw.rect(frameobj.surface, (255, 255, 255), self.hudcorner)
 		if self.loading:
 			frameobj.surface.blit(self.menucorner_wait, (0, 0))
 		else:
 			frameobj.surface.blit(self.menucorner, (0, 0))
-		xpos=27
+		xpos=25
 		if self.histpoint>0 and self.loading==0:
-			self.backrect=frameobj.surface.blit(self.backbtn, (xpos, 1))
+			self.backrect=frameobj.surface.blit(self.backbtn, (xpos, 0))
 		else:
-			self.backrect=frameobj.surface.blit(self.backbtn_inact, (xpos, 1))
+			self.backrect=frameobj.surface.blit(self.backbtn_inact, (xpos, 0))
 		xpos+=60
 		if self.histpoint<len(self.histlist)-1 and self.loading==0:
-			self.nextrect=frameobj.surface.blit(self.nextbtn, (xpos, 1))
+			self.nextrect=frameobj.surface.blit(self.nextbtn, (xpos, 0))
 		else:
-			self.nextrect=frameobj.surface.blit(self.nextbtn_inact, (xpos, 1))
+			self.nextrect=frameobj.surface.blit(self.nextbtn_inact, (xpos, 0))
 		xpos+=60
 		if "/" in self.selector and self.selector!="/":
-			self.uprect=frameobj.surface.blit(self.upbtn, (xpos, 1))
+			self.uprect=frameobj.surface.blit(self.upbtn, (xpos, 0))
 		else:
-			self.uprect=frameobj.surface.blit(self.upbtn_inact, (xpos, 1))
+			self.uprect=frameobj.surface.blit(self.upbtn_inact, (xpos, 0))
 		xpos+=60
 		if self.selector!="/" and self.selector!="":
-			self.rootrect=frameobj.surface.blit(self.rootbtn, (xpos, 1))
+			self.rootrect=frameobj.surface.blit(self.rootbtn, (xpos, 0))
 		else:
-			self.rootrect=frameobj.surface.blit(self.rootbtn_inact, (xpos, 1))
-		xpos+=62
-		pygame.draw.line(frameobj.surface, (255, 255, 255), (xpos, 0), (xpos, 25), 2)
+			self.rootrect=frameobj.surface.blit(self.rootbtn_inact, (xpos, 0))
+		xpos+=60
+		#pygame.draw.line(frameobj.surface, (255, 255, 255), (xpos, 0), (xpos, 25), 0)
 		xpos+=8
-		self.bookrect=frameobj.surface.blit(self.bookbtn, (xpos, 1))
+		self.bookrect=frameobj.surface.blit(self.bookbtn, (xpos, 0))
 		xpos+=60
 		if self.loading:
-			self.loadrect=frameobj.surface.blit(self.loadbtn_inact, (xpos, 1))
+			self.loadrect=frameobj.surface.blit(self.loadbtn_inact, (xpos, 0))
 		else:
-			self.loadrect=frameobj.surface.blit(self.loadbtn, (xpos, 1))
+			self.loadrect=frameobj.surface.blit(self.loadbtn, (xpos, 0))
 		xpos+=60
 		if self.PageError!=0 or self.ServError!=0:
-			self.erroriconRect=frameobj.surface.blit(self.perrorbtn, (xpos, 1))
+			self.erroriconRect=frameobj.surface.blit(self.perrorbtn, (xpos, 0))
 		else:
-			self.erroriconRect=frameobj.surface.blit(self.perrorbtn_inact, (xpos, 1))
+			self.erroriconRect=frameobj.surface.blit(self.perrorbtn_inact, (xpos, 0))
 		
 		if self.yoff<25:
 			self.scuprect=frameobj.surface.blit(self.scrollup, (frameobj.surface.get_width()-44, 0))
@@ -829,9 +851,11 @@ class gopherpane:
 					deskt.hovertext=str(self.ServError) + " Server Error(s)."
 				else:
 					deskt.hovertext="No Errors detected."
+			#link-url on mouseover code
 			elif not self.hudrect.collidepoint(mpos):
 				for item in self.menu:
 					if item.gtype!=None:
+						#normal (supported) gopher types
 						if item.gtype in "01pgI7s":
 							try:
 								if item.rect.collidepoint(mpos):
@@ -842,6 +866,7 @@ class gopherpane:
 									break
 							except AttributeError:
 								continue
+						#web url
 						if item.gtype=="h":
 							try:
 								if item.rect.collidepoint(mpos):
@@ -855,6 +880,7 @@ class gopherpane:
 			del self.renderdict
 			del self.menu
 			del self.data
+			del self.histlist
 		#startup
 		if frameobj.statflg==1:
 			self.menudraw(frameobj)
@@ -1221,21 +1247,21 @@ class bookmarks:
 		#pygame.draw.rect(frameobj.surface, (185, 195, 255), self.siderect)
 		pygame.draw.rect(frameobj.surface, (223, 223, 223), self.siderect)
 		pygame.draw.line(frameobj.surface, (0, 0, 0), (25, 0), (25, frameobj.surface.get_height()), 1)
-		pygame.draw.rect(frameobj.surface, (60, 60, 120), pygame.Rect(0, 0, frameobj.surface.get_width(), 22))
+		pygame.draw.rect(frameobj.surface, (220, 220, 220), pygame.Rect(0, 0, frameobj.surface.get_width(), 22))
 		frameobj.surface.blit(self.menucorner_book, (0, 0))
-		self.newrect=frameobj.surface.blit(self.newbm, (176, 1))
+		self.newrect=frameobj.surface.blit(self.newbm, (205, 0))
 		if self.funct==0:
-			self.gorect=frameobj.surface.blit(self.go1, (26, 1))
-			self.delrect=frameobj.surface.blit(self.del0, (76, 1))
-			self.editrect=frameobj.surface.blit(self.edit0, (126, 1))
+			self.gorect=frameobj.surface.blit(self.go1, (25, 0))
+			self.delrect=frameobj.surface.blit(self.del0, (85, 0))
+			self.editrect=frameobj.surface.blit(self.edit0, (145, 0))
 		elif self.funct==1:
-			self.gorect=frameobj.surface.blit(self.go0, (26, 1))
-			self.delrect=frameobj.surface.blit(self.del1, (76, 1))
-			self.editrect=frameobj.surface.blit(self.edit0, (126, 1))
+			self.gorect=frameobj.surface.blit(self.go0, (25, 0))
+			self.delrect=frameobj.surface.blit(self.del1, (85, 0))
+			self.editrect=frameobj.surface.blit(self.edit0, (145, 0))
 		else:
-			self.gorect=frameobj.surface.blit(self.go0, (26, 1))
-			self.delrect=frameobj.surface.blit(self.del0, (76, 1))
-			self.editrect=frameobj.surface.blit(self.edit1, (126, 1))
+			self.gorect=frameobj.surface.blit(self.go0, (25, 0))
+			self.delrect=frameobj.surface.blit(self.del0, (85, 0))
+			self.editrect=frameobj.surface.blit(self.edit1, (145, 0))
 		self.ypos=25
 		for item in xlist:
 			item.rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, itemicn=self.getitemtypeicn(item.url), link=1)
@@ -1772,6 +1798,118 @@ class sndplay:
 				
 				
 
+class MediaPlaybackEngine:
+	def __init__(self):
+		self.playlist=[]
+		self.playing=0
+		self.repeatmode=0
+		self.trackindex=None
+		#if set to 1, MPE should wait in a loop for the current
+		#self.trackindex to load, then play it.
+		self.loadtrack=0
+		#if not none, the given track should be added and played (the latter if its loaded yet)
+		self.tracktoadd=None
+		#if not none, the given track should be removed, and if playing, stopped, and self.trackindex be reset to 0)
+		self.tracktoremove=None
+		self.run=1
+		self.shutdown_ready=0
+	def Process(self):
+		print("Zoxenpher Media Playback Engine initialized.")
+		while self.run:
+			time.sleep(0.1)
+		self.shutdown_ready=1
+	#blocking shutdown mechanism.
+	def shutdown(self):
+		self.run=0
+		while not self.shutdown_ready:
+			time.sleep(0.1)
+	def AddPlay(self, song):
+		if song not in self.playlist:
+			self.tracktoadd=song
+	def RemoveStop(self, song):
+		if song in self.playlist:
+			self.tracktoremove=song
+			
+
+
+##MEDIA PLAYBACK ENGINE STARTUP
+print("Start MPE...")
+MPE=MediaPlaybackEngine()
+sideproc=Thread(target = MPE.Process)
+sideproc.daemon=True
+sideproc.start()
+
+
+class Song:
+	def __init__(self, host, port, selector, nametext=None):
+		if selector.lower().endswith(".mp3"):
+			self.mtype="MP3 Audio"
+		elif selector.lower().endswith(".ogg"):
+			self.mtype="OGG Audio"
+		elif selector.lower().endswith(".wav"):
+			self.mtype="Wave Audio"
+		elif selector.lower().endswith(".midi"):
+			self.mtype="MIDI"
+		else:
+			self.mtype="Unknown"
+		
+		self.host=host
+		self.port=port
+		self.slector=selector
+		self.ready=0
+		self.loading=1
+		self.nametext=nametext
+		if self.nametext==None:
+			self.nametext=host+"/s"+selector
+		self.data=None
+		self.sound=None
+		sideproc=Thread(target = self.loadaudio)
+		sideproc.daemon=True
+		sideproc.start()
+	def loadaudio(self):
+		self.data=pathfigure(self.host, self.port, self.selector, gtype='s')
+		
+		if self.data!=None and self.data!=0:
+			self.ready=1
+			self.loading=0
+		elif self.data==None:
+			self.error=1
+			self.ready=0
+			self.loading=0
+
+
+
+class mediaplay:
+	def __init__(self):
+		self.yoff=0
+		self.yjump=int(libzox.cnfdict["menutextjump"])
+		self.data=0
+		self.buttonbarsize=20+(45*5)
+	def renderdisp(self, frameobj):
+		frameobj.surface.fill((100, 100, 100))
+		boff=(frameobj.surface.get_width()//2)-(self.buttonbarsize//2)
+		self.hudrect=pygame.Rect(0, 0, frameobj.sizex, 45)
+		pygame.draw.rect(frameobj.surface, (220, 220, 220), self.hudrect)
+		self.playrect=frameobj.surface.blit(media_play, (0+boff, 0))
+		self.pauserect=frameobj.surface.blit(media_pause, (45+boff, 0))
+		
+		self.backrect=frameobj.surface.blit(media_back, (110+boff, 0))
+		self.stoprect=frameobj.surface.blit(media_stop, (155+boff, 0))
+		self.nextrect=frameobj.surface.blit(media_next, (200+boff, 0))
+		
+	def pumpcall1(self, frameobj, data=None):
+		if frameobj.statflg==2:
+			self.renderdisp(frameobj)
+		if frameobj.statflg==1:
+			frameobj.name="Zoxenpher Media Player"
+			self.renderdisp(frameobj)
+			#sideproc=Thread(target = self.loader, args = [frameobj])
+			#sideproc.daemon=True
+			#sideproc.start()
+			frameobj.seticon(gtsound)
+				
+				
+
 class xmitm:
 	def __init__(self, icon, label, mtype, data1=None, data2=None, data3=None, comment="", width=350, height=100, resize=1):
 		if isinstance(icon, pygame.Surface):
@@ -1839,7 +1977,7 @@ class morethings:
 			self.rectlist.extend([[retrect, item]])
 			
 		self.hudrect=pygame.Rect(0, 0, frameobj.surface.get_width(), 22)
-		pygame.draw.rect(frameobj.surface, (60, 60, 120), self.hudrect)
+		pygame.draw.rect(frameobj.surface, (220, 220, 220), self.hudrect)
 		if self.yoff<25:
 			self.scuprect=frameobj.surface.blit(self.scrollup, (frameobj.surface.get_width()-44, 0))
 		else:

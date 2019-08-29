@@ -9,11 +9,29 @@ import socket
 #import copy
 #import sys
 
+gfxpath=os.path.join("vgop", "gfx")
+internalurlhosts=["zox>>", "zoxhelp>>", "zoxsplash>>", "file>>"]
+
+def isinternalurl(url):
+	for host in internalurlhosts:
+		if url.startswith(host):
+			return 1
+	return 0
+def isinternalhost(host):
+	if host in internalurlhosts:
+		return 1
+	return 0
+
+
+
 #determines if a host-port-selector location is one of zoxenpher's special "about:" paths or a normal gopher location.
 #also brings up appropiate error pages and images in the event of load failures.
+errorpath=os.path.join("vgop", "error")
 def pathfigure(host, port, selector, gtype="0", query=None):
 	data=None
+	#legacy internal doc URL scheme (DO NOT USE!!!!)
 	if host.startswith("about:"):
+		print("Legacy WARNING: old 'about:' internal URL accessed!\n\t'"+host+"'")
 		hoststripped=host.replace('\\', "").replace("/", "").replace("..", "")
 		hoststripped=hoststripped[6:]
 		if os.path.isfile(os.path.join("vgop", hoststripped)):
@@ -22,67 +40,176 @@ def pathfigure(host, port, selector, gtype="0", query=None):
 			data=open(os.path.join("vgop", hoststripped+".gop"))
 		else:
 			if gtype=="1":
-				data=open(os.path.join("vgop", "E_localerror"))
+				data=open(os.path.join(errorpath, "E_localerror"))
 			if gtype=="0":
-				data=open(os.path.join("vgop", "E_localerror.txt"))
+				data=open(os.path.join(errorpath, "E_localerror.txt"))
 			if gtype=="p":
-				data=open(os.path.join("vgop", "gaierror.png"))
+				data=open(os.path.join(errorpath, "gaierror.png"))
 			if gtype=="I" or gtype=="g":
-				data=open(os.path.join("vgop", "gaierror.gif"))
+				data=open(os.path.join(errorpath, "gaierror.gif"))
+	#new internal doc URL scheme.
+	elif host==("zox>>") or host=="zoxhelp>>" or host=="zoxsplash>>" or host=="file>>":
+		#run special fileurl listing code. if not a directory, normal internal doc code runs.
+		if host=="file>>" and gtype=="1":
+			fileurldata=fileurl(host, port, selector)
+			if fileurldata!=None:
+				return fileurldata
+		#hoststripped=host.replace('\\', "").replace("/", "").replace("..", "")
+		#hoststripped=hoststripped[6:]
+		selectorlist=selector.split("/")
+		
+		if "" in selectorlist:
+			selectorlist.remove("")
+		if "." in selectorlist:
+			selectorlist.remove(".")
+		if ".." in selectorlist:
+			selectorlist.remove("..")
+		#add help prefix path for zoxhelp>> URLs
+		if host=="zoxhelp>>":
+			selectorlist=["vgop", "help"]+selectorlist
+		if host=="zoxsplash>>":
+			selectorlist=["vgop", "splash"]+selectorlist
+		selectorlist=["."]+selectorlist
+		selectpath=os.path.join(*selectorlist)
+		#selectdir=os.path.join(*selectorlist)
+		if os.path.isfile(selectpath):
+			data=open(selectpath)
+		elif os.path.isfile(selectpath+".gop"):
+			data=open(selectpath+".gop")
+		elif os.path.isfile(os.path.join(selectpath, "index.gop")):
+			data=open(os.path.join(selectpath, "index.gop"))
+		else:
+			if gtype=="1":
+				data=open(os.path.join(errorpath, "E_localerror"))
+			if gtype=="0":
+				data=open(os.path.join(errorpath, "E_localerror.txt"))
+			if gtype=="p":
+				data=open(os.path.join(errorpath, "gaierror.png"))
+			if gtype=="I" or gtype=="g":
+				data=open(os.path.join(errorpath, "gaierror.gif"))
 	else:
 		try:
 			data=libgop.gopherget(host, port, selector, query)
 		except socket.timeout as err:
 			print(err)
 			if gtype=="1":
-				data=open(os.path.join("vgop", "E_timeout"))
+				data=open(os.path.join(errorpath, "E_timeout"))
 			if gtype=="0":
-				data=open(os.path.join("vgop", "E_timeout.txt"))
+				data=open(os.path.join(errorpath, "E_timeout.txt"))
 			if gtype=="p":
-				data=open(os.path.join("vgop", "gaierror.png"))
+				data=open(os.path.join(errorpath, "gaierror.png"))
 			if gtype=="I" or gtype=="g":
-				data=open(os.path.join("vgop", "gaierror.gif"))
+				data=open(os.path.join(errorpath, "gaierror.gif"))
 		except socket.error as err:
 			print(err)
 			if gtype=="1":
-				data=open(os.path.join("vgop", "E_serror"))
+				data=open(os.path.join(errorpath, "E_serror"))
 			if gtype=="0":
-				data=open(os.path.join("vgop", "E_serror.txt"))
+				data=open(os.path.join(errorpath, "E_serror.txt"))
 			if gtype=="p":
-				data=open(os.path.join("vgop", "gaierror.png"))
+				data=open(os.path.join(errorpath, "gaierror.png"))
 			if gtype=="I" or gtype=="g":
-				data=open(os.path.join("vgop", "gaierror.gif"))
+				data=open(os.path.join(errorpath, "gaierror.gif"))
 		except socket.gaierror as err:
 			print(err)
 			if gtype=="1":
-				data=open(os.path.join("vgop", "E_gaierror"))
+				data=open(os.path.join(errorpath, "E_gaierror"))
 			if gtype=="0":
-				data=open(os.path.join("vgop", "E_gaierror.txt"))
+				data=open(os.path.join(errorpath, "E_gaierror.txt"))
 			if gtype=="p":
-				data=open(os.path.join("vgop", "gaierror.png"))
+				data=open(os.path.join(errorpath, "gaierror.png"))
 			if gtype=="I" or gtype=="g":
-				data=open(os.path.join("vgop", "gaierror.gif"))
+				data=open(os.path.join(errorpath, "gaierror.gif"))
 		except socket.herror as err:
 			print(err)
 			if gtype=="1":
-				data=open(os.path.join("vgop", "E_herror"))
+				data=open(os.path.join(errorpath, "E_herror"))
 			if gtype=="0":
-				data=open(os.path.join("vgop", "E_herror.txt"))
+				data=open(os.path.join(errorpath, "E_herror.txt"))
 			if gtype=="p":
-				data=open(os.path.join("vgop", "gaierror.png"))
+				data=open(os.path.join(errorpath, "gaierror.png"))
 			if gtype=="I" or gtype=="g":
-				data=open(os.path.join("vgop", "gaierror.gif"))
+				data=open(os.path.join(errorpath, "gaierror.gif"))
 		except Exception as err:
 			print(err)
 			if gtype=="1":
-				data=open(os.path.join("vgop", "E_undeferror"))
+				data=open(os.path.join(errorpath, "E_undeferror"))
 			if gtype=="0":
-				data=open(os.path.join("vgop", "E_undeferror.txt"))
+				data=open(os.path.join(errorpath, "E_undeferror.txt"))
 			if gtype=="p":
-				data=open(os.path.join("vgop", "gaierror.png"))
+				data=open(os.path.join(errorpath, "gaierror.png"))
 			if gtype=="I" or gtype=="g":
-				data=open(os.path.join("vgop", "gaierror.gif"))
+				data=open(os.path.join(errorpath, "gaierror.gif"))
 	return data
+
+
+
+def ientry(string, gtype="i", selector="null", host="null"):
+	return gtype+string+"\t"+selector+"\t"+host+"\t70"
+
+def fileurl_pathlist(host, port, selector, selectorlist):
+	ext=None
+	gtype=None
+	data=[ientry("file>>: Directory Listing: '"+selector+"'")]
+	realpath=os.path.join(*selectorlist)
+	for filen in os.listdir(realpath):
+		if selector=="" or selector=="/":
+			filepath="/"+filen
+		else:
+			filepath=selector+"/"+filen
+		realfilepath=os.path.join(realpath, filen)
+		if filen.startswith("."):
+			pass
+		elif os.path.isfile(realfilepath):
+			if "." in filen:
+				ext=filen.lower().rsplit(".")[-1]
+			else:
+				ext=None
+			if ext=="png":
+				gtype="p"
+			elif ext=="gif":
+				gtype="g"
+			elif ext=="gop":
+				gtype="1"
+			
+			elif ext in ["jpg", "jpeg", "bmp"]:
+				gtype="I"
+			elif ext in ["txt", "md", "cfg", "dat"]:
+				gtype="0"
+			elif ext in ["wav", "mp3", "mod", "ogg", "oga", "midi", "mid"]:
+				gtype="s"
+			else:
+				ext=None
+				gtype=None
+			if ext!=None and gtype!=None:
+				data.append(ientry("---- "+filen))
+				data.append(ientry("Open", gtype=gtype, host="file>>", selector=filepath))
+				#data.append(ientry("Info", gtype="1", host="fileinfo>>", selector=filepath))
+				data.append(ientry(""))
+		elif os.path.isdir(realfilepath):
+			data.append(ientry("DIR- "+filen))
+			data.append(ientry("Open", gtype="1", host="file>>", selector=filepath))
+			data.append(ientry(""))
+			
+	return data
+	
+
+def fileurl(host, port, selector):
+	selectorlist=selector.split("/")
+	if "" in selectorlist:
+		selectorlist.remove("")
+	if "." in selectorlist:
+		selectorlist.remove(".")
+	if ".." in selectorlist:
+		selectorlist.remove("..")
+	selectorlist=["."]+selectorlist
+	selectpath=os.path.join(*selectorlist)
+	#data=[ientry("The path: '"+selector+"' is not a directory.", gtype="3")]
+	if os.path.isdir(selectpath):
+		return fileurl_pathlist(host, port, selector, selectorlist)
+	return None
+			
+	
 
 #ratio-preserving image shrinker
 def imagelimit(surf, maxsize):

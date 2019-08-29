@@ -1,32 +1,32 @@
 iBrowsing Gopher	null	null	70
 iHere is a quick guide to navigating gopher in zoxenpher.	null	null	70
 i	null	null	70
-p	/	about:help_part1.png	70
+p	/part1.png	zoxhelp>>	70
 iType Icon bar	null	null	70
 i______________________________________________________	null	null	70
 i	null	null	70
 i<-- First off, note this grey bar [figure 1, I]. icons will appear here to show you what the accompanying selector (menu item) is.	null	null	70
 i	null	null	70
 iFor more information, and an overview of the gopher types zoxenpher supports,	null	null	70
-1     See: "help: gopher types" for more information.	/	about:help_gtypes	70
+1     See: "help: gopher types" for more information.	/gtypes	zoxhelp>>	70
 i	null	null	70
-p	/	about:help_part2.png	70
+p	/part2.png	zoxhelp>>	70
 iScrolling	null	null	70
 i______________________________________________________	null	null	70
 i	null	null	70
 iUpwards scrolling indicator	null	null	70
-p-Can Scroll UP:	/	about:scrollu.png	70
-p-CAN NOT scroll UP:	/	about:scrollu_no.png	70
+p-Can Scroll UP:	/vgop/gfx/scrollu.png	zox>>	70
+p-CAN NOT scroll UP:	/vgop/gfx/scrollu_no.png	zox>>	70
 i	null	null	70
 iDownwards scrolling indicator	null	null	70
-p-Can Scroll DOWN:	/	about:scrolld.png	70
-p-CAN NOT scroll DOWN:	/	about:scrolld_no.png	70
+p-Can Scroll DOWN:	/vgop/gfx/scrolld.png	zox>>	70
+p-CAN NOT scroll DOWN:	/vgop/gfx/scrolld_no.png	zox>>	70
 i	null	null	70
-p	/	about:help_part3.png	70
+p	/part3.png	zoxhelp>>	70
 iDiagram Of A Zoxenpher Gopher window (and notes on inline-images)	null	null	70
 i______________________________________________________	null	null	70
 i	null	null	70
-I-Figure 1:	/	about:help_figure1.jpg	70
+I-Figure 1:	/figure1.jpg	zoxhelp>>	70
 iNote: click on image previews to open them in a viewer window. Try it with this diagram.	null	null	70
 i	null	null	70
 iNote: images will be dynamically sized to fit in the current window's width.	null	null	70
@@ -34,48 +34,48 @@ i They will only be resized if they are larger than the window width, however.	n
 i 	null	null	70
 iNote: the image viewer limits the zoom level/initial image size based upon	null	null	70
 i the viewzoom setting. (default 2400)	null	null	70
-p	/	about:help_part4.png	70
+p	/part4.png	zoxhelp>>	70
 i--- Loading Indicator ---	null	null	70
 i______________________________________________________	null	null	70
 iwhere the grey and blue bars meet, you'll see a gopher icon. [figure 1, J] When the menu is accessing a server, it will become an hour glass:	null	null	70
-p-normal:	/	about:menucorner.png	70
-p-loading:	/	about:menucorner_wait.png	70
+p-normal:	/vgop/gfx/menucorner.png	zox>>	70
+p-loading:	/vgop/gfx/menucorner_wait.png	zox>>	70
 i	null	null	70
 iNote: When you click the new button, you are presented with a splash page with some helpful links to documentation, and some common gopher servers, for your convienence. 	null	null	70
 i	null	null	70
 iYou will also notice the buttons above.  These, sorted by their function, are:	null	null	70
-p	/	about:help_part5.png	70
+p	/part5.png	zoxhelp>>	70
 i--- Misc. Buttons ---	null	null	70
 i______________________________________________________	null	null	70
-p-book [figure 1, G]:	/	about:bookbtn.png	70
+p-book [figure 1, G]:	/vgop/gfx/bookbtn.png	zox>>	70
 iThis will open an add bookmark menu. Yes! Zoxenpher has a complete bookmarks system!	null	null	70
-1      See: "help: bookmarks" for more information.	/	about:help_bookmarks	70
+1      See: "help: bookmarks" for more information.	/bookmarks	zoxhelp>>	70
 i	null	null	70
-p-load [figure 1, H]:	/	about:loadbtn.png	70
+p-load [figure 1, H]:	/vgop/gfx/loadbtn.png	zox>>	70
 iThis will reload the current gopher menu.	null	null	70
 i	null	null	70
-p	/	about:help_part6.png	70
+p	/part6.png	zoxhelp>>	70
 i--- navigation buttons ---	null	null	70
 i______________________________________________________	null	null	70
-p-root [figure 1, F]:	/	about:rootbtn.png	70
+p-root [figure 1, F]:	/vgop/gfx/rootbtn.png	zox>>	70
 iThis will return to the root menu of a server if you are not already there.  rightclick this to open server root in a new window.	null	null	70
 iIf you are already at the server root, this button will be greyed out.	null	null	70
 i	null	null	70
-p-up [figure 1, E]:	/	about:upbtn.png	70
+p-up [figure 1, E]:	/vgop/gfx/upbtn.png	zox>>	70
 iThis will let you go up a level. i.e. from '/foo/bar' to '/foo'. this will be greyed out when at the server root.	null	null	70
 i	null	null	70
-p	/	about:help_part7.png	70
+p	/part7.png	zoxhelp>>	70
 i--- History function ---	null	null	70
 i______________________________________________________	null	null	70
 iZoxenpher will cache up to 10 previous pages (by default. you can change this via cnf.dat) per gopher menu to provide back/next(forward) button capacity similar to that of a web browser.	null	null	70
 i	null	null	70
-p-back [figure 1, C]:	/	about:backbtn.png	70
+p-back [figure 1, C]:	/vgop/gfx/backbtn.png	zox>>	70
 iGo back to previous page in menu history. unavailable when greyed out.	null	null	70
 i	null	null	70
-p-next [figure 1, D]:	/	about:nextbtn.png	70
+p-next [figure 1, D]:	/vgop/gfx/nextbtn.png	zox>>	70
 iGo to next page in menu history. unavailable when greyed out. opening a new gopher menu clears any items after the current page in history. 	null	null	70
 i	null	null	70
-p	/	about:help_part8.png	70
+p	/part8.png	zoxhelp>>	70
 i--- working with Zoxenpher's windows ---	null	null	70
 i______________________________________________________	null	null	70
 i-Close the window: click the close button. [figure 1, B]	null	null	70
@@ -88,7 +88,7 @@ i	null	null	70
 iNote: some windows dont show a gopher URL	null	null	70
 iNote: frame style settings other than the default will look different, but the same basic layout still applies.	null	null	70
 i	null	null	70
-p	/	about:help_part9.png	70
+p	/part9.png	zoxhelp>>	70
 i--- Basics of gopher ---	null	null	70
 i______________________________________________________	null	null	70
 iGopher is really just one massive series of menus. each menu has various sorts of "selectors". These selectors are like gopher's equivalent to "links". Notice how some slectors are not treated as links. Text, and in zoxenpher's case, unsupported gopher types, being notable examples.	null	null	70
@@ -96,11 +96,11 @@ i	null	null	70
 iZoxenpher has some important features relating to links. Such as with links to other menus, rightclick opens it in a new window. For all links, clicking while holding the shift key brings up an add bookmarks dialog. And another helpful feature: the gopher URL of a link (in the window that has focus) is shown in the hud bar above, upon hovering the mouse over said link. try it!	null	null	70
 i	null	null	70
 iFinding information on gopher has the same solution as the web. search engines of course. A notable example is floodgap's "veronica 2" search engine. (link provided in splash page) Across gopher, you will find queries (also called ask, index search, etc.). These queries, when clicked, will open a special query entry box. enter your query in this box and your results should open in a new window once they have been loaded.	null	null	70
-p	/	about:help_part10.png	70
+p	/part10.png	zoxhelp>>	70
 iThings to remember:	null	null	70
 i______________________________________________________	null	null	70
 iserver root: This is the highest menu of the gopher server.	null	null	70
 i	null	null	70
 i	null	null	70
-1Return to help menu	/	about:help	70
+1Return to help menu	/	zoxhelp>>	70
 .

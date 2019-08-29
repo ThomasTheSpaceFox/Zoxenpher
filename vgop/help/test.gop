@@ -1,16 +1,16 @@
 iTest page	null	null	70
-p	/	about:help_part1.png	70
+p	/part1.png	zoxhelp>>	70
 i--sound--	null	null	70
 i______________________________________________________	null	null	70
 iClick the following link to test sound playback. a "sound:" window should	null	null	70
 iappear and shortly start playing some music.	null	null	70
-sSound Test	/	about:testsnd.ogg	70
+sSound Test	/vgop/sounds/testsnd.ogg	zox>>	70
 i	null	null	70
-p	/	about:help_part2.png	70
+p	/part2.png	zoxhelp>>	70
 i--Web URLs--	null	null	70
 i______________________________________________________	null	null	70
 iNote: For web url test to work, YOU MUST HAVE SPECIFIED A WEB BROWSER IN YOUR cnf.dat FILE!	null	null	70
 hweb url test (zoxenpher github repository)	URL:https://github.com/ThomasTheSpaceFox/Zoxenpher	null	70
 i	null	null	70
-1Return to help menu	/	about:help	70
+1Return to help menu	/	zoxhelp>>	70
 .

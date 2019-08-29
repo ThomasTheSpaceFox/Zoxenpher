@@ -1,14 +1,14 @@
 iWallpaper	null	null	70
-p	/	about:help_part1.png	70
+p	/part1.png	zoxhelp>>	70
 i--- wallpaper overview---	null	null	70
 i______________________________________________________	null	null	70
 izoxenpher has tiled wallpaper support. You can choose a wallpaper using a cnf.dat setting.	null	null	70
-1Note: read configuration help first!	/	about:help_conf	70
+1Note: read configuration help first!	/conf	zoxhelp>>	70
 i	null	null	70
 i -Set to 'none' for no wallpaper.	null	null	70
 ibgtile=none	null	null	70
 i	null	null	70
-p	/	about:help_part2.png	70
+p	/part2.png	zoxhelp>>	70
 iWallpaper Display modes:	null	null	70
 i______________________________________________________	null	null	70
 i - centered mode	null	null	70
@@ -18,7 +18,7 @@ ibgmode=1	null	null	70
 i - centered mode	null	null	70
 ibgmode=2	null	null	70
 i	null	null	70
-p	/	about:help_part3.png	70
+p	/part3.png	zoxhelp>>	70
 iusing your own wallpaper:	null	null	70
 i______________________________________________________	null	null	70
 iplace the wallpaper image in the 'usr' directory (where cnf.example and cnf.dat are)	null	null	70
@@ -30,14 +30,14 @@ iexample: 'bgtile=tilebg.png'	null	null	70
 i	null	null	70
 i	null	null	70
 igallery:	null	null	70
-p'tilebg.png'	/	about:tilebg.png	70
-p'tilebg2.png'	/	about:tilebg2.png	70
-p'mascotbg.png'	/	about:mascotbg.png	70
-p'diagbg.png'	/	about:diagbg.png	70
+p'tilebg.png'	/vgop/gfx/tilebg.png	zox>>	70
+p'tilebg2.png'	/vgop/gfx/tilebg2.png	zox>>	70
+p'mascotbg.png'	/vgop/gfx/mascotbg.png	zox>>	70
+p'diagbg.png'	/vgop/gfx/diagbg.png	zox>>	70
 i	null	null	70
 i	null	null	70
 i	null	null	70
 i	null	null	70
-1Return to configuration help	/	about:help_conf	70
-1Return to help menu	/	about:help	70
+1Return to configuration help	/conf	zoxhelp>>	70
+1Return to help menu	/	zoxhelp>>	70
 .

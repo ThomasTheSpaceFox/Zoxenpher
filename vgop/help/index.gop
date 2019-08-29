@@ -1,0 +1,19 @@
+iIndex	null	null	70
+iwelcome to Zoxenpher's live help system.	null	null	70
+i	null	null	70
+iPlease take your time to read the topics below, if you need any help.	null	null	70
+p 	/helptitle.png	zoxhelp>>	70
+iTopics:	null	null	70
+i______________________________________________________	null	null	70
+1Basics	/basic.gop	zoxhelp>>	70
+1Widgets & 'more things' help	/widgets.gop	zoxhelp>>	70
+1Browsing Gopher	/gophermenu.gop	zoxhelp>>	70
+1Configuration Help	/conf.gop	zoxhelp>>	70
+1Troubleshooting	/troubleshoot.gop	zoxhelp>>	70
+1Tests	/test.gop	zoxhelp>>	70
+1Error Codes	/errorcodes.gop	zoxhelp>>	70
+1Keys and Usage	/keys.gop	zoxhelp>>	70
+1Bookmarks	/bookmarks.gop	zoxhelp>>	70
+1Gopher Types	/gtypes.gop	zoxhelp>>	70
+1Wallpaper help	/wallpaper.gop	zoxhelp>>	70
+.

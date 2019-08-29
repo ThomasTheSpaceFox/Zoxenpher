@@ -15,13 +15,13 @@ simplefont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict[
 
 framesc=None
 
-diag_yes=pygame.image.load(os.path.join("vgop", "diag_yes.png"))
-diag_no=pygame.image.load(os.path.join("vgop", "diag_no.png"))
-clock_wicon=pygame.image.load(os.path.join("vgop", "clock_wicon.png"))
-tip_wicon=pygame.image.load(os.path.join("vgop", "tip_wicon.png"))
-sinfo_wicon=pygame.image.load(os.path.join("vgop", "sinfo_wicon.png"))
-yn_wicon=pygame.image.load(os.path.join("vgop", "yn_wicon.png"))
-about_wicon=pygame.image.load(os.path.join("vgop", "about_wicon.png"))
+diag_yes=pygame.image.load(os.path.join(libzox.gfxpath, "diag_yes.png"))
+diag_no=pygame.image.load(os.path.join(libzox.gfxpath, "diag_no.png"))
+clock_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "clock_wicon.png"))
+tip_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "tip_wicon.png"))
+sinfo_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "sinfo_wicon.png"))
+yn_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "yn_wicon.png"))
+about_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "about_wicon.png"))
 
 
 
@@ -93,8 +93,9 @@ class yndialog:
 class clock:
 	def __init__(self):
 		self.ypos=0
-		self.hourding=pygame.mixer.Sound(os.path.join("vgop", "clockhour.ogg"))
-		self.minding=pygame.mixer.Sound(os.path.join("vgop", "clockmin.ogg"))
+		self.soundspath=os.path.join("vgop", "sounds")
+		self.hourding=pygame.mixer.Sound(os.path.join(self.soundspath, "clockhour.ogg"))
+		self.minding=pygame.mixer.Sound(os.path.join(self.soundspath, "clockmin.ogg"))
 		self.tform="%I:%M %p"
 		self.dform="%A, %B %d, %Y"
 		self.fonttime=pygame.font.SysFont(None, 30)
@@ -221,10 +222,10 @@ class aboutsplash:
 	def __init__(self):
 		self.font=pygame.font.SysFont(None, 22)
 		if "indev" in versionstring:
-			self.splashbg=pygame.image.load(os.path.join("vgop", "aboutsplash_indev.jpg")).convert()
+			self.splashbg=pygame.image.load(os.path.join(libzox.gfxpath, "aboutsplash_indev.jpg")).convert()
 
 		else:
-			self.splashbg=pygame.image.load(os.path.join("vgop", "aboutsplash.jpg")).convert()
+			self.splashbg=pygame.image.load(os.path.join(libzox.gfxpath, "aboutsplash.jpg")).convert()
 	def renderdisp(self, frameobj):
 		#frameobj.surface.fill((255, 255, 255))
 		frameobj.surface.blit(self.splashbg, (0, 0))

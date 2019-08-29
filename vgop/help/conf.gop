@@ -1,9 +1,9 @@
 iConfiguration File	null	null	70
-p	/	about:help_part1.png	70
+p	/part1.png	zoxhelp>>	70
 i--- Overview ---	null	null	70
 i______________________________________________________	null	null	70
 iZoxenpher currently lacks any in-program options menu, so you will need to setup cnf.dat file manually to alter the default settings.	null	null	70
-p	/	about:help_part2.png	70
+p	/part2.png	zoxhelp>>	70
 i--- Creating cnf.dat ---	null	null	70
 i______________________________________________________	null	null	70
 ilook in the subdirectory called "usr" (the one in the directory where zoxenpher.py is).  You should see a file called cnf.example. 	null	null	70
@@ -11,10 +11,10 @@ i	null	null	70
 icopy cnf.example as cnf.dat and open it in a code editor, or very basic text editor. DO NOT USE A WORD PROCESSOR!	null	null	70
 i	null	null	70
 iNow, refer to the sections below to find the setting you wish to change.	null	null	70
-p	/	about:help_part3.png	70
+p	/part3.png	zoxhelp>>	70
 i--- SETTING WEB BROWSER ---	null	null	70
 i______________________________________________________	null	null	70
-pweb	/	about:webicn.png	70
+pweb	/vgop/gfx/webicn.png	zox>>	70
 iWeb URL links. These can't be opened by zoxenpher directly. You see, Zoxenpher is a GOPHER Client, not a WEB browser.	null	null	70
 iworry not! You can open these in your favorite browser like so:	null	null	70
 i	null	null	70
@@ -25,12 +25,12 @@ i -Set the 'browser' setting to the executable name of your favorite browser.	nu
 ibrowser=firefox	null	null	70
 ibrowser=chrome	null	null	70
 i	null	null	70
-p	/	about:help_part4.png	70
+p	/part4.png	zoxhelp>>	70
 i--- Setting wallpaper ---	null	null	70
 i______________________________________________________	null	null	70
-1see: wallpaper help	/	about:help_wallpaper	70
+1see: wallpaper help	/wallpaper	zoxhelp>>	70
 i	null	null	70
-p	/	about:help_part5.png	70
+p	/part5.png	zoxhelp>>	70
 i--- Fixing menu font ---	null	null	70
 i______________________________________________________	null	null	70
 iOn some systems, the default settings will end up loading a non-monospaced font, or wind up being the wrong size.	null	null	70
@@ -47,20 +47,20 @@ imenufont=mono	null	null	70
 i	null	null	70
 i -While the default width is sized automatically to 80 columns, the height is set in the configuration. adjust to your preference.	null	null	70
 imenuheight=460	null	null	70
-p	/	about:help_part6.png	70
+p	/part6.png	zoxhelp>>	70
 i--- Image preview settings ---	null	null	70
 i______________________________________________________	null	null	70
 iIf you have a slow internet connection, or a slow computer, you may wish to adjust the image preview settings. Likewise, you may also want to increase the number of previewed images as well.	null	null	70
 i	null	null	70
 i -To do either of these things, use this setting. (note that setting this to 0 disables image previewing outright):	null	null	70
 iimgpreview=10	null	null	70
-p	/	about:help_part7.png	70
+p	/part7.png	zoxhelp>>	70
 i--- Menu window history size limit ---	null	null	70
 i______________________________________________________	null	null	70
 i -This will limit how many history entries zoxenpher will keep for each gopher menu. history entries are cached.	null	null	70
 ihistsize=10	null	null	70
 i	null	null	70
-p	/	about:help_part8.png	70
+p	/part8.png	zoxhelp>>	70
 i--- Default Window Size ---	null	null	70
 i______________________________________________________	null	null	70
 iIf 800x600 is not your desired window size, you can change it. via these settings:	null	null	70
@@ -72,12 +72,12 @@ i	null	null	70
 i -height:	null	null	70
 ideskh=600	null	null	70
 i	null	null	70
-p	/	about:help_part9.png	70
+p	/part9.png	zoxhelp>>	70
 i--- Strazoloidwm frame style ---	null	null	70
 i______________________________________________________	null	null	70
 ichoose what builtin frame style strazoloidwm should use.	null	null	70
 i(0=plain, 1=3D (without bevels), 2=3D (with bevels, default)	null	null	70
 iframestyle=1	null	null	70
 i	null	null	70
-1Return to help menu	/	about:help	70
+1Return to help menu	/	zoxhelp>>	70
 .

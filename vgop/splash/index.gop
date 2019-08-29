@@ -2,9 +2,11 @@ iwelcome to Zoxenpher! A python graphical gopher client!	null	null	70
 i	null	null	70
 iZoxenpher v3.0.0.indev	null	null	70
 i	null	null	70
-1Start here	/	about:start_here	70
-1Help	/	about:help	70
-1About	/	about:about	70
+1Start here	/start_here.gop	zoxsplash>>	70
+1Help	/	zoxhelp>>	70
+1About	/about.gop	zoxsplash>>	70
+0GNU GPL v3:	/license.txt	file>>	70
+1User Directory	/usr/	file>>	70
 i	null	null	70
 iFind stuff:	null	null	70
 1Gopherpedia - read wikipedia articles via gopher	/	gopherpedia.com	70
@@ -16,10 +18,9 @@ imore gopherspace links:	null	null	70
 1SDF gopherspace	/	sdf.org	70
 i	null	null	70
 iHow do i gopher?	null	null	70
-1Help on zoxenpher's gopher menu window	/	about:help_gophermenu	70
+1Help on zoxenpher's gopher menu window	/gophermenu	zoxhelp>>	70
 1floodgap's nice introduction	/gopher/	gopher.floodgap.com	70
 1gopherproject.org	/	gopherproject.org	70
 i	null	null	70
 iWeb links (REQUIRES HAVING BROWSER SETTING CONFIGURED):	null	null	70
 hzoxenpher github repository	URL:https://github.com/ThomasTheSpaceFox/Zoxenpher	null	70
-.

@@ -1,5 +1,5 @@
 iZoxenpher Error Codes	null	null	70
-p	/	about:help_part1.png	70
+p	/part1.png	zoxhelp>>	70
 i--- Socket errors/connection errors ---	null	null	70
 i______________________________________________________	null	null	70
 is0 - socket.gaierror: an address-related error. A caught 'socket.gaierror' exception.	null	null	70
@@ -9,10 +9,10 @@ is3 - Local documentation error. (if you get this from a link in the local docum
 is4 - socket.herror: an address-related error. A caught 'socket.herror' exception.	null	null	70
 is5 - socket.error: a generic socket error. A caught 'socket.error' exception.	null	null	70
 i	null	null	70
-p	/	about:help_part2.png	70
+p	/part2.png	zoxhelp>>	70
 i--- Sound player errors ---	null	null	70
 i______________________________________________________	null	null	70
 iaud0 - failed to load sound type data into mixer. (may be caused by corrupt data, unsupported format, invalid selector, mistyped data, etc.)	null	null	70
 iaud1 - failed to load sound type data due to network/socket error.	null	null	70
-1Return to help menu	/	about:help	70
+1Return to help menu	/	zoxhelp>>	70
 .

@@ -25,7 +25,7 @@ if tilestr=="none":
 	tiledraw=None
 else:
 	try:
-		tiledraw=pygame.image.load(os.path.join("vgop", tilestr))
+		tiledraw=pygame.image.load(os.path.join(libzox.gfxpath, tilestr))
 	except pygame.error:
 		try:
 			tiledraw=pygame.image.load(os.path.join("usr", tilestr))
@@ -46,49 +46,49 @@ pygame.mixer.init()
 maximages=int(libzox.cnfdict["imgpreview"])
 bmlist=libzox.bmload()
 #menu window graphics
-bookbtn=pygame.image.load(os.path.join("vgop", "bookbtn.png"))
-menucorner=pygame.image.load(os.path.join("vgop", "menucorner.png"))
-menucorner_wait=pygame.image.load(os.path.join("vgop", "menucorner_wait.png"))
-loadbtn=pygame.image.load(os.path.join("vgop", "loadbtn.png"))
-loadbtn_inact=pygame.image.load(os.path.join("vgop", "loadbtn_inact.png"))
+bookbtn=pygame.image.load(os.path.join(libzox.gfxpath, "bookbtn.png"))
+menucorner=pygame.image.load(os.path.join(libzox.gfxpath, "menucorner.png"))
+menucorner_wait=pygame.image.load(os.path.join(libzox.gfxpath, "menucorner_wait.png"))
+loadbtn=pygame.image.load(os.path.join(libzox.gfxpath, "loadbtn.png"))
+loadbtn_inact=pygame.image.load(os.path.join(libzox.gfxpath, "loadbtn_inact.png"))
 
-backbtn=pygame.image.load(os.path.join("vgop", "backbtn.png"))
-backbtn_inact=pygame.image.load(os.path.join("vgop", "backbtn_inact.png"))
-nextbtn=pygame.image.load(os.path.join("vgop", "nextbtn.png"))
-nextbtn_inact=pygame.image.load(os.path.join("vgop", "nextbtn_inact.png"))
-upbtn=pygame.image.load(os.path.join("vgop", "upbtn.png"))
-upbtn_inact=pygame.image.load(os.path.join("vgop", "upbtn_inact.png"))
-rootbtn=pygame.image.load(os.path.join("vgop", "rootbtn.png"))
-rootbtn_inact=pygame.image.load(os.path.join("vgop", "rootbtn_inact.png"))
-perrorbtn=pygame.image.load(os.path.join("vgop", "perrorbtn.png"))
-perrorbtn_inact=pygame.image.load(os.path.join("vgop", "perrorbtn_inact.png"))
+backbtn=pygame.image.load(os.path.join(libzox.gfxpath, "backbtn.png"))
+backbtn_inact=pygame.image.load(os.path.join(libzox.gfxpath, "backbtn_inact.png"))
+nextbtn=pygame.image.load(os.path.join(libzox.gfxpath, "nextbtn.png"))
+nextbtn_inact=pygame.image.load(os.path.join(libzox.gfxpath, "nextbtn_inact.png"))
+upbtn=pygame.image.load(os.path.join(libzox.gfxpath, "upbtn.png"))
+upbtn_inact=pygame.image.load(os.path.join(libzox.gfxpath, "upbtn_inact.png"))
+rootbtn=pygame.image.load(os.path.join(libzox.gfxpath, "rootbtn.png"))
+rootbtn_inact=pygame.image.load(os.path.join(libzox.gfxpath, "rootbtn_inact.png"))
+perrorbtn=pygame.image.load(os.path.join(libzox.gfxpath, "perrorbtn.png"))
+perrorbtn_inact=pygame.image.load(os.path.join(libzox.gfxpath, "perrorbtn_inact.png"))
 
 
 
 
 #common:
-scrollup=pygame.image.load(os.path.join("vgop", "scrollu.png"))
-scrolldn=pygame.image.load(os.path.join("vgop", "scrolld.png"))
-scrollup_no=pygame.image.load(os.path.join("vgop", "scrollu_no.png"))
-scrolldn_no=pygame.image.load(os.path.join("vgop", "scrolld_no.png"))
+scrollup=pygame.image.load(os.path.join(libzox.gfxpath, "scrollu.png"))
+scrolldn=pygame.image.load(os.path.join(libzox.gfxpath, "scrolld.png"))
+scrollup_no=pygame.image.load(os.path.join(libzox.gfxpath, "scrollu_no.png"))
+scrolldn_no=pygame.image.load(os.path.join(libzox.gfxpath, "scrolld_no.png"))
 
 #bookmark window graphics
-bookm_del0=pygame.image.load(os.path.join("vgop", "delinact.png"))
-bookm_del1=pygame.image.load(os.path.join("vgop", "delact.png"))
-bookm_go0=pygame.image.load(os.path.join("vgop", "goinact.png"))
-bookm_go1=pygame.image.load(os.path.join("vgop", "goact.png"))
-bookm_edit0=pygame.image.load(os.path.join("vgop", "editinact.png"))
-bookm_edit1=pygame.image.load(os.path.join("vgop", "editact.png"))
-bookm_newbm=pygame.image.load(os.path.join("vgop", "newbm.png"))
-menucorner_book=pygame.image.load(os.path.join("vgop", "menucorner_book.png"))
+bookm_del0=pygame.image.load(os.path.join(libzox.gfxpath, "delinact.png"))
+bookm_del1=pygame.image.load(os.path.join(libzox.gfxpath, "delact.png"))
+bookm_go0=pygame.image.load(os.path.join(libzox.gfxpath, "goinact.png"))
+bookm_go1=pygame.image.load(os.path.join(libzox.gfxpath, "goact.png"))
+bookm_edit0=pygame.image.load(os.path.join(libzox.gfxpath, "editinact.png"))
+bookm_edit1=pygame.image.load(os.path.join(libzox.gfxpath, "editact.png"))
+bookm_newbm=pygame.image.load(os.path.join(libzox.gfxpath, "newbm.png"))
+menucorner_book=pygame.image.load(os.path.join(libzox.gfxpath, "menucorner_book.png"))
 
-go_wicon=pygame.image.load(os.path.join("vgop", "go_wicon.png"))
-book_wicon=pygame.image.load(os.path.join("vgop", "book_wicon.png"))
-bookedit_wicon=pygame.image.load(os.path.join("vgop", "bookedit_wicon.png"))
-booknew_wicon=pygame.image.load(os.path.join("vgop", "booknew_wicon.png"))
-more_wicon=pygame.image.load(os.path.join("vgop", "more_wicon.png"))
-about_wicon=pygame.image.load(os.path.join("vgop", "about_wicon.png"))
-help_wicon=pygame.image.load(os.path.join("vgop", "help_wicon.png"))
+go_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "go_wicon.png"))
+book_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "book_wicon.png"))
+bookedit_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "bookedit_wicon.png"))
+booknew_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "booknew_wicon.png"))
+more_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "more_wicon.png"))
+about_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "about_wicon.png"))
+help_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "help_wicon.png"))
 
 framesc=None
 
@@ -122,29 +122,29 @@ def init(framescape, desktop):
 	deskt=desktop
 	framesc=framescape
 	#load Gopher type icons.
-	gthelp=pygame.image.load(os.path.join("vgop", "menuhelpicn.png")).convert()	
-	gtmenu=pygame.image.load(os.path.join("vgop", "menuicn.png")).convert()
-	gtmenuremote=pygame.image.load(os.path.join("vgop", "menuremoteicn.png")).convert()
-	gtmenuint=pygame.image.load(os.path.join("vgop", "menuinticn.png")).convert()
-	gtmenuroot=pygame.image.load(os.path.join("vgop", "menurooticn.png")).convert()
+	gthelp=pygame.image.load(os.path.join(libzox.gfxpath, "menuhelpicn.png")).convert()	
+	gtmenu=pygame.image.load(os.path.join(libzox.gfxpath, "menuicn.png")).convert()
+	gtmenuremote=pygame.image.load(os.path.join(libzox.gfxpath, "menuremoteicn.png")).convert()
+	gtmenuint=pygame.image.load(os.path.join(libzox.gfxpath, "menuinticn.png")).convert()
+	gtmenuroot=pygame.image.load(os.path.join(libzox.gfxpath, "menurooticn.png")).convert()
 	
-	gtimage=pygame.image.load(os.path.join("vgop", "imageicon.png")).convert()
-	gttext=pygame.image.load(os.path.join("vgop", "texticon.png")).convert()
-	gtquery=pygame.image.load(os.path.join("vgop", "queryicon.png")).convert()
+	gtimage=pygame.image.load(os.path.join(libzox.gfxpath, "imageicon.png")).convert()
+	gttext=pygame.image.load(os.path.join(libzox.gfxpath, "texticon.png")).convert()
+	gtquery=pygame.image.load(os.path.join(libzox.gfxpath, "queryicon.png")).convert()
 	
-	gtsound=pygame.image.load(os.path.join("vgop", "soundicn.png")).convert()
-	gtbin=pygame.image.load(os.path.join("vgop", "binicn.png")).convert()
-	gtweb=pygame.image.load(os.path.join("vgop", "webicn.png")).convert()
-	gterror=pygame.image.load(os.path.join("vgop", "erroricn.png")).convert()
-	highlight_arrow=pygame.image.load(os.path.join("vgop", "highlight_arrow.png")).convert()
+	gtsound=pygame.image.load(os.path.join(libzox.gfxpath, "soundicn.png")).convert()
+	gtbin=pygame.image.load(os.path.join(libzox.gfxpath, "binicn.png")).convert()
+	gtweb=pygame.image.load(os.path.join(libzox.gfxpath, "webicn.png")).convert()
+	gterror=pygame.image.load(os.path.join(libzox.gfxpath, "erroricn.png")).convert()
+	highlight_arrow=pygame.image.load(os.path.join(libzox.gfxpath, "highlight_arrow.png")).convert()
 
-	loadingimage=pygame.image.load(os.path.join("vgop", "loadingimage.png")).convert()
+	loadingimage=pygame.image.load(os.path.join(libzox.gfxpath, "loadingimage.png")).convert()
 	
-	media_play=pygame.image.load(os.path.join("vgop", "media_play.png")).convert()
-	media_pause=pygame.image.load(os.path.join("vgop", "media_pause.png")).convert()
-	media_stop=pygame.image.load(os.path.join("vgop", "media_stop.png")).convert()
-	media_next=pygame.image.load(os.path.join("vgop", "media_next.png")).convert()
-	media_back=pygame.image.load(os.path.join("vgop", "media_back.png")).convert()
+	media_play=pygame.image.load(os.path.join(libzox.gfxpath, "media_play.png")).convert()
+	media_pause=pygame.image.load(os.path.join(libzox.gfxpath, "media_pause.png")).convert()
+	media_stop=pygame.image.load(os.path.join(libzox.gfxpath, "media_stop.png")).convert()
+	media_next=pygame.image.load(os.path.join(libzox.gfxpath, "media_next.png")).convert()
+	media_back=pygame.image.load(os.path.join(libzox.gfxpath, "media_back.png")).convert()
 	
 
 
@@ -233,7 +233,7 @@ class deskclass:
 			if data.button==1:
 				#about button
 				if self.mascotrect.collidepoint(data.pos):
-					newgop=gopherpane(host="about:about", port=70, selector="/", shortprefix="About: ")
+					newgop=gopherpane(host="zoxsplash>>", port=70, selector="/about.gop", shortprefix="About: ")
 					framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 					abtzox=libzoxui.aboutsplash()
 					framesc.add_frame(stz.framex(600, 150, "About Zoxenpher", resizable=0, pumpcall=abtzox.pumpcall1, xpos=100, ypos=200))
@@ -296,11 +296,11 @@ class deskclass:
 		return
 	def imageloader(self, surface):
 		#self.wallpaper=pygame.image.load("wallpaper.jpg").convert(surface)
-		self.mascot=pygame.image.load(os.path.join("vgop", "mascot45.png")).convert(surface)
-		#self.iconend=pygame.image.load(os.path.join("vgop", "iconbarend.png")).convert(surface)
-		#self.iconbegin=pygame.image.load(os.path.join("vgop", "iconbarbegin.png")).convert(surface)
+		self.mascot=pygame.image.load(os.path.join(libzox.gfxpath, "mascot45.png")).convert(surface)
+		#self.iconend=pygame.image.load(os.path.join(libzox.gfxpath, "iconbarend.png")).convert(surface)
+		#self.iconbegin=pygame.image.load(os.path.join(libzox.gfxpath, "iconbarbegin.png")).convert(surface)
 		#QUESTION: why does .convert_alpha(surface) need display mode set, but .convert(surface) does not? this makes zero sense!
-		self.zban=pygame.image.load(os.path.join("vgop", "zoxbanner.png"))
+		self.zban=pygame.image.load(os.path.join(libzox.gfxpath, "zoxbanner.png"))
 		self.resize(surface)
 		if tiledraw!=None:
 			self.tilesurf=tiledraw.convert(surface)
@@ -417,7 +417,7 @@ def textshow(host, port, selector):
 
 #gopher menu class. also used for text documents
 class gopherpane:
-	def __init__(self, host='about:splash', port=70, selector="", prefix="menu: gopher://", preload=None, forceimage=0, linkdisable=0, gtype="1", shortprefix="menu: ", loading=1, query=None):
+	def __init__(self, host='zoxsplash>>', port=70, selector="/", prefix="menu: gopher://", preload=None, forceimage=0, linkdisable=0, gtype="1", shortprefix="menu: ", loading=1, query=None):
 		self.host=host
 		self.port=port
 		self.selector=selector
@@ -555,10 +555,10 @@ class gopherpane:
 						print("Parser Error! Malformed line " + str(count) + " in document '" + str(self.selector) + "'\n   from server: '" + str(self.host) + ":" + str(self.port) + "'\n   ''" + item.debug + "''")
 						self.PageError+=1
 						self.PageErrorList.extend([item])
-			elif item.gtype=="1" and item.hostname.startswith("about:help"):
+			elif item.gtype=="1" and item.hostname=="zoxhelp>>":
 				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gthelp, 1)
 				item.rect=rect
-			elif item.gtype=="1" and item.hostname.startswith("about:"):
+			elif item.gtype=="1" and (item.hostname=="zox>>" or item.hostname=="zoxsplash>>"):
 				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenuint, 1)
 				item.rect=rect
 			elif item.gtype=="1" and item.hostname!=self.host:
@@ -587,9 +587,11 @@ class gopherpane:
 					
 				except AttributeError as err:
 					#print(err)
-					item.image=loadingimage.copy()
-					if imagecount<maximages or (imagecount<2 and self.forceimage) or self.host.startswith("about:"):
+					if imagecount<maximages or (imagecount<2 and self.forceimage) or libzox.isinternalhost(self.host):
+						item.image=loadingimage.copy()
 						imageset.extend([item])
+					else:
+						item.image=None
 					#item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
 
 				if item.image!=None:
@@ -776,15 +778,19 @@ class gopherpane:
 		#reset server error flag-counter
 		self.ServError=0
 		self.PageErrorList=[]
-		if self.host.startswith("about:about"):
+		if self.host=="zoxsplash>>" and self.selector=="/about.gop":
 			self.prefix="about: "
 			self.shortprefix="about: "
 			frameobj.seticon(about_wicon.convert())
-		elif self.host.startswith("about:help"):
+		elif self.host=="zoxhelp>>":
 			self.prefix="help: "
 			self.shortprefix="help: "
 			frameobj.seticon(help_wicon.convert())
-		elif self.host.startswith("about:"):
+		elif self.host=="zoxsplash>>":
+			self.prefix="Splash: "
+			self.shortprefix="Splash: "
+			frameobj.seticon(gtmenuint)
+		elif self.host=="zox>>":
 			self.prefix="about: "
 			self.shortprefix="about: "
 			frameobj.seticon(gtmenuint)
@@ -807,15 +813,15 @@ class gopherpane:
 			querystring=" ?:" + self.query
 		else:
 			querystring=""
-		if self.host.startswith("about:about"):
+		if self.host=="zoxsplash>>" and self.selector=="/about.gop":
 			frameobj.name="About Zoxenpher"
-		elif self.host.startswith("about:help"):
+		elif self.host=="zoxhelp>>":
 			try:
 				frameobj.name="Help: "+self.menu[0].name
 			except IndexError:
 				frameobj.name="Help"
-		elif self.host.startswith("about:"):
-			frameobj.name=(self.shortprefix+str(self.host))
+		elif self.host in ["zox>>", "zoxsplash>>"]:
+			frameobj.name=(self.shortprefix+str(self.selector))
 		else:
 			frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector) + querystring)
 	def pumpcall1(self, frameobj, data=None):
@@ -859,8 +865,8 @@ class gopherpane:
 						if item.gtype in "01pgI7s":
 							try:
 								if item.rect.collidepoint(mpos):
-									if item.hostname.startswith("about:"):
-										deskt.hovertext=(item.hostname)
+									if libzox.isinternalhost(item.hostname):
+										deskt.hovertext=(item.hostname + "/" + item.gtype + item.selector)
 									else:
 										deskt.hovertext=("gopher://" + item.hostname + "/" + item.gtype + item.selector)
 									break
@@ -1331,7 +1337,7 @@ class bookmarks:
 			mpos=pygame.mouse.get_pos()
 			for item in bmlist:
 				if item.rect.collidepoint(stz.mousehelper(mpos, frameobj)):
-					if item.url.startswith("about:"):
+					if libzox.isinternalurl(item.url):
 						deskt.hovertext=item.url
 					else:
 						deskt.hovertext="gopher://" + item.url
@@ -1499,7 +1505,7 @@ class urlgo:
 		self.yjump=int(libzox.cnfdict["menutextjump"])+2
 		self.stringblob=""
 		#self.hovmsg="Enter a gopher URL to load."
-		self.validchars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890:/.-_"
+		self.validchars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890:/.-_>"
 	def renderdisp(self, frameobj):
 		#frameobj.surface.fill((255, 255, 255))
 		frameobj.surface.fill((220, 220, 220))
@@ -1611,7 +1617,7 @@ class imgview:
 		self.pan=0
 		self.loaderupt=0
 		self.maxsize=int(libzox.cnfdict["viewzoom"])
-		self.dummysurf=pygame.image.load(os.path.join("vgop", "loadingimage.png"))
+		self.dummysurf=pygame.image.load(os.path.join(libzox.gfxpath, "loadingimage.png"))
 		if self.imagesurf==None:
 			self.surf=self.dummysurf
 			sideproc=Thread(target = self.imageload)
@@ -1633,7 +1639,7 @@ class imgview:
 			self.surf=imagefx
 			self.surf=libzox.imagelimit(self.surf, self.maxsize)
 		except pygame.error:
-			self.surf=pygame.image.load(os.path.join("vgop", "giaerror.png"))
+			self.surf=pygame.image.load(os.path.join(libzox.gfxpath, "giaerror.png"))
 			print("imgview: Failed to load.")
 			
 		self.loaderupt=1
@@ -1660,8 +1666,8 @@ class imgview:
 			
 		if frameobj.statflg==1:
 			frameobj.seticon(gtimage)
-			if self.host.startswith("about:"):
-				frameobj.name=("Image: " + str(self.host) + "/" + self.gtype)
+			if libzox.isinternalhost(self.host):
+				frameobj.name=("Image: " + str(self.host) + "/" + self.gtype + self.selector)
 			else:
 				frameobj.name=("Image: gopher://" + self.host + "/" + self.gtype + self.selector)
 		if frameobj.statflg==1 or frameobj.statflg==2 or self.loaderupt:
@@ -1915,7 +1921,7 @@ class xmitm:
 		if isinstance(icon, pygame.Surface):
 			self.icon=icon
 		else:
-			self.icon=pygame.image.load(os.path.join("vgop", icon))
+			self.icon=pygame.image.load(os.path.join(libzox.gfxpath, icon))
 		self.label=label
 		self.mtype=mtype
 		self.data1=data1

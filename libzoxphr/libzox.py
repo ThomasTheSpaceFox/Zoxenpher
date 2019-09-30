@@ -30,25 +30,26 @@ errorpath=os.path.join("vgop", "error")
 def pathfigure(host, port, selector, gtype="0", query=None):
 	data=None
 	#legacy internal doc URL scheme (DO NOT USE!!!!)
-	if host.startswith("about:"):
-		print("Legacy WARNING: old 'about:' internal URL accessed!\n\t'"+host+"'")
-		hoststripped=host.replace('\\', "").replace("/", "").replace("..", "")
-		hoststripped=hoststripped[6:]
-		if os.path.isfile(os.path.join("vgop", hoststripped)):
-			data=open(os.path.join("vgop", hoststripped))
-		elif os.path.isfile(os.path.join("vgop", hoststripped+".gop")):
-			data=open(os.path.join("vgop", hoststripped+".gop"))
-		else:
-			if gtype=="1":
-				data=open(os.path.join(errorpath, "E_localerror"))
-			if gtype=="0":
-				data=open(os.path.join(errorpath, "E_localerror.txt"))
-			if gtype=="p":
-				data=open(os.path.join(errorpath, "gaierror.png"))
-			if gtype=="I" or gtype=="g":
-				data=open(os.path.join(errorpath, "gaierror.gif"))
+	#if host.startswith("about:"):
+		#print("Legacy WARNING: old 'about:' internal URL accessed!\n\t'"+host+"'")
+		#hoststripped=host.replace('\\', "").replace("/", "").replace("..", "")
+		#hoststripped=hoststripped[6:]
+		#if os.path.isfile(os.path.join("vgop", hoststripped)):
+			#data=open(os.path.join("vgop", hoststripped))
+		#elif os.path.isfile(os.path.join("vgop", hoststripped+".gop")):
+			#data=open(os.path.join("vgop", hoststripped+".gop"))
+		#else:
+			#if gtype=="1":
+				#data=open(os.path.join(errorpath, "E_localerror"))
+			#if gtype=="0":
+				#data=open(os.path.join(errorpath, "E_localerror.txt"))
+			#if gtype=="p":
+				#data=open(os.path.join(errorpath, "gaierror.png"))
+			#if gtype=="I" or gtype=="g":
+				#data=open(os.path.join(errorpath, "gaierror.gif"))
 	#new internal doc URL scheme.
-	elif host==("zox>>") or host=="zoxhelp>>" or host=="zoxsplash>>" or host=="file>>":
+	#these "fake" hosts, enact hardcoded file loading/internal page generation activity.
+	if host==("zox>>") or host=="zoxhelp>>" or host=="zoxsplash>>" or host=="file>>":
 		#run special fileurl listing code. if not a directory, normal internal doc code runs.
 		if host=="file>>" and gtype=="1":
 			fileurldata=fileurl(host, port, selector)
@@ -142,7 +143,29 @@ def pathfigure(host, port, selector, gtype="0", query=None):
 				data=open(os.path.join(errorpath, "gaierror.gif"))
 	return data
 
+default_heading_divider="_________________________________________________________________"
 
+#Filters external gopher menus for any possible security issues, i.e. trying to refrence internal zoxenpher URLs
+def SecureFilter(menulist, serverhost):
+	#if its an internal URL, the anti-internal url filter (obviously) should not run.
+	if isinternalhost(serverhost):
+		return menulist
+	else:
+		for item in menulist:
+			#block external gopher menus referencing internal Zoxenpher urls.
+			if item.gtype!="i" and isinternalhost(item.hostname):
+				#errorstring="WARNING: internal URL selector on external menu! Debug: " + item.debug
+				#item.debug=errorstring
+				#item.name=errorstring
+				
+				item.errortype=libgop.ERR_SECURITY
+				item.errorlabel="MENU SECURITY FILTER"
+				item.errorinfo="An Internal URL was detected in a selector on an external server's menu. For security reasons, Zoxenpher blocks external refrences to internal URLs, showing instead an error message."
+				item.gtype=None
+				item.hostname=None
+				item.selector=None
+				item.datalist=None
+		return menulist
 
 def ientry(string, gtype="i", selector="null", host="null"):
 	return gtype+string+"\t"+selector+"\t"+host+"\t70"
@@ -150,7 +173,8 @@ def ientry(string, gtype="i", selector="null", host="null"):
 def fileurl_pathlist(host, port, selector, selectorlist):
 	ext=None
 	gtype=None
-	data=[ientry("file>>: Directory Listing: '"+selector+"'")]
+	data=[ientry("-- Directory Listing: '"+selector+"' --")]
+	data.append(ientry(default_heading_divider))
 	realpath=os.path.join(*selectorlist)
 	for filen in os.listdir(realpath):
 		if selector=="" or selector=="/":
@@ -190,7 +214,8 @@ def fileurl_pathlist(host, port, selector, selectorlist):
 			data.append(ientry("DIR- "+filen))
 			data.append(ientry("Open", gtype="1", host="file>>", selector=filepath))
 			data.append(ientry(""))
-			
+	data.append(ientry(default_heading_divider))
+	data.append(ientry("This page was generated internally by Zoxenpher."))
 	return data
 	
 
@@ -245,7 +270,7 @@ def imagelimit_gwindow(surf, maxsize, heightmax):
 
 
 #displays text and links with automatic word wrap.
-def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=None, link=0, xoff=26, textcoly=(255, 255, 255), iconsize=25):
+def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=None, link=0, xoff=26, textcoly=(255, 255, 255), iconsize=25, roff=0):
 	xpos=0
 	yposstart=ypos
 	#don't bother with items beyond the end of the screen, as theres no point.
@@ -287,12 +312,12 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 						if link:
 							namelabel=xfont.render(buffstring.strip(), True, textcolx, textcoly)
 						else:
-							namelabel=xfont.render(buffstring, True, textcolx, textcoly)
+							namelabel=xfont.render(buffstring.rstrip(), True, textcolx, textcoly)
 						renderdict[dictkey]=namelabel
 					rectlist.extend([surface.blit(namelabel, (xpos, ypos))])
 					
 				ypos+=yjump
-			elif xfont.size(buffstring+word+" ")[0]<=(surface.get_width()-xoff):
+			elif xfont.size(buffstring+word+" ")[0]<=(surface.get_width()-xoff-roff):
 				buffstring+=word+" "
 			else:
 				if ypos>=top_offset:# and ypos<=surface.get_height():
@@ -303,7 +328,7 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 						if link:
 							namelabel=xfont.render(buffstring.strip(), True, textcolx, textcoly)
 						else:
-							namelabel=xfont.render(buffstring, True, textcolx, textcoly)
+							namelabel=xfont.render(buffstring.rstrip(), True, textcolx, textcoly)
 						renderdict[dictkey]=namelabel
 					rectlist.extend([surface.blit(namelabel, (xpos, ypos))])
 				
@@ -336,7 +361,7 @@ class progobj:
 
 #special gopherpane "launch icon" class. used by help icon to bring up "about:help"
 class pathprogobj:
-	def __init__(self, classref, icon, idcode, friendly_name, commname, xsize, ysize, resizable=0, key=None, mod=None, host="about:splash", port=70, selector="/", hint="", side=0):
+	def __init__(self, classref, icon, idcode, friendly_name, commname, xsize, ysize, resizable=0, key=None, mod=None, host="zoxsplash>>", port=70, selector="/", hint="", side=0):
 		self.idcode=idcode
 		self.friendly_name=friendly_name
 		self.commname=commname

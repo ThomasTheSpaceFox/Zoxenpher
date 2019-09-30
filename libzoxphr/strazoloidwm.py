@@ -3,6 +3,7 @@ import os
 import pygame
 import time
 import math
+from random import randint
 pygame.display.init()
 pygame.font.init()
 #ui styling globals
@@ -125,13 +126,27 @@ def getpop(framerect):
 	poprect.h+=4
 	return poprect
 
+#used as a crash-proof failsafe for random framex positions.
+#normally a<b should always evaluate as true.
+def saferandom(a, b):
+	if a<b:
+		return randint(a, b)
+	elif b<a:
+		print("StrazoloidWM: Placement Fault! random range backwards!")
+		return a
+	else:
+		print("StrazoloidWM: Placement Fault! random range flat!")
+		return a
+	
 
 class framex:
-	def __init__(self, sizex, sizey, name, xpos=10, ypos=30, resizable=0, sizeminx=140, sizeminy=140, pumpcall=None, icon=None):
+	def __init__(self, sizex, sizey, name, xpos=None, ypos=None, resizable=0, sizeminx=140, sizeminy=140, pumpcall=None, icon=None):
 		self.icon=None
 		self.iconsrc=None
 		if icon!=None:
 			self.seticon(icon)
+		
+			
 		self.shade=0
 		#---Required---
 		self.resizable=resizable
@@ -144,11 +159,12 @@ class framex:
 			self.ypos=miny
 		self.wo=None
 		self.pid=None
-		self.SurfRect=pygame.Rect(self.xpos, self.ypos, sizex, sizey)
-		self.framerect=getframe_shadeaware(self, self.SurfRect, self.resizable)
-		self.closerect=getclose(self.framerect)
-		self.shadrect=getshade(self.framerect)
-		self.poprect=getpop(self.framerect)
+		if self.xpos!=None and self.ypos!=None:
+			self.SurfRect=pygame.Rect(self.xpos, self.ypos, sizex, sizey)
+			self.framerect=getframe_shadeaware(self, self.SurfRect, self.resizable)
+			self.closerect=getclose(self.framerect)
+			self.shadrect=getshade(self.framerect)
+			self.poprect=getpop(self.framerect)
 		self.surface=pygame.Surface((sizex, sizey))
 		self.sizeminx=sizeminx
 		self.sizeminy=sizeminy
@@ -165,6 +181,26 @@ class framex:
 	def seticon(self, icon):
 		self.iconsrc=icon.copy()
 		self.icon=pygame.transform.scale(icon, (hudsize, hudsize))
+	def _internal_set_pos(self, deskx, desky):
+		if self.xpos==None:
+			if self.sizey<(desky-miny):
+				maxy=desky-self.sizey
+				#print((miny, maxy))
+				self.ypos=saferandom(miny, maxy)
+			else:
+				self.ypos=miny
+		if self.xpos==None:
+			if self.sizex<deskx:
+				maxx=deskx-self.sizex
+				self.xpos=saferandom(0, maxx)
+			else:
+				self.xpos=0
+		#make rects now, as they aren't made in __init__ when random position is used.
+		self.SurfRect=pygame.Rect(self.xpos, self.ypos, self.sizex, self.sizey)
+		self.framerect=getframe_shadeaware(self, self.SurfRect, self.resizable)
+		self.closerect=getclose(self.framerect)
+		self.shadrect=getshade(self.framerect)
+		self.poprect=getpop(self.framerect)
 	def pump(self):
 		if self.pumpcall!=None:
 			self.pumpcall(self)
@@ -673,7 +709,7 @@ class framescape:
 		self.resizedesk=0
 		self.activeframe=None
 		self.simplefont = pygame.font.SysFont(None, fontsize)
-		print("Strazoloid Window Manager v1.3.0")
+		print("Strazoloid Window Manager v1.4.0.indev")
 	def close_pid(self, pid):
 		try:
 			frame=self.idlook[pid]
@@ -719,6 +755,8 @@ class framescape:
 		else:
 			return 1
 	def add_frame(self, frame):
+		if frame.xpos==None or frame.ypos==None:
+			frame._internal_set_pos(self.desktop.sizex, self.desktop.sizey)
 		frame.surface.convert(self.surface)
 		frame.start_prep()
 		frame.pid=self.idcnt

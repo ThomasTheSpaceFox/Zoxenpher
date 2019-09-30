@@ -6,7 +6,6 @@ i	null	null	70
 1Help	/	zoxhelp>>	70
 1About	/about.gop	zoxsplash>>	70
 0GNU GPL v3:	/license.txt	file>>	70
-1User Directory	/usr/	file>>	70
 i	null	null	70
 iFind stuff:	null	null	70
 1Gopherpedia - read wikipedia articles via gopher	/	gopherpedia.com	70
@@ -24,3 +23,4 @@ iHow do i gopher?	null	null	70
 i	null	null	70
 iWeb links (REQUIRES HAVING BROWSER SETTING CONFIGURED):	null	null	70
 hzoxenpher github repository	URL:https://github.com/ThomasTheSpaceFox/Zoxenpher	null	70
+.

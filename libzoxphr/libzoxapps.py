@@ -109,6 +109,8 @@ def init(framescape, desktop):
 	global gtbin
 	global gtweb
 	global gterror
+	global gtEND
+	global gtTOP
 	global highlight_arrow
 	
 	global deskt
@@ -136,7 +138,10 @@ def init(framescape, desktop):
 	gtbin=pygame.image.load(os.path.join(libzox.gfxpath, "binicn.png")).convert()
 	gtweb=pygame.image.load(os.path.join(libzox.gfxpath, "webicn.png")).convert()
 	gterror=pygame.image.load(os.path.join(libzox.gfxpath, "erroricn.png")).convert()
+	#special markers
 	highlight_arrow=pygame.image.load(os.path.join(libzox.gfxpath, "highlight_arrow.png")).convert()
+	gtEND=pygame.image.load(os.path.join(libzox.gfxpath, "eof_icon.png")).convert()
+	gtTOP=pygame.image.load(os.path.join(libzox.gfxpath, "top_icon.png")).convert()
 
 	loadingimage=pygame.image.load(os.path.join(libzox.gfxpath, "loadingimage.png")).convert()
 	
@@ -468,7 +473,7 @@ class gopherpane:
 		else:
 			txtflg=0
 		self.data=pathfigure(self.host, self.port, self.selector, self.gtype, self.query)
-		self.menu=libgop.menudecode(self.data, txtflg=txtflg)
+		self.menu=libzox.SecureFilter(libgop.menudecode(self.data, txtflg=txtflg), self.host)
 		for item in self.renderdict:
 			del item
 		del self.renderdict
@@ -488,7 +493,7 @@ class gopherpane:
 		else:
 			txtflg=0
 		self.data=pathfigure(self.host, self.port, self.selector, self.gtype, self.query)
-		self.menu=libgop.menudecode(self.data, txtflg=txtflg)
+		self.menu=libzox.SecureFilter(libgop.menudecode(self.data, txtflg=txtflg), self.host)
 		for item in self.renderdict:
 			del item
 		del self.renderdict
@@ -523,12 +528,37 @@ class gopherpane:
 		imageset=[]
 		imagecount=0
 		self.ypos=self.yoff
+		
+		surfhig=frameobj.surface.get_height()
+		surfwid=frameobj.surface.get_width()
+
 		frameobj.surface.fill((255, 255, 255))
-		self.siderect=pygame.Rect(0, 0, 25, frameobj.surface.get_height())
+		self.siderect=pygame.Rect(0, 0, 25, surfhig)
 		#pygame.draw.rect(frameobj.surface, (185, 195, 255), self.siderect)
 		pygame.draw.rect(frameobj.surface, (223, 223, 223), self.siderect)
-		pygame.draw.line(frameobj.surface, (0, 0, 0), (25, 0), (25, frameobj.surface.get_height()), 1)
+		pygame.draw.line(frameobj.surface, (0, 0, 0), (25, 0), (25, surfhig), 1)
 		count=0
+		#"lead in" code
+		self.ypos+=2
+		if self.ypos>=0:
+			frameobj.surface.blit(gtTOP, (0, self.ypos))
+			leadrect=pygame.Rect(26, 0, surfwid, self.ypos)
+			pygame.draw.rect(frameobj.surface, (107, 107, 107), leadrect)
+			pygame.draw.line(frameobj.surface, (0, 0, 0), (25, self.ypos), (surfwid-4, self.ypos), 1)
+		
+		
+		
+		# "document edge" code
+		docsiderect=pygame.Rect(surfwid-4, 0, 4, surfhig)
+		pygame.draw.rect(frameobj.surface, (107, 107, 107), docsiderect)
+		if self.ypos>=0:
+			pygame.draw.line(frameobj.surface, (0, 0, 0), (surfwid-4, self.ypos), (surfwid-4, surfhig), 1)
+		else:
+			pygame.draw.line(frameobj.surface, (0, 0, 0), (surfwid-4, 0), (surfwid-4, surfhig), 1)
+		#gtTOP offset needs to be added here, for docuemnt edge lines to add up.
+		self.ypos+=6
+		
+		
 		for item in self.menu:
 			if item.gtype=="3":
 				self.ServError+=1
@@ -543,22 +573,25 @@ class gopherpane:
 
 				
 				
-			#If text, or local documentation format, show unformatted lines
+			#If text, show unformatted lines
 			elif item.gtype==None and (self.gtype=="0"):
 				rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
-			#else, hide them.
+			#if not text, then gtype==None means an error. this code displays red error text, and, upon seeing an error for the first time, adds that selector to the PageErrorList
 			elif item.gtype==None:
-				#don't report end-stops as errors.
-				if item.name!=".":
-					rects, self.ypos, self.renderdict = textitem("[LINE ERROR]: ''" + item.debug + "''", simplefont, self.yjump, (155, 0, 0), frameobj.surface, self.ypos, self.renderdict)
-					if item not in self.PageErrorList:
-						print("Parser Error! Malformed line " + str(count) + " in document '" + str(self.selector) + "'\n   from server: '" + str(self.host) + ":" + str(self.port) + "'\n   ''" + item.debug + "''")
-						self.PageError+=1
-						self.PageErrorList.extend([item])
+				rects, self.ypos, self.renderdict = textitem("[" + item.errorlabel + "]: " + item.errorinfo + " DEBUG: ''" + item.debug + "''", simplefont, self.yjump, (155, 0, 0), frameobj.surface, self.ypos, self.renderdict)
+				if item not in self.PageErrorList:
+					print(item.errorlabel + ": Line: " + str(count) + ", in document '" + str(self.selector) + "'\n   from server: '" + str(self.host) + ":" + str(self.port) + "'\n  ERROR INFO: ''" + item.errorinfo + "'\n  DEBUG: ''" + item.debug + "''")
+					self.PageError+=1
+					self.PageErrorList.extend([item])
+			#END OF FILE dot
+			elif item.gtype=="END":
+				#rect, self.ypos, self.renderdict = textitem("", linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtEND, 1)
+				pass
 			elif item.gtype=="1" and item.hostname=="zoxhelp>>":
 				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gthelp, 1)
 				item.rect=rect
-			elif item.gtype=="1" and (item.hostname=="zox>>" or item.hostname=="zoxsplash>>"):
+			#TODO: add seprate gtmenufile icon for file directories. if anything like downloads>> or usr>> is added, they should also use gtmenufile.
+			elif item.gtype=="1" and (item.hostname=="zox>>" or item.hostname=="zoxsplash>>" or item.hostname=="file>>"):
 				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenuint, 1)
 				item.rect=rect
 			elif item.gtype=="1" and item.hostname!=self.host:
@@ -589,9 +622,11 @@ class gopherpane:
 					#print(err)
 					if imagecount<maximages or (imagecount<2 and self.forceimage) or libzox.isinternalhost(self.host):
 						item.image=loadingimage.copy()
+						item.fullimage=None
 						imageset.extend([item])
 					else:
 						item.image=None
+						item.fullimage=None
 					#item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
 
 				if item.image!=None:
@@ -641,6 +676,16 @@ class gopherpane:
 			sideproc=Thread(target = imgget, args = [imageset, self.menudraw, frameobj, self])
 			sideproc.daemon=True
 			sideproc.start()
+		
+		if self.ypos<surfhig:
+			frameobj.surface.blit(gtEND, (0, self.ypos))
+			endrect=pygame.Rect(26, self.ypos, surfwid, surfhig-self.ypos)
+			endrect_shadow=pygame.Rect(26, self.ypos, surfwid-49, 20)
+			pygame.draw.rect(frameobj.surface, (107, 107, 107), endrect)
+			pygame.draw.rect(frameobj.surface, (47, 47, 47), endrect_shadow)
+			pygame.draw.line(frameobj.surface, (0, 0, 0), (25, self.ypos), (surfwid-4, self.ypos), 1)
+		self.ypos+=25
+		
 		self.hudrect=pygame.Rect(0, 0, frameobj.surface.get_width(), 22)
 		pygame.draw.rect(frameobj.surface, (220, 220, 220), self.hudrect)
 		#self.hudcorner=pygame.Rect(0, 0, 25, 22)
@@ -685,13 +730,13 @@ class gopherpane:
 			self.erroriconRect=frameobj.surface.blit(self.perrorbtn_inact, (xpos, 0))
 		
 		if self.yoff<25:
-			self.scuprect=frameobj.surface.blit(self.scrollup, (frameobj.surface.get_width()-44, 0))
+			self.scuprect=frameobj.surface.blit(self.scrollup, (frameobj.surface.get_width()-24, 0))
 		else:
-			self.scuprect=frameobj.surface.blit(self.scrollup_no, (frameobj.surface.get_width()-44, 0))
+			self.scuprect=frameobj.surface.blit(self.scrollup_no, (frameobj.surface.get_width()-24, 0))
 		if self.ypos>frameobj.sizey:
-			self.scdnrect=frameobj.surface.blit(self.scrolldn, (frameobj.surface.get_width()-88, 0))
+			self.scdnrect=frameobj.surface.blit(self.scrolldn, (frameobj.surface.get_width()-46, 0))
 		else:
-			self.scdnrect=frameobj.surface.blit(self.scrolldn_no, (frameobj.surface.get_width()-88, 0))
+			self.scdnrect=frameobj.surface.blit(self.scrolldn_no, (frameobj.surface.get_width()-46, 0))
 		
 	#menu change loader
 	def menuchange(self, item, frameobj):
@@ -793,6 +838,11 @@ class gopherpane:
 		elif self.host=="zox>>":
 			self.prefix="about: "
 			self.shortprefix="about: "
+			frameobj.seticon(gtmenuint)
+		elif self.host=="file>>":
+			self.prefix="file: "
+			self.shortprefix="file: "
+			#TODO: add special gtmenufile icon here. note that anything like usr>> or downloads>> should share this icon.
 			frameobj.seticon(gtmenuint)
 		elif self.gtype=="0":
 			self.prefix="text: gopher://"
@@ -1271,19 +1321,20 @@ class bookmarks:
 		self.ypos=25
 		for item in xlist:
 			item.rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, itemicn=self.getitemtypeicn(item.url), link=1)
+			#pygame.draw.line(frameobj.surface, (0, 0, 0), (26, self.ypos-1), (frameobj.sizex, self.ypos-1), 1)
 			if libzox.itemdebug:
 				try:
 					pygame.draw.rect(frameobj.surface, (255, 0, 0), item.rect, 1)
 				except AttributeError:
 					pass
 		if self.offset>0:
-			self.scuprect=frameobj.surface.blit(self.scrollup, (frameobj.surface.get_width()-44, 0))
+			self.scuprect=frameobj.surface.blit(self.scrollup, (frameobj.surface.get_width()-24, 0))
 		else:
-			self.scuprect=frameobj.surface.blit(self.scrollup_no, (frameobj.surface.get_width()-44, 0))
+			self.scuprect=frameobj.surface.blit(self.scrollup_no, (frameobj.surface.get_width()-24, 0))
 		if self.ypos>frameobj.sizey:
-			self.scdnrect=frameobj.surface.blit(self.scrolldn, (frameobj.surface.get_width()-88, 0))
+			self.scdnrect=frameobj.surface.blit(self.scrolldn, (frameobj.surface.get_width()-46, 0))
 		else:
-			self.scdnrect=frameobj.surface.blit(self.scrolldn_no, (frameobj.surface.get_width()-88, 0))
+			self.scdnrect=frameobj.surface.blit(self.scrolldn_no, (frameobj.surface.get_width()-46, 0))
 	def getitemtypeicn(self, url):
 		gtype=libzox.gurldecode(url)[3]
 		selector=libzox.gurldecode(url)[2]
@@ -1856,6 +1907,8 @@ class Song:
 			self.mtype="Wave Audio"
 		elif selector.lower().endswith(".midi"):
 			self.mtype="MIDI"
+		elif selector.lower().endswith(".mod"):
+			self.mtype="MIDI"
 		else:
 			self.mtype="Unknown"
 		
@@ -1915,7 +1968,9 @@ class mediaplay:
 			frameobj.seticon(gtsound)
 				
 				
-
+##### mtype key:
+#1=generic internal no-argument classes. eg. clock widget. data1=argument_class_ref WARNING: given class should have pumpcall1 defined!
+#2=(INTERNAL ONLY) gophermenu host+selector (NOT INTENDED FOR EXTERNAL URLS) data1=host, data2=selector
 class xmitm:
 	def __init__(self, icon, label, mtype, data1=None, data2=None, data3=None, comment="", width=350, height=100, resize=1):
 		if isinstance(icon, pygame.Surface):
@@ -1931,15 +1986,41 @@ class xmitm:
 		self.width=width
 		self.height=height
 		self.resize=resize
+		#ensure if mtype==2 arguments sent to gopherpane are at least valid. if not set host+selector to splash page, print warning.
+		if self.mtype==2:
+			if self.data1==None:
+				print("WARNING: xmitm entry: '" + label + "' of mtype 2, has no valid host given!\n    setting host+selector to internal default...")
+				self.data1="zoxsplash>>"
+				self.data2="/"
+			if self.data2==None:
+				print("WARNING: xmitm entry: '" + label + "' of mtype 2, has no valid selector given!\n    setting host+selector to internal default...")
+				self.data1="zoxsplash>>"
+				self.data2="/"
 	def action(self):
-		if self.mtype==1:
+		if self.mtype==2:
+			newgop=gopherpane(host=self.data1, port=70, selector=self.data2)
+			framesc.add_frame(stz.framex(self.width, self.height, self.label, resizable=self.resize, pumpcall=newgop.pumpcall1))
+		if self.mtype==3:
+			newgop=morethings(appselect=widgetslist, label="Widgets")
+			framesc.add_frame(stz.framex(300, 400, self.label, resizable=True, pumpcall=newgop.pumpcall1))
+
+		elif self.mtype==1:
 			newgop=self.data1()
 			framesc.add_frame(stz.framex(self.width, self.height, self.label, resizable=self.resize, pumpcall=newgop.pumpcall1))
 	def render(self, frameobj, ypos):
+		cache={}
 		ystart=ypos
+		#ensure background of card is white
+		trectr=pygame.Rect(4, ypos, frameobj.sizex-9, frameobj.sizey)
+		pygame.draw.rect(frameobj.surface, (232, 229, 217), trectr, 0)
+		
+		trectl=pygame.Rect(4, ypos, 71, frameobj.sizey)
+		pygame.draw.rect(frameobj.surface, (86, 86, 86), trectl, 0)
+		
 		iconrect=frameobj.surface.blit(self.icon, (5, ypos+1))
-		textrect1, ypos, bar = textitem(self.label, morefonthead, 24, (0, 0, 0), frameobj.surface, ypos, {}, xoff=77)
-		textrect2, ypos, bar = textitem(self.comment, morefontcomment, 20, (50, 50, 50), frameobj.surface, ypos, {}, xoff=77)
+		textrect1, ypos, cache = textitem(self.label, morefonthead, 24, (0, 0, 0), frameobj.surface, ypos, cache, xoff=77, textcoly=(232, 229, 217), roff=5)
+		pygame.draw.line(frameobj.surface, (0, 0, 0), (5+self.icon.get_width(), ypos-1), (frameobj.sizex-7, ypos-1), 1)
+		textrect2, ypos, cache = textitem(self.comment, morefontcomment, 20, (50, 50, 50), frameobj.surface, ypos, cache, xoff=77, textcoly=(232, 229, 217), roff=5)
 		
 		iconrect.w=frameobj.sizex-9
 		iconrect.x-=1
@@ -1953,19 +2034,30 @@ class xmitm:
 		
 		if ypos<72+ystart:
 			ypos=72+ystart
-		ypos+=10
+		#
+		endrect=pygame.Rect(4, ypos, frameobj.sizex-9, frameobj.sizey)
+		pygame.draw.rect(frameobj.surface, (107, 107, 107), endrect, 0)
+		shadowrect=pygame.Rect(0, ypos, frameobj.sizex-9-20, 20)
+		pygame.draw.rect(frameobj.surface, (47, 47, 47), shadowrect, 0)
+		
+		#ypos+=1
 		return (ypos, iconrect)
 		
 
-defaultlist=[xmitm("more_clock.png", "Clock", 1, data1=libzoxui.clock, comment="An on-screen clock with date and sound.", width=230, height=60, resize=0),
-xmitm("more_tipofday.png", "Tip Of The Day", 1, data1=libzoxui.tipofday, comment="Get a random tip from a set of Zoxenpher-related tips.", width=350, height=120, resize=0),
+#Widgets Menu
+widgetslist=[xmitm("more_clock.png", "Clock", 1, data1=libzoxui.clock, comment="An on-screen clock with date and sound.", width=230, height=60, resize=0),
+xmitm("more_tipofday.png", "Tip Of The Day", 1, data1=libzoxui.tipofday, comment="Get a random tip from a set of Zoxenpher-related tips.", width=350, height=120, resize=0)]
+
+#main category
+defaultlist=[xmitm("more_dummy.png", "File Browse", 2, data1="file>>", data2="/", comment="Browse zoxenpher's subdirectories.", width=gopherwidth, height=gopherheight, resize=0),
+xmitm("more_dummy.png", "Widgets ->", 3, data1=widgetslist, comment="A selection of assorted mini-programs of varying usefulness.",),
 xmitm("more_sinfo.png", "System Info", 1, data1=libzoxui.sinfo, comment="Info on Zoxenpher's runtime, and host OS.", width=200, height=240, resize=0)]
 
 testmenu=[xmitm("more_dummy.png", "TEST ITEM 02", 1, data1=gopherpane, comment="Hello", width=gopherwidth, height=gopherheight),
 xmitm("more_dummy.png", "TEST ITEM 03", 1, data1=gopherpane, comment="Hello", width=gopherwidth, height=gopherheight),]
 
 class morethings:
-	def __init__(self, appselect=defaultlist):
+	def __init__(self, appselect=defaultlist, label="main"):
 		self.yoff=25
 		self.yjump=int(libzox.cnfdict["menutextjump"])
 		self.data=0
@@ -1974,32 +2066,37 @@ class morethings:
 		self.scrolldn=scrolldn.convert()
 		self.scrollup_no=scrollup_no.convert()
 		self.scrolldn_no=scrolldn_no.convert()
+		self.label=label
 	def renderdisp(self, frameobj):
-		frameobj.surface.fill((255, 255, 255))
+		frameobj.surface.fill((107, 107, 107))
 		self.ypos=self.yoff
 		self.rectlist=[]
 		for item in self.appselect:
 			self.ypos, retrect = item.render(frameobj, self.ypos)
 			self.rectlist.extend([[retrect, item]])
-			
+		self.ypos+=25
 		self.hudrect=pygame.Rect(0, 0, frameobj.surface.get_width(), 22)
 		pygame.draw.rect(frameobj.surface, (220, 220, 220), self.hudrect)
 		if self.yoff<25:
-			self.scuprect=frameobj.surface.blit(self.scrollup, (frameobj.surface.get_width()-44, 0))
+			self.scuprect=frameobj.surface.blit(self.scrollup, (frameobj.surface.get_width()-24, 0))
 		else:
-			self.scuprect=frameobj.surface.blit(self.scrollup_no, (frameobj.surface.get_width()-44, 0))
+			self.scuprect=frameobj.surface.blit(self.scrollup_no, (frameobj.surface.get_width()-24, 0))
 		if self.ypos>frameobj.sizey:
-			self.scdnrect=frameobj.surface.blit(self.scrolldn, (frameobj.surface.get_width()-88, 0))
+			self.scdnrect=frameobj.surface.blit(self.scrolldn, (frameobj.surface.get_width()-46, 0))
 		else:
-			self.scdnrect=frameobj.surface.blit(self.scrolldn_no, (frameobj.surface.get_width()-88, 0))
-		
+			self.scdnrect=frameobj.surface.blit(self.scrolldn_no, (frameobj.surface.get_width()-46, 0))
+		siderect=pygame.Rect(0, 0, 4, frameobj.sizey)
+		#siderect2=pygame.Rect(frameobj.sizex-5, 0, 5, frameobj.sizey)
+		pygame.draw.rect(frameobj.surface, (220, 220, 220), siderect)
+		#pygame.draw.rect(frameobj.surface, (220, 220, 220), siderect2)
+		pygame.draw.line(frameobj.surface, (0, 0, 0), (4, 0), (4, frameobj.sizey), 1)
 		
 	def pumpcall1(self, frameobj, data=None):
 		if frameobj.statflg==2:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
 			frameobj.seticon(more_wicon.convert())
-			frameobj.name="More Things..."
+			frameobj.name="More: "+self.label
 			self.renderdisp(frameobj)
 		if frameobj.statflg==4:
 			mpos=stz.mousehelper(data.pos, frameobj)

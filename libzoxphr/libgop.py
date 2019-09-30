@@ -5,7 +5,11 @@ import io
 import tempfile
 import sys
 
-
+#error types
+ERR_SECURITY=2
+ERR_PARSER=1
+ERR_IMAGELOAD=3
+ERR_NONE=0
 stopget=0
 print("libgop gopher library v0.1")
 print("check python version...")
@@ -16,6 +20,9 @@ else:
 	print("python 3")
 class mitem:
 	def __init__(self, data, txtflg=0):
+		self.errortype=ERR_NONE
+		self.errorlabel=""
+		self.errorinfo=""
 		if not isinstance(data, str) and vers==3:
 			data=data.decode()
 			#print("py3 data convert")
@@ -32,21 +39,37 @@ class mitem:
 				
 			try:
 				datax=data.replace("\r\n", "")
-				self.gtype=datax[0]
-				self.datalist=datax[1:].split("\t")
-				self.name=self.datalist[0]
-				self.selector=self.datalist[1]
-				self.hostname=self.datalist[2]
-				self.port=self.datalist[3]
-				self.debug=data.replace("\r\n", "[CR][LF]").replace("\r", "[CR]").replace("\n", "[LF]").replace("\t", "[TAB]")
-
+				#handle gopher EOF dots here, so error message code is less ugly.
+				if datax==".":
+					self.gtype="END"
+					self.name="."
+					self.selector=None
+					self.hostname=None
+					self.port=None
+					self.debug=data.replace("\r\n", "[CR][LF]").replace("\r", "[CR]").replace("\n", "[LF]").replace("\t", "[TAB]")
+					self.datalist=datax
+				else:
+					self.gtype=datax[0]
+					self.datalist=datax[1:].split("\t")
+					self.name=self.datalist[0]
+					self.selector=self.datalist[1]
+					self.hostname=self.datalist[2]
+					self.port=self.datalist[3]
+					self.debug=data.replace("\r\n", "[CR][LF]").replace("\r", "[CR]").replace("\n", "[LF]").replace("\t", "[TAB]")
+			#Handle index errors
 			except IndexError:
 				self.datalist=None
 				self.hostname=None
 				self.selector=None
 				self.gtype=None
 				self.debug=data.replace("\r\n", "[CR][LF]").replace("\r", "[CR]").replace("\n", "[LF]").replace("\t", "[TAB]")
-				
+				self.errortype=ERR_PARSER
+				#treat blank lines specifically, as they are fairly common.
+				if self.debug=="[CR][LF]":
+					self.errorinfo="Stray Newline."
+				else:
+					self.errorinfo="Could not index needed feilds."
+				self.errorlabel="LINE ERROR"
 				self.name=data.replace("\r\n", "").replace("\r", "").replace("\n", "").replace("\t", "        ")
 
 socketlist=[]

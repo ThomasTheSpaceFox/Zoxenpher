@@ -23,7 +23,7 @@ stz.wmfps=int(libzox.cnfdict["wmfps"])
 stz.hudsize=25
 #calculate gopher menu window width and height. (needed by desktop class)
 simplefont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
-gopherwidth=((simplefont.size("_")[0])*81)+25
+gopherwidth=((simplefont.size("_")[0])*81)+25+4
 gopherheight=int(libzox.cnfdict["menuheight"])
 
 

@@ -98,6 +98,7 @@ def init(framescape, desktop):
 	global gtmenuremote
 	global gtmenuint
 	global gtmenuroot
+	global gtmenurootremote
 	global gthelp
 	
 	
@@ -129,6 +130,7 @@ def init(framescape, desktop):
 	gtmenuremote=pygame.image.load(os.path.join(libzox.gfxpath, "menuremoteicn.png")).convert()
 	gtmenuint=pygame.image.load(os.path.join(libzox.gfxpath, "menuinticn.png")).convert()
 	gtmenuroot=pygame.image.load(os.path.join(libzox.gfxpath, "menurooticn.png")).convert()
+	gtmenurootremote=pygame.image.load(os.path.join(libzox.gfxpath, "menurootremoteicn.png")).convert()
 	
 	gtimage=pygame.image.load(os.path.join(libzox.gfxpath, "imageicon.png")).convert()
 	gttext=pygame.image.load(os.path.join(libzox.gfxpath, "texticon.png")).convert()
@@ -241,7 +243,7 @@ class deskclass:
 					newgop=gopherpane(host="zoxsplash>>", port=70, selector="/about.gop", shortprefix="About: ")
 					framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 					abtzox=libzoxui.aboutsplash()
-					framesc.add_frame(stz.framex(600, 150, "About Zoxenpher", resizable=0, pumpcall=abtzox.pumpcall1, xpos=100, ypos=200))
+					framesc.add_frame(stz.framex(600, 150, "About Zoxenpher", resizable=0, pumpcall=abtzox.pumpcall1))
 				#task switcher logic
 				for framex in self.taskrects:
 					if self.taskrects[framex].collidepoint(data.pos):
@@ -284,6 +286,17 @@ class deskclass:
 			self.drawdesk(frameobj.surface)#Needed only if a resizable desk is desired.
 		if frameobj.statflg==6:
 			mods=pygame.key.get_mods()
+			if data.key==pygame.K_TAB and mods & pygame.KMOD_CTRL:
+				try:
+					if len(self.tasksorted)>1:
+						if self.actindex==None:
+							framesc.raise_frame(self.tasksorted[0])
+						elif self.actindex==len(self.tasksorted)-1:
+							framesc.raise_frame(self.tasksorted[0])
+						else:
+							framesc.raise_frame(self.tasksorted[self.actindex+1])
+				except IndexError:
+					print("Index Error In forward window cycle.")
 			for prog in self.progs:
 				if prog.mod==None:
 					if prog.key!=None:
@@ -593,6 +606,9 @@ class gopherpane:
 			#TODO: add seprate gtmenufile icon for file directories. if anything like downloads>> or usr>> is added, they should also use gtmenufile.
 			elif item.gtype=="1" and (item.hostname=="zox>>" or item.hostname=="zoxsplash>>" or item.hostname=="file>>"):
 				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenuint, 1)
+				item.rect=rect
+			elif item.gtype=="1" and item.hostname!=self.host and (item.selector=="/" or item.selector==""):
+				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenurootremote, 1)
 				item.rect=rect
 			elif item.gtype=="1" and item.hostname!=self.host:
 				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenuremote, 1)
@@ -968,7 +984,16 @@ class gopherpane:
 			
 			if data.key==pygame.K_m:
 				newgop=bookmadded(url=libzox.gurlencode(self.host, self.selector, self.gtype, self.port, self.query))
-				framesc.add_frame(stz.framex(500, 150, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50, sizeminy=150))
+				framesc.add_frame(stz.framex(500, 150, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, sizeminy=150))
+			#home/end functionality.
+			if data.key==pygame.K_HOME:
+				self.yoff=25
+				self.menudraw(frameobj)
+			if data.key==pygame.K_END:
+				if self.ypos>frameobj.sizey:
+					self.yoff=-abs((self.ypos+abs(self.yoff))-frameobj.sizey)
+					self.menudraw(frameobj)
+			
 			mods=pygame.key.get_mods()
 			if mods & pygame.KMOD_CTRL:
 				if data.key==pygame.K_r:
@@ -1046,7 +1071,7 @@ class gopherpane:
 							sideproc.start()
 					if self.bookrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 						newgop=bookmadded(url=libzox.gurlencode(self.host, self.selector, self.gtype, self.port, self.query))
-						framesc.add_frame(stz.framex(500, 150, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50, sizeminy=150))
+						framesc.add_frame(stz.framex(500, 150, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1,  sizeminy=150))
 					if self.backrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 						if self.histpoint>0 and self.loading==0:
 							self.histpoint-=1
@@ -1073,7 +1098,7 @@ class gopherpane:
 							if item.gtype in "10gpI7s":
 								if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 									newgop=bookmadded(url=libzox.gurlencode(item.hostname, item.selector, item.gtype, item.port), name=item.name)
-									framesc.add_frame(stz.framex(500, 150, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50, sizeminy=150))
+									framesc.add_frame(stz.framex(500, 150, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, sizeminy=150))
 
 					else:
 						
@@ -1107,7 +1132,7 @@ class gopherpane:
 								#del itemcopy.image
 								#newgop=gopherpane(host=itemcopy.hostname, port=itemcopy.port, selector=itemcopy.selector, prefix="image: gopher://", preload=[itemcopy], forceimage=1, linkdisable=1, gtype=item.gtype, shortprefix="image: ")
 								newgop=imgview(host=item.hostname, port=item.port, selector=item.selector, gtype=item.gtype, imagesurf=item.fullimage)
-								framesc.add_frame(stz.framex(500, 400, "Image", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50))
+								framesc.add_frame(stz.framex(500, 400, "Image", resizable=1, pumpcall=newgop.pumpcall1))
 						if item.gtype=="7":
 							if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 								newgop=querypane(host=item.hostname, port=item.port, selector=item.selector, itmdesc=item.name)

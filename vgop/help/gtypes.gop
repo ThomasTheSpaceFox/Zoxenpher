@@ -5,21 +5,26 @@ i	null	null	70
 psection arrow	/vgop/gfx/highlight_arrow.png	zox>>	70
 iA special zoxenpher-specific indicator that Tries to identify section dividers & section dividing titles. (type i, which normally lacks an icon)	null	null	70
 i	null	null	70
+i__ TYPE 1 (menu) __________________________________________	null	null	70
 pmenu	/vgop/gfx/menuicn.png	zox>>	70
 itype 1: a gopher menu. gopher menus are the lists of items (selectors) that make up the gopher world.	null	null	70
 i	null	null	70
 pmenu-remote	/vgop/gfx/menuremoteicn.png	zox>>	70
-iThis icon is the same as the normal menu icon, but indicates a menu on a different server. hence the arrow. Its worth noting that they are the same type.	null	null	70
-i	null	null	70
-pmenu-internal	/vgop/gfx/menuinticn.png	zox>>	70
-iVirtual menu provided internally by zoxenpher. such as this help page, and the "about:splash" page.	null	null	70
-i	null	null	70
-pmenu-help	/vgop/gfx/menuhelpicn.png	zox>>	70
-iVirtual Help menu provided internally by zoxenpher. Indicates internal zoxenpher documentation.	null	null	70
+iIndicates a menu on a different server. hence the arrow. Its worth noting that they are the same type.	null	null	70
 i	null	null	70
 pmenu-root	/vgop/gfx/menurooticn.png	zox>>	70
 iThe current server's root menu. note that this icon in specific can also be seen in the bookmarks manager.	null	null	70
 i	null	null	70
+pmenu-root-remote	/vgop/gfx/menurootremoteicn.png	zox>>	70
+iThe root menu of a different server than the current one.	null	null	70
+i	null	null	70
+pmenu-internal	/vgop/gfx/menuinticn.png	zox>>	70
+iVirtual menu provided internally by zoxenpher. i.e. the "about:splash" page.	null	null	70
+i	null	null	70
+pmenu-help	/vgop/gfx/menuhelpicn.png	zox>>	70
+iVirtual Help menu provided internally by zoxenpher. Indicates internal zoxenpher documentation.	null	null	70
+i	null	null	70
+i__ More types __________________________________________	null	null	70
 ptext	/vgop/gfx/texticon.png	zox>>	70
 itype 0: a text document. This type will behave the same as menus. leftclick=same window, rightclick=new window.	null	null	70
 i	null	null	70

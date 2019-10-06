@@ -273,9 +273,10 @@ def imagelimit_gwindow(surf, maxsize, heightmax):
 def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=None, link=0, xoff=26, textcoly=(255, 255, 255), iconsize=25, roff=0):
 	xpos=0
 	yposstart=ypos
-	#don't bother with items beyond the end of the screen, as theres no point.
-	if ypos>surface.get_height():
-		return (pygame.Rect(0, 0, 0, 0), ypos, renderdict)
+	#####don't bother with items beyond the end of the screen, as theres no point.
+	#YES BOTHER WITH THEM!
+	#if ypos>surface.get_height():
+	#	return (pygame.Rect(0, 0, 0, 0), ypos, renderdict)
 	#upper position of rendering
 	top_offset=-30-yjump
 	#generate renderdict key for storing height, use to read cached
@@ -283,7 +284,7 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 	#NOTE: its OK if the same line of text is duplicated, as it will
 	#   word-wrap the exact same way, and hence, be the same height.
 	sizekey="YSIZECACHE-" + text + "---"
-	if ypos<=top_offset:
+	if ypos<=top_offset or ypos>=surface.get_height():
 		if sizekey in renderdict:
 			return (pygame.Rect(0, 0, 0, 0), renderdict[sizekey]+ypos, renderdict)
 	
@@ -304,7 +305,7 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 			
 			#print buffstring
 			if word==None:
-				if ypos>=top_offset:# and ypos<=surface.get_height():
+				if ypos>=top_offset and ypos<=surface.get_height():
 					dictkey=str(textcoly[0])+"\t"+str(textcoly[1])+"\t"+str(textcoly[2])+"\t"+str(textcolx[0])+"\t"+str(textcolx[1])+"\t"+str(textcolx[2])+"\t"+buffstring
 					if dictkey in renderdict:
 						namelabel=renderdict[dictkey]
@@ -320,7 +321,7 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 			elif xfont.size(buffstring+word+" ")[0]<=(surface.get_width()-xoff-roff):
 				buffstring+=word+" "
 			else:
-				if ypos>=top_offset:# and ypos<=surface.get_height():
+				if ypos>=top_offset and ypos<=surface.get_height():
 					dictkey=str(textcoly[0])+"\t"+str(textcoly[1])+"\t"+str(textcoly[2])+"\t"+str(textcolx[0])+"\t"+str(textcolx[1])+"\t"+str(textcolx[2])+"\t"+buffstring
 					if dictkey in renderdict:
 						namelabel=renderdict[dictkey]

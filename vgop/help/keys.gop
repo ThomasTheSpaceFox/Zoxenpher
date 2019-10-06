@@ -7,6 +7,7 @@ i - CTRL+g: open go dialog	null	null	70
 i - F1: open help menu	null	null	70
 i - CTRL+b: open bookmarks manager	null	null	70
 i - CTRL+q: exit zoxenpher.	null	null	70
+i - CTRL+Tab: cycle windows.	null	null	70
 i 	null	null	70
 p	/part2.png	zoxhelp>>	70
 iGopher menu Controls:	null	null	70
@@ -19,12 +20,14 @@ i - shift+mouse wheel: scroll menu up/down (faster)	null	null	70
 i - up/down arrow keys: scroll menu up/down (slower)	null	null	70
 i - PageUp/PageDown: scroll menu up/down (faster)	null	null	70
 i - m: bookmark page (will open dialog for label and confirmation)	null	null	70
-i - SHIFT+leftclick: bookmark link. (will open dialog for label and confirmation)	null	null	70
+i - SHIFT+leftclick: bookmark link. (will open new bookmark dialog)	null	null	70
 i - ALT+up: go up a level. (same as 'up' button)	null	null	70
 i - ALT+down: goto server root menu if not alreay there.	null	null	70
 i - ALT+left: goto previous menu in history.	null	null	70
 i - ALT+right: goto next menu in history.	null	null	70
 i - CTRL+r: reload current menu. (disabled when menu is loading data)	null	null	70
+i - Home: goto top of menu/document.	null	null	70
+i - End: goto end of menu/document.	null	null	70
 i	null	null	70
 p	/part3.png	zoxhelp>>	70
 iImage viewer:	null	null	70

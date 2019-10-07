@@ -243,7 +243,7 @@ class deskclass:
 					newgop=gopherpane(host="zoxsplash>>", port=70, selector="/about.gop", shortprefix="About: ")
 					framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 					abtzox=libzoxui.aboutsplash()
-					framesc.add_frame(stz.framex(600, 150, "About Zoxenpher", resizable=0, pumpcall=abtzox.pumpcall1))
+					framesc.add_frame(stz.framex(600, 343, "About Zoxenpher", resizable=0, pumpcall=abtzox.pumpcall1))
 				#task switcher logic
 				for framex in self.taskrects:
 					if self.taskrects[framex].collidepoint(data.pos):
@@ -2025,13 +2025,15 @@ class xmitm:
 		if self.mtype==2:
 			newgop=gopherpane(host=self.data1, port=70, selector=self.data2)
 			framesc.add_frame(stz.framex(self.width, self.height, self.label, resizable=self.resize, pumpcall=newgop.pumpcall1))
+		if self.mtype==4:
+			return self.data1, self.data2
 		if self.mtype==3:
 			newgop=morethings(appselect=widgetslist, label="Widgets")
 			framesc.add_frame(stz.framex(300, 400, self.label, resizable=True, pumpcall=newgop.pumpcall1))
-
 		elif self.mtype==1:
 			newgop=self.data1()
 			framesc.add_frame(stz.framex(self.width, self.height, self.label, resizable=self.resize, pumpcall=newgop.pumpcall1))
+		return None
 	def render(self, frameobj, ypos):
 		cache={}
 		ystart=ypos
@@ -2075,7 +2077,7 @@ xmitm("more_tipofday.png", "Tip Of The Day", 1, data1=libzoxui.tipofday, comment
 
 #main category
 defaultlist=[xmitm("more_dummy.png", "File Browse", 2, data1="file>>", data2="/", comment="Browse zoxenpher's subdirectories.", width=gopherwidth, height=gopherheight, resize=0),
-xmitm("more_dummy.png", "Widgets ->", 3, data1=widgetslist, comment="A selection of assorted mini-programs of varying usefulness.",),
+xmitm("more_dummy.png", "Widgets ->", 4, data1=widgetslist, data2="Widgets", comment="A selection of assorted mini-programs of varying usefulness.",),
 xmitm("more_sinfo.png", "System Info", 1, data1=libzoxui.sinfo, comment="Info on Zoxenpher's runtime, and host OS.", width=200, height=240, resize=0)]
 
 testmenu=[xmitm("more_dummy.png", "TEST ITEM 02", 1, data1=gopherpane, comment="Hello", width=gopherwidth, height=gopherheight),
@@ -2087,11 +2089,14 @@ class morethings:
 		self.yjump=int(libzox.cnfdict["menutextjump"])
 		self.data=0
 		self.appselect=appselect
+		self.origin_appselect=[]
 		self.scrollup=scrollup.convert()
 		self.scrolldn=scrolldn.convert()
 		self.scrollup_no=scrollup_no.convert()
 		self.scrolldn_no=scrolldn_no.convert()
-		self.label=label
+		self.backbtn=backbtn.convert()
+		self.backbtn_inact=backbtn_inact.convert()
+		self.label=[label]
 	def renderdisp(self, frameobj):
 		frameobj.surface.fill((107, 107, 107))
 		self.ypos=self.yoff
@@ -2115,13 +2120,16 @@ class morethings:
 		pygame.draw.rect(frameobj.surface, (220, 220, 220), siderect)
 		#pygame.draw.rect(frameobj.surface, (220, 220, 220), siderect2)
 		pygame.draw.line(frameobj.surface, (0, 0, 0), (4, 0), (4, frameobj.sizey), 1)
-		
+		if self.origin_appselect!=[]:
+			self.backrect=frameobj.surface.blit(self.backbtn, (5, 0))
+		else:
+			self.backrect_inact=frameobj.surface.blit(self.backbtn_inact, (5, 0))
 	def pumpcall1(self, frameobj, data=None):
 		if frameobj.statflg==2:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
 			frameobj.seticon(more_wicon.convert())
-			frameobj.name="More: "+self.label
+			frameobj.name="More: "+" > ".join(self.label)
 			self.renderdisp(frameobj)
 		if frameobj.statflg==4:
 			mpos=stz.mousehelper(data.pos, frameobj)
@@ -2129,7 +2137,16 @@ class morethings:
 				if data.button==1:
 					for item in self.rectlist:
 						if item[0].collidepoint(mpos):
-							item[1].action()
+							ret=item[1].action()
+							#subcategory code
+							if ret!=None:
+								self.origin_appselect.append(self.appselect)
+								self.appselect=ret[0]
+								self.yoff=25
+								self.label.append(ret[1])
+								frameobj.name="More: "+" > ".join(self.label)
+								self.renderdisp(frameobj)
+				#mouse wheel
 				elif data.button==4:
 					self.yoff+=self.yjump*2
 					if self.yoff>25:
@@ -2138,6 +2155,15 @@ class morethings:
 				elif data.button==5 and self.ypos>frameobj.sizey:
 					self.yoff-=self.yjump*2
 					self.renderdisp(frameobj)
-							
+			#Hud buttons
+			else:
+				#back button
+				if self.backrect.collidepoint(mpos) and len(self.origin_appselect)>0:
+					self.appselect=self.origin_appselect.pop()
+					self.yoff=25
+					self.label.pop()
+					frameobj.name="More: "+" > ".join(self.label)
+					self.renderdisp(frameobj)
+					
 				
 

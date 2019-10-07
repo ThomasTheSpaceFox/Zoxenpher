@@ -226,17 +226,23 @@ class aboutsplash:
 
 		else:
 			self.splashbg=pygame.image.load(os.path.join(libzox.gfxpath, "aboutsplash.jpg")).convert()
+		self.texypos=0
 	def renderdisp(self, frameobj):
-		#frameobj.surface.fill((255, 255, 255))
-		frameobj.surface.blit(self.splashbg, (0, 0))
-		frameobj.surface.blit(self.versiontext, (self.versionpos))
+		frameobj.surface.fill((255, 255, 255))
+		frameobj.surface.blit(self.splashbg, (0, self.texypos))
+		
 	def pumpcall1(self, frameobj, data=None):
 		#if frameobj.statflg==0:
 		#	self.renderdisp(frameobj)
+		if frameobj.statflg==0 and self.texypos!=0:
+			self.texypos-=1
+			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
-			self.versiontext=self.font.render(versionstring, True, (0, 0, 0))
-			self.versionpos=(frameobj.surface.get_width()-self.versiontext.get_width(), frameobj.surface.get_height()-self.versiontext.get_height())
+			#self.versiontext=self.font.render(versionstring, True, (0, 0, 0))
+			#self.versionpos=(frameobj.surface.get_width()-self.versiontext.get_width(), 147-self.versiontext.get_height())
+			#self.splashbg.blit(self.versiontext, (self.versionpos))
 			frameobj.seticon(about_wicon.convert())
 			frameobj.name=versionstring
+			self.texypos=343
 			self.renderdisp(frameobj)
 

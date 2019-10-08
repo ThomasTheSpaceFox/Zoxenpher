@@ -80,67 +80,25 @@ def pathfigure(host, port, selector, gtype="0", query=None):
 		elif os.path.isfile(os.path.join(selectpath, "index.gop")):
 			data=open(os.path.join(selectpath, "index.gop"))
 		else:
-			if gtype=="1":
-				data=open(os.path.join(errorpath, "E_localerror"))
-			if gtype=="0":
-				data=open(os.path.join(errorpath, "E_localerror.txt"))
-			if gtype=="p":
-				data=open(os.path.join(errorpath, "gaierror.png"))
-			if gtype=="I" or gtype=="g":
-				data=open(os.path.join(errorpath, "gaierror.gif"))
+			data=PathErrorHandle(selector, host, port, "Internal URL Error! [err s3]", "Zoxenpher was unable to load the given inernal URL.", gtype=gtype)
 	else:
 		try:
 			data=libgop.gopherget(host, port, selector, query)
 		except socket.timeout as err:
 			print(err)
-			if gtype=="1":
-				data=open(os.path.join(errorpath, "E_timeout"))
-			if gtype=="0":
-				data=open(os.path.join(errorpath, "E_timeout.txt"))
-			if gtype=="p":
-				data=open(os.path.join(errorpath, "gaierror.png"))
-			if gtype=="I" or gtype=="g":
-				data=open(os.path.join(errorpath, "gaierror.gif"))
+			data=PathErrorHandle(selector, host, port, "Connection timeout. (socket.timeout) [err s1]", "The connection timed out.", gtype=gtype)
 		except socket.error as err:
 			print(err)
-			if gtype=="1":
-				data=open(os.path.join(errorpath, "E_serror"))
-			if gtype=="0":
-				data=open(os.path.join(errorpath, "E_serror.txt"))
-			if gtype=="p":
-				data=open(os.path.join(errorpath, "gaierror.png"))
-			if gtype=="I" or gtype=="g":
-				data=open(os.path.join(errorpath, "gaierror.gif"))
+			data=PathErrorHandle(selector, host, port, "Generic Socket Error (socket.error) [err s5]", "Zoxenpher was unable to load the specified gopher address!", gtype=gtype)
 		except socket.gaierror as err:
 			print(err)
-			if gtype=="1":
-				data=open(os.path.join(errorpath, "E_gaierror"))
-			if gtype=="0":
-				data=open(os.path.join(errorpath, "E_gaierror.txt"))
-			if gtype=="p":
-				data=open(os.path.join(errorpath, "gaierror.png"))
-			if gtype=="I" or gtype=="g":
-				data=open(os.path.join(errorpath, "gaierror.gif"))
+			data=PathErrorHandle(selector, host, port, "Socket Error (socket.gaierror) [err s0]", "Zoxenpher was unable to load the specified gopher address!", gtype=gtype)
 		except socket.herror as err:
 			print(err)
-			if gtype=="1":
-				data=open(os.path.join(errorpath, "E_herror"))
-			if gtype=="0":
-				data=open(os.path.join(errorpath, "E_herror.txt"))
-			if gtype=="p":
-				data=open(os.path.join(errorpath, "gaierror.png"))
-			if gtype=="I" or gtype=="g":
-				data=open(os.path.join(errorpath, "gaierror.gif"))
+			data=PathErrorHandle(selector, host, port, "Socket Error (socket.herror) [err s4]", "Zoxenpher was unable to load the specified gopher address!", gtype=gtype)
 		except Exception as err:
 			print(err)
-			if gtype=="1":
-				data=open(os.path.join(errorpath, "E_undeferror"))
-			if gtype=="0":
-				data=open(os.path.join(errorpath, "E_undeferror.txt"))
-			if gtype=="p":
-				data=open(os.path.join(errorpath, "gaierror.png"))
-			if gtype=="I" or gtype=="g":
-				data=open(os.path.join(errorpath, "gaierror.gif"))
+			data=PathErrorHandle(selector, host, port, "Unknown Error [s2]"  , "An unknown error occured when trying to make a connection.", gtype=gtype)
 	return data
 
 default_heading_divider="_________________________________________________________________"
@@ -169,6 +127,46 @@ def SecureFilter(menulist, serverhost):
 
 def ientry(string, gtype="i", selector="null", host="null"):
 	return gtype+string+"\t"+selector+"\t"+host+"\t70"
+
+def PathErrorHandle(selector, host, port, errorstr, errordesc, gtype="1"):
+	print(gtype)
+	if isinternalhost(host):
+		iurl="Yes"
+	else:
+		iurl="No"
+	if gtype=="1":
+		data=[]
+		data.append(ientry(errorstr, gtype="3"))
+		data.append(ientry(default_heading_divider))
+		data.append(ientry(errordesc))
+		data.append(ientry("", gtype="p", selector="/vgop/error/generic.png", host="zox>>"))
+		data.append(ientry("Host: " + str(host)))
+		data.append(ientry("Port: " + str(port)))
+		data.append(ientry("Selector: " + str(selector)))
+		data.append(ientry("Gopher Type: " + str(gtype)))
+		data.append(ientry("Internal Url: " + iurl))
+		data.append(ientry(default_heading_divider))
+		data.append(ientry("This page was generated internally by Zoxenpher."))
+		data.append(".")
+		return data
+	if gtype=="0":
+		data=[]
+		data.append((errorstr))
+		data.append((default_heading_divider))
+		data.append((errordesc))
+		data.append(("Host: " + str(host)))
+		data.append(("Port: " + str(port)))
+		data.append(("Selector: " + str(selector)))
+		data.append(("Gopher Type: " + str(gtype)))
+		data.append(("Internal Url: " + iurl))
+		data.append((default_heading_divider))
+		data.append(("This page was generated internally by Zoxenpher."))
+		return data
+	if gtype=="p":
+		return open(os.path.join(errorpath, "gaierror.png"))
+	if gtype=="I" or gtype=="g":
+		return open(os.path.join(errorpath, "gaierror.gif"))
+	return None
 
 def fileurl_pathlist(host, port, selector, selectorlist):
 	ext=None

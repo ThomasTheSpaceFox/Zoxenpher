@@ -1,3 +1,0 @@
-Generic Socket Error!
-(herror)
-Zoxenpher error code: 's5'

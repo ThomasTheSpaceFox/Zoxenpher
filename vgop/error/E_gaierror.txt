@@ -1,3 +1,0 @@
-Zoxenpher was unable to load the specified gopher address!
-(gaierror)
-Zoxenpher error code: 's0'

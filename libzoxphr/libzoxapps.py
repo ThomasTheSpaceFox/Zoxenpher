@@ -478,6 +478,7 @@ class gopherpane:
 		self.ServError=0
 		self.query=query
 		self.PageErrorList=[]
+		self.ServerErrorList=[]
 	#menu get routine
 	def menuget(self):
 		
@@ -574,8 +575,10 @@ class gopherpane:
 		
 		for item in self.menu:
 			if item.gtype=="3":
-				self.ServError+=1
 				rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (155, 0, 0), frameobj.surface, self.ypos, self.renderdict, gterror)
+				if item not in self.ServerErrorList:
+					self.ServError+=1
+					self.ServerErrorList.append(item)
 			elif item.gtype=="i":
 				if item.gtype=="0":
 					rects, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
@@ -839,6 +842,7 @@ class gopherpane:
 		#reset server error flag-counter
 		self.ServError=0
 		self.PageErrorList=[]
+		self.ServerErrorList=[]
 		if self.host=="zoxsplash>>" and self.selector=="/about.gop":
 			self.prefix="about: "
 			self.shortprefix="about: "

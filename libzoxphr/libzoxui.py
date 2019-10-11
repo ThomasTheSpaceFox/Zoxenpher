@@ -227,15 +227,20 @@ class aboutsplash:
 		else:
 			self.splashbg=pygame.image.load(os.path.join(libzox.gfxpath, "aboutsplash.jpg")).convert()
 		self.texypos=0
+		self.subval=26
 	def renderdisp(self, frameobj):
 		frameobj.surface.fill((255, 255, 255))
+		prect=pygame.Rect(0, self.texypos, frameobj.sizex, frameobj.sizey+100)
+		pygame.draw.rect(frameobj.surface, (0, 0, 0), prect, 0)
 		frameobj.surface.blit(self.splashbg, (0, self.texypos))
 		
 	def pumpcall1(self, frameobj, data=None):
 		#if frameobj.statflg==0:
 		#	self.renderdisp(frameobj)
 		if frameobj.statflg==0 and self.texypos!=0:
-			self.texypos-=1
+			self.texypos-=self.subval
+			if self.subval>-1:
+				self.subval-=1
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
 			#self.versiontext=self.font.render(versionstring, True, (0, 0, 0))

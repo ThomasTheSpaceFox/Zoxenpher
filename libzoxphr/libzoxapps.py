@@ -9,7 +9,7 @@ from . import strazoloidwm as stz
 from . import libzox
 from .libzox import pathfigure
 from .libzox import textitem
-from .libzox import imgget
+#from .libzox import imgget
 import subprocess
 from subprocess import Popen
 from . import libzoxui
@@ -479,6 +479,8 @@ class gopherpane:
 		self.query=query
 		self.PageErrorList=[]
 		self.ServerErrorList=[]
+		self.screenup=False
+		self.imghalt=0
 	#menu get routine
 	def menuget(self):
 		
@@ -500,6 +502,7 @@ class gopherpane:
 			#print("histpop")
 			self.histlist.pop(0)
 			self.histpoint-=1
+		self.screenup=True
 	def menuget_nohist(self):
 		
 		if self.gtype=="0":
@@ -512,6 +515,7 @@ class gopherpane:
 			del item
 		del self.renderdict
 		self.renderdict={}
+		self.screenup=True
 	def newhist(self):
 		#print("newhist")
 		self.histlist=self.histlist[:self.histpoint+1]
@@ -692,7 +696,7 @@ class gopherpane:
 		if imageset!=[]:
 			self.images=imageset
 			self.loading=1
-			sideproc=Thread(target = imgget, args = [imageset, self.menudraw, frameobj, self])
+			sideproc=Thread(target = self.imgget, args = [imageset, frameobj])
 			sideproc.daemon=True
 			sideproc.start()
 		
@@ -756,7 +760,29 @@ class gopherpane:
 			self.scdnrect=frameobj.surface.blit(self.scrolldn, (frameobj.surface.get_width()-46, 0))
 		else:
 			self.scdnrect=frameobj.surface.blit(self.scrolldn_no, (frameobj.surface.get_width()-46, 0))
-		
+	
+	def imgget(self, items, frameobj):
+		for mitem in items:
+			#stop loading if menu window is closed.
+			if self.imghalt:
+				print("imgget: window closed... terminating...")
+				return
+			data=pathfigure(mitem.hostname, mitem.port, mitem.selector, gtype=mitem.gtype)
+			try:
+				if mitem.gtype=="g":
+					imagefx=pygame.image.load(data, "quack.gif")
+				if mitem.gtype=="p":
+					imagefx=pygame.image.load(data, "quack.png")
+				if mitem.gtype=="I":
+					imagefx=pygame.image.load(data)
+				imagefx.convert()
+				mitem.fullimage=imagefx
+				mitem.image=libzox.imagelimit_gwindow(imagefx, frameobj.surface.get_width()-30, 1800)
+			except pygame.error:
+				self.loading=0
+				return
+		self.loading=0
+		self.screenup=True
 	#menu change loader
 	def menuchange(self, item, frameobj):
 		self.host=item.hostname
@@ -768,7 +794,7 @@ class gopherpane:
 		
 		self.yoff=25
 		self.loading=0
-		self.menudraw(frameobj)
+		#self.menudraw(frameobj)
 		return
 	def menurefresh(self, frameobj):
 		#self.histpoint-=1
@@ -785,7 +811,7 @@ class gopherpane:
 		
 		self.yoff=25
 		self.loading=0
-		self.menudraw(frameobj)
+		#self.menudraw(frameobj)
 	def menuroot(self, frameobj):
 		self.selector="/"
 		self.gtype="1"
@@ -796,7 +822,7 @@ class gopherpane:
 		
 		self.yoff=25
 		self.loading=0
-		self.menudraw(frameobj)
+		#self.menudraw(frameobj)
 	def menuup(self, frameobj):
 		if self.selector.count("/")>1 and not self.selector.endswith("/"):
 			self.selector=self.selector.rsplit("/", 1)[0]
@@ -812,7 +838,7 @@ class gopherpane:
 		
 		self.yoff=25
 		self.loading=0
-		self.menudraw(frameobj)
+		#self.menudraw(frameobj)
 	#menu initalization loader
 	def menuinital(self, frameobj):
 		
@@ -822,7 +848,7 @@ class gopherpane:
 		
 		self.yoff=25
 		self.loading=0
-		self.menudraw(frameobj)
+		#self.menudraw(frameobj)
 	def histchange(self, histitem, frameobj):
 		self.data=histitem.data
 		self.menu=histitem.menu
@@ -835,7 +861,8 @@ class gopherpane:
 		
 		self.renderdict={}
 		self.yoff=25
-		self.menudraw(frameobj)
+		self.screenup=True
+		#self.menudraw(frameobj)
 	def set_icon_name(self, frameobj):
 		#reset page error flag-counter
 		self.PageError=0
@@ -897,8 +924,9 @@ class gopherpane:
 	def pumpcall1(self, frameobj, data=None):
 		
 				
-			
-			
+		#enabled by access threads to trigger display redraw.
+		if frameobj.statflg==0 and self.screenup==True:
+			self.menudraw(frameobj)
 		#link destination preview routine. 
 		if frameobj.statflg==0 and frameobj.wo==0 and frameobj.shade==0:
 			mpos=stz.mousehelper(pygame.mouse.get_pos(), frameobj)
@@ -951,12 +979,14 @@ class gopherpane:
 								continue
 		#delete some of the larger things upon close
 		if frameobj.statflg==3:
+			self.imghalt=1
 			for item in self.renderdict:
 				del item
 			del self.renderdict
 			del self.menu
 			del self.data
 			del self.histlist
+			
 		#startup
 		if frameobj.statflg==1:
 			self.menudraw(frameobj)

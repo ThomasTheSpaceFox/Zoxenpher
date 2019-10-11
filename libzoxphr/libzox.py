@@ -129,7 +129,7 @@ def ientry(string, gtype="i", selector="null", host="null"):
 	return gtype+string+"\t"+selector+"\t"+host+"\t70"
 
 def PathErrorHandle(selector, host, port, errorstr, errordesc, gtype="1"):
-	print(gtype)
+	#print(gtype)
 	if isinternalhost(host):
 		iurl="Yes"
 	else:
@@ -139,7 +139,8 @@ def PathErrorHandle(selector, host, port, errorstr, errordesc, gtype="1"):
 		data.append(ientry(errorstr, gtype="3"))
 		data.append(ientry(default_heading_divider))
 		data.append(ientry(errordesc))
-		data.append(ientry("", gtype="p", selector="/vgop/error/generic.png", host="zox>>"))
+		#triggers security filter on external urls.
+		#data.append(ientry("", gtype="p", selector="/vgop/error/generic.png", host="zox>>"))
 		data.append(ientry("Host: " + str(host)))
 		data.append(ientry("Port: " + str(port)))
 		data.append(ientry("Selector: " + str(selector)))
@@ -380,25 +381,29 @@ class pathprogobj:
 		return self.classrefx(host=self.host, port=self.port, selector=self.selector)
 
 #image loader routine. (runs in separate thread when needed)
-def imgget(items, uptref, frameobj, gopherwindow):
-	for mitem in items:
-		data=pathfigure(mitem.hostname, mitem.port, mitem.selector, gtype=mitem.gtype)
-		try:
-			if mitem.gtype=="g":
-				imagefx=pygame.image.load(data, "quack.gif")
-			if mitem.gtype=="p":
-				imagefx=pygame.image.load(data, "quack.png")
-			if mitem.gtype=="I":
-				imagefx=pygame.image.load(data)
-			imagefx.convert()
-			mitem.fullimage=imagefx
-			mitem.image=imagelimit_gwindow(imagefx, frameobj.surface.get_width()-30, 1800)
-		except pygame.error:
-			gopherwindow.loading=0
-			return
-	gopherwindow.loading=0
-	if uptref!=None:
-		uptref(frameobj)
+#MOVED TO INSIDE GOPHERPANE
+#def imgget(items, uptref, frameobj, gopherwindow):
+	#for mitem in items:
+		##stop loading if menu window is closed.
+		#if frameobj.runflg==0:
+			#return
+		#data=pathfigure(mitem.hostname, mitem.port, mitem.selector, gtype=mitem.gtype)
+		#try:
+			#if mitem.gtype=="g":
+				#imagefx=pygame.image.load(data, "quack.gif")
+			#if mitem.gtype=="p":
+				#imagefx=pygame.image.load(data, "quack.png")
+			#if mitem.gtype=="I":
+				#imagefx=pygame.image.load(data)
+			#imagefx.convert()
+			#mitem.fullimage=imagefx
+			#mitem.image=imagelimit_gwindow(imagefx, frameobj.surface.get_width()-30, 1800)
+		#except pygame.error:
+			#gopherwindow.loading=0
+			#return
+	#gopherwindow.loading=0
+	#if uptref!=None:
+		#uptref(frameobj)
 	
 
 def reshrinkimages(items, frameobj):

@@ -6,7 +6,7 @@ powered by:
  - libgop gopher library v0.2      
  - strazoloid virtual window manager framework v1.3.0             
           
-Copyright (c) 2018-2019 Thomas Leathers and contributors       
+Copyright (c) 2018-2020 Thomas Leathers and contributors       
 
       
 Zoxenpher is free software: you can redistribute it and/or modify             

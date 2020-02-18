@@ -15,11 +15,11 @@ iq: I see a red-ish line of text that begins with "[LINE ERROR]:". what went wro
 ia: Most likely faulty formatting in a gophermap document. If this line even was a selector, it certainly didn't look like it to the parser.	null	null	70
 i	null	null	70
 iq: i see:	null	null	70
-pErrorImage	/vgop/gfx/gaierror.png	zox>>	70
+pErrorImage	/vgop/error/gaierror.png	zox>>	70
 ia: This means Zoxenpher wasn't able to load that content.  This can be for a variety of reasons, ranging from dead links to server bugs to bugs in Zoxenpher itself.	null	null	70
 i	null	null	70
-iq: i see some sort of error page/error window with a 'zoxenpher error code':	null	null	70
-ia: You can look up the error code here:	null	null	70
+iq: I see a Network Error/Internal Error page!:	null	null	70
+ia: Zoxenpher ran into a problem while trying to load that page. You can look up the error code here:	null	null	70
 1Error Codes	/errorcodes	zoxhelp>>	70
 i	null	null	70
 iq: A connection seems to have hanged.	null	null	70
@@ -35,7 +35,7 @@ iq: sound playback stops when i close a sound player window, even when its not t
 ia: this is a known bug, which is due to the sound player using pygame's music playback. This should be fixed in the future.	null	null	70
 i	null	null	70
 iq: it takes a bit before sound starts playing in the sound player sometimes.	null	null	70
-ia: the sound player currently doesn't play the data as its being downloaded. This should be fixed in the future.	null	null	70
+ia: the sound player currently doesn't play the data as its being downloaded.	null	null	70
 i	null	null	70
 iq: mp3s don't play.	null	null	70
 ia: mp3 support is notoriously patchy and unpredictable when it comes to pygame, sadly.	null	null	70

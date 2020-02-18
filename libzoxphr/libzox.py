@@ -80,25 +80,25 @@ def pathfigure(host, port, selector, gtype="0", query=None):
 		elif os.path.isfile(os.path.join(selectpath, "index.gop")):
 			data=open(os.path.join(selectpath, "index.gop"))
 		else:
-			data=PathErrorHandle(selector, host, port, "Internal URL Error! [err s3]", "Zoxenpher was unable to load the given inernal URL.", gtype=gtype)
+			data=PathErrorHandle(selector, host, port, "Internal URL Error! [error s3]", "Zoxenpher was unable to load that inernal URL.", gtype=gtype, querytext=query)
 	else:
 		try:
 			data=libgop.gopherget(host, port, selector, query)
 		except socket.timeout as err:
 			print(err)
-			data=PathErrorHandle(selector, host, port, "Connection timeout. (socket.timeout) [err s1]", "The connection timed out.", gtype=gtype)
+			data=PathErrorHandle(selector, host, port, "Connection timeout. (socket.timeout) [error s1]", "The connection timed out.", errraw=err, gtype=gtype, querytext=query)
 		except socket.error as err:
 			print(err)
-			data=PathErrorHandle(selector, host, port, "Generic Socket Error (socket.error) [err s5]", "Zoxenpher was unable to load the specified gopher address!", gtype=gtype)
+			data=PathErrorHandle(selector, host, port, "Generic Socket Error (socket.error) [error s5]", "Zoxenpher was unable to load that gopher address!", errraw=err, gtype=gtype, querytext=query)
 		except socket.gaierror as err:
 			print(err)
-			data=PathErrorHandle(selector, host, port, "Socket Error (socket.gaierror) [err s0]", "Zoxenpher was unable to load the specified gopher address!", gtype=gtype)
+			data=PathErrorHandle(selector, host, port, "Socket Error (socket.gaierror) [error s0]", "Zoxenpher was unable to load that gopher address!", errraw=err, gtype=gtype, querytext=query)
 		except socket.herror as err:
 			print(err)
-			data=PathErrorHandle(selector, host, port, "Socket Error (socket.herror) [err s4]", "Zoxenpher was unable to load the specified gopher address!", gtype=gtype)
+			data=PathErrorHandle(selector, host, port, "Socket Error (socket.herror) [error s4]", "Zoxenpher was unable to load that gopher address!", errraw=err, gtype=gtype, querytext=query)
 		except Exception as err:
 			print(err)
-			data=PathErrorHandle(selector, host, port, "Unknown Error [s2]"  , "An unknown error occured when trying to make a connection.", gtype=gtype)
+			data=PathErrorHandle(selector, host, port, "Unknown Error [error s2]"  , "An unknown error occured when trying to make a connection.", errraw=err, gtype=gtype, querytext=query)
 	return data
 
 default_heading_divider="_________________________________________________________________"
@@ -128,14 +128,20 @@ def SecureFilter(menulist, serverhost):
 def ientry(string, gtype="i", selector="null", host="null"):
 	return gtype+string+"\t"+selector+"\t"+host+"\t70"
 
-def PathErrorHandle(selector, host, port, errorstr, errordesc, gtype="1"):
+def PathErrorHandle(selector, host, port, errorstr, errordesc, errraw=None, gtype="1", querytext=None):
 	#print(gtype)
+	if errraw!=None:
+		errraw=str(errraw)
 	if isinternalhost(host):
 		iurl="Yes"
 	else:
 		iurl="No"
-	if gtype=="1":
+	if gtype=="7" or gtype=="1":
 		data=[]
+		if not isinternalhost(host):
+			data.append(ientry("Network Error:"))
+		else:
+			data.append(ientry("Internal Error:"))
 		data.append(ientry(errorstr, gtype="3"))
 		data.append(ientry(default_heading_divider))
 		data.append(ientry(errordesc))
@@ -144,14 +150,25 @@ def PathErrorHandle(selector, host, port, errorstr, errordesc, gtype="1"):
 		data.append(ientry("Host: " + str(host)))
 		data.append(ientry("Port: " + str(port)))
 		data.append(ientry("Selector: " + str(selector)))
+		if querytext!=None:
+			data.append(ientry("Query: " + str(querytext)))
 		data.append(ientry("Gopher Type: " + str(gtype)))
 		data.append(ientry("Internal Url: " + iurl))
+		
 		data.append(ientry(default_heading_divider))
+		if errraw!=None:
+			data.append(ientry("--Error Details--"))
+			data.append(ientry("'" + errraw.replace("\t", "   ").replace("\n", "") + "'"))
+			data.append(ientry(default_heading_divider))
 		data.append(ientry("This page was generated internally by Zoxenpher."))
 		data.append(".")
 		return data
 	if gtype=="0":
 		data=[]
+		if not isinternalhost(host):
+			data.append(("Network Error:"))
+		else:
+			data.append(("Internal Error:"))
 		data.append((errorstr))
 		data.append((default_heading_divider))
 		data.append((errordesc))
@@ -161,6 +178,10 @@ def PathErrorHandle(selector, host, port, errorstr, errordesc, gtype="1"):
 		data.append(("Gopher Type: " + str(gtype)))
 		data.append(("Internal Url: " + iurl))
 		data.append((default_heading_divider))
+		if errraw!=None:
+			data.append(("--Error Details--"))
+			data.append(("'" + errraw.replace("\t", "   ").replace("\n", "") + "'"))
+			data.append((default_heading_divider))
 		data.append(("This page was generated internally by Zoxenpher."))
 		return data
 	if gtype=="p":

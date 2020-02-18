@@ -2110,7 +2110,7 @@ widgetslist=[xmitm("more_clock.png", "Clock", 1, data1=libzoxui.clock, comment="
 xmitm("more_tipofday.png", "Tip Of The Day", 1, data1=libzoxui.tipofday, comment="Get a random tip from a set of Zoxenpher-related tips.", width=350, height=120, resize=0)]
 
 #main category
-defaultlist=[xmitm("more_dummy.png", "File Browse", 2, data1="file>>", data2="/", comment="Browse zoxenpher's subdirectories.", width=gopherwidth, height=gopherheight, resize=0),
+defaultlist=[xmitm("more_dummy.png", "File Browse", 2, data1="file>>", data2="/", comment="Browse zoxenpher's subdirectories.", width=gopherwidth, height=gopherheight, resize=1),
 xmitm("more_dummy.png", "Widgets ->", 4, data1=widgetslist, data2="Widgets", comment="A selection of assorted mini-programs of varying usefulness.",),
 xmitm("more_sinfo.png", "System Info", 1, data1=libzoxui.sinfo, comment="Info on Zoxenpher's runtime, and host OS.", width=200, height=240, resize=0)]
 
@@ -2157,7 +2157,7 @@ class morethings:
 		if self.origin_appselect!=[]:
 			self.backrect=frameobj.surface.blit(self.backbtn, (5, 0))
 		else:
-			self.backrect_inact=frameobj.surface.blit(self.backbtn_inact, (5, 0))
+			self.backrect=frameobj.surface.blit(self.backbtn_inact, (5, 0))
 	def pumpcall1(self, frameobj, data=None):
 		if frameobj.statflg==2:
 			self.renderdisp(frameobj)

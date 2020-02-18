@@ -5,6 +5,8 @@ i______________________________________________________	null	null	70
 i - CTRL+n: new gopher window	null	null	70
 i - CTRL+g: open go dialog	null	null	70
 i - F1: open help menu	null	null	70
+i - F2: open more menu	null	null	70
+i - F3: open Media Player	null	null	70
 i - CTRL+b: open bookmarks manager	null	null	70
 i - CTRL+q: exit zoxenpher.	null	null	70
 i - CTRL+Tab: cycle windows.	null	null	70

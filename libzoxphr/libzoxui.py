@@ -45,6 +45,7 @@ class yndialog:
 		self.message=message
 		self.callback=callback
 		self.carrydata=carrydata
+		self.closeflg=0
 	def renderdisp(self, frameobj):
 		frameobj.surface.fill((220, 220, 220))
 		for line in self.message.split("\n"):
@@ -60,7 +61,7 @@ class yndialog:
 		self.nrect=frameobj.surface.blit(diag_no, (nox, yesnoy))
 		
 	def pumpcall1(self, frameobj, data=None):
-		if frameobj.statflg==2:
+		if frameobj.statflg==11:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
 			frameobj.name=self.dname
@@ -68,7 +69,7 @@ class yndialog:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==3:
 			if frameobj.runflg==2:
-				if not self.canclose:
+				if not self.canclose and not self.closeflg:
 					framesc.add_frame(frameobj)
 			else:
 				self.callback(0, self.carrydata)
@@ -77,16 +78,20 @@ class yndialog:
 			if data.button==1:
 				if self.yrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 					self.callback(1, self.carrydata)
+					self.closeflg=1
 					framesc.close_frame(frameobj)
 				if self.nrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 					self.callback(0, self.carrydata)
+					self.closeflg=1
 					framesc.close_frame(frameobj)
 		if frameobj.statflg==6:
 			if data.key==pygame.K_y:
 				self.callback(1, self.carrydata)
+				self.closeflg=1
 				framesc.close_frame(frameobj)
 			elif data.key==pygame.K_n:
 				self.callback(0, self.carrydata)
+				self.closeflg=1
 				framesc.close_frame(frameobj)
 
 

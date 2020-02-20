@@ -25,6 +25,8 @@ minyoffset2=31
 #helpful offset setting for desktop taskbars/toolbars on top of main window.
 miny=0
 
+#ask desktop before quitting?
+code12_askbeforequit=False
 
 def setminy(newminy):
 	global miny
@@ -244,6 +246,11 @@ class framex:
 		self.closerect=getclose(self.framerect)
 		self.shadrect=getshade(self.framerect)
 		self.poprect=getpop(self.framerect)
+		#during resize Call
+		self.statflg=11
+		if self.pumpcall!=None:
+			self.pumpcall(self)
+		self.statflg=0
 		return
 	def click(self, event):
 		self.statflg=4
@@ -437,6 +444,21 @@ class desktop:
 		if self.pumpcall!=None:
 			self.pumpcall(self)
 		self.statflg=0
+	def quitcheck(self):
+		self.statflg=12
+		self.runflg=0
+		if not code12_askbeforequit:
+			ret=True
+		elif self.pumpcall!=None:
+			if self.pumpcall(self):
+				ret=True
+			else:
+				ret=False
+		else:
+			ret=True
+		
+		self.statflg=0
+		return ret
 	def resize(self, xsize, ysize):
 		self.sizex=xsize
 		self.sizey=ysize
@@ -708,8 +730,9 @@ class framescape:
 		self.aftxt=actframetext
 		self.resizedesk=0
 		self.activeframe=None
+		self.shutdown_flag=False
 		self.simplefont = pygame.font.SysFont(None, fontsize)
-		print("Strazoloid Window Manager v1.4.0.indev")
+		print("Strazoloid Window Manager v1.4.0")
 	def close_pid(self, pid):
 		try:
 			frame=self.idlook[pid]
@@ -754,6 +777,8 @@ class framescape:
 			self.activeframe=frame
 		else:
 			return 1
+	def shutdown(self):
+		self.shutdown_flag=True
 	def add_frame(self, frame):
 		if frame.xpos==None or frame.ypos==None:
 			frame._internal_set_pos(self.desktop.sizex, self.desktop.sizey)
@@ -826,6 +851,14 @@ class framescape:
 			pygame.display.flip()
 			#event parser
 			for event in pygame.event.get():
+				if self.shutdown_flag:
+					self.runflg=0
+					for frame in self.proclist:
+						frame.quitcall()
+					for ghost in self.ghostproc:
+						ghost.quitcall()
+					self.desktop.quitcall()
+					break
 				if event.type==pygame.VIDEORESIZE:
 					self.resizedesk=1
 					resw=event.w
@@ -833,14 +866,14 @@ class framescape:
 					time.sleep(0.1)
 					break
 				if event.type==pygame.QUIT:
-					self.runflg=0
-					for frame in self.proclist:
-						frame.quitcall()
-					for ghost in self.ghostproc:
-						ghost.quitcall()
-					self.desktop.quitcall()
-					
-					break
+					if self.desktop.quitcheck():
+						self.runflg=0
+						for frame in self.proclist:
+							frame.quitcall()
+						for ghost in self.ghostproc:
+							ghost.quitcall()
+						self.desktop.quitcall()
+						break
 				if event.type==pygame.KEYDOWN:
 					if self.activeframe!=None:
 						self.activeframe.keydown(event)

@@ -366,7 +366,7 @@ def textitem(text, xfont, yjump, textcolx, surface, ypos, renderdict, itemicn=No
 
 #normal "launch icon" class
 class progobj:
-	def __init__(self, classref, icon, idcode, friendly_name, commname, xsize, ysize, resizable=0, key=None, mod=None, hint="", side=0):
+	def __init__(self, classref, icon, idcode, friendly_name, commname, xsize, ysize, resizable=0, key=None, mod=None, hint="", side=0, ghost=0):
 		self.idcode=idcode
 		self.friendly_name=friendly_name
 		self.commname=commname
@@ -379,6 +379,7 @@ class progobj:
 		self.mod=mod
 		self.hint=hint
 		self.side=side
+		self.ghost=ghost
 
 #special gopherpane "launch icon" class. used by help icon to bring up "about:help"
 class pathprogobj:

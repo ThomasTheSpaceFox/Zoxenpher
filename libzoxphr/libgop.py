@@ -11,7 +11,7 @@ ERR_PARSER=1
 ERR_IMAGELOAD=3
 ERR_NONE=0
 stopget=0
-print("libgop gopher library v0.1")
+print("libgop gopher library v0.2")
 print("check python version...")
 vers=sys.version_info[0]
 if vers==2:

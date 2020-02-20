@@ -4,7 +4,7 @@ v3.0.0.indev
          
 powered by:      
  - libgop gopher library v0.2      
- - strazoloid virtual window manager framework v1.3.0             
+ - strazoloid virtual window manager framework v1.4.0             
           
 Copyright (c) 2018-2020 Thomas Leathers and contributors       
 

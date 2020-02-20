@@ -25,13 +25,13 @@ stz.hudsize=25
 simplefont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
 gopherwidth=((simplefont.size("_")[0])*81)+25+4
 gopherheight=int(libzox.cnfdict["menuheight"])
-
+stz.code12_askbeforequit=True
 
 #desktop 'taskbar' icons
 progs=[progobj(lza.gopherpane, pygame.image.load(os.path.join(libzox.gfxpath, "newwindow.png")), "goppane", "Gopher Menu", "GOPHER", gopherwidth, gopherheight, 1, key=pygame.K_n, mod=pygame.KMOD_CTRL, hint="Open a new gopher window. (CTRL+n)"),
 progobj(lza.urlgo, pygame.image.load(os.path.join(libzox.gfxpath, "go.png")), "urlgo", "URL GO:", "urlgo", 500, 100, 1, key=pygame.K_g, mod=pygame.KMOD_CTRL, hint="Enter a Gopher URL to load. (CTRL+g)"),
 progobj(lza.bookmarks, pygame.image.load(os.path.join(libzox.gfxpath, "bookmarks.png")), "bookmarks", "Bookmarks", "bookmarks", gopherwidth, gopherheight, 1, key=pygame.K_b, mod=pygame.KMOD_CTRL, hint="Open bookmarks. (CTRL+b)"),
-progobj(lza.quitx, pygame.image.load(os.path.join(libzox.gfxpath, "exit.png")), "quit", "quit", "quit", gopherwidth, gopherheight, 1, key=pygame.K_q, mod=pygame.KMOD_CTRL, hint="quit. (CTRL+q)", side=1),
+progobj(lza.quitx, pygame.image.load(os.path.join(libzox.gfxpath, "exit.png")), "quit", "quit", "quit", gopherwidth, gopherheight, 1, key=pygame.K_q, mod=pygame.KMOD_CTRL, hint="quit. (CTRL+q)", side=1, ghost=1),
 pathprogobj(lza.gopherpane, pygame.image.load(os.path.join(libzox.gfxpath, "help.png")), "goppane_HELP", "Gopher Menu", "GOPHER_HELP", gopherwidth, gopherheight, 1, host="zoxhelp>>", selector="/", key=pygame.K_F1, hint="Bring up a help menu. (F1)"),
 progobj(lza.morethings, pygame.image.load(os.path.join(libzox.gfxpath, "more.png")), "more", "More", "MORE", 300, 400, 1, key=pygame.K_F2, hint="More things. (F2)"),
 progobj(lza.mediaplay, pygame.image.load(os.path.join(libzox.gfxpath, "media.png")), "media", "Media", "MEDIA", gopherwidth, gopherheight, 1, key=pygame.K_F3, hint="Media Player (F3)")]

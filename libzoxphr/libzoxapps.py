@@ -236,6 +236,9 @@ class deskclass:
 			print("Stopping MPE...")
 			MPE.shutdown()
 			self.active=0
+		if frameobj.statflg==12:
+			framesc.add_ghost(stz.ghost("Quit", pumpcall=quitx().pumpcall1))
+			return False
 		if frameobj.statflg==4:
 			if data.button==1:
 				#about button
@@ -251,7 +254,10 @@ class deskclass:
 				#launcher icons
 				for prog in self.progs:
 					if prog.iconrect.collidepoint(data.pos):
-						framesc.add_frame(stz.framex(prog.xsize, prog.ysize, prog.friendly_name, pumpcall=prog.classref().pumpcall1, resizable=prog.resizable))
+						if prog.ghost==1:
+							framesc.add_ghost(stz.ghost(prog.friendly_name, pumpcall=prog.classref().pumpcall1))
+						else:
+							framesc.add_frame(stz.framex(prog.xsize, prog.ysize, prog.friendly_name, pumpcall=prog.classref().pumpcall1, resizable=prog.resizable))
 			elif data.button==4 and data.pos[1]<46:
 				try:
 					if len(self.tasksorted)>1:
@@ -301,11 +307,18 @@ class deskclass:
 				if prog.mod==None:
 					if prog.key!=None:
 						if data.key==prog.key:
-							framesc.add_frame(stz.framex(prog.xsize, prog.ysize, prog.friendly_name, pumpcall=prog.classref().pumpcall1, resizable=prog.resizable))
+							if prog.ghost==1:
+								framesc.add_ghost(stz.ghost(prog.friendly_name, pumpcall=prog.classref().pumpcall1))
+							else:
+								framesc.add_frame(stz.framex(prog.xsize, prog.ysize, prog.friendly_name, pumpcall=prog.classref().pumpcall1, resizable=prog.resizable))
 				elif mods & prog.mod:
 					if prog.key!=None:
 						if data.key==prog.key:
-							framesc.add_frame(stz.framex(prog.xsize, prog.ysize, prog.friendly_name, pumpcall=prog.classref().pumpcall1, resizable=prog.resizable))
+							
+							if prog.ghost==1:
+								framesc.add_ghost(stz.ghost(prog.friendly_name, pumpcall=prog.classref().pumpcall1))
+							else:
+								framesc.add_frame(stz.framex(prog.xsize, prog.ysize, prog.friendly_name, pumpcall=prog.classref().pumpcall1, resizable=prog.resizable))
 			
 	#resize handling
 	def resize(self, surface):
@@ -1005,7 +1018,7 @@ class gopherpane:
 					frameobj.name=(self.prefix+str(self.host) + "/" + self.gtype + str(self.selector))
 				self.newhist()
 		#resize
-		if frameobj.statflg==2:
+		if frameobj.statflg==11:
 			self.yoff=25
 			for item in self.renderdict:
 				del item
@@ -1274,7 +1287,7 @@ class querypane:
 			#show hint in hover text area
 			#if frameobj.wo==0:
 			#	deskt.hovertext=self.hovmsg
-		if frameobj.statflg==2:
+		if frameobj.statflg==11:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
 			#str1=self.host+"/7"+self.selector
@@ -1436,7 +1449,7 @@ class bookmarks:
 				bmlist.remove(carrydata)
 				libzox.bmsave(bmlist)
 	def pumpcall1(self, frameobj, data=None):
-		if frameobj.statflg==2:
+		if frameobj.statflg==11:
 			self.offset=0
 			self.renderdisp(frameobj)
 		if frameobj.statflg==0 and self.bmprev!=bmlist:
@@ -1562,7 +1575,7 @@ class bookmadded:
 		foo, self.ypos, bar = textitem(namestr, simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.ypos+3, {}, xoff=5, textcoly=namecolor)
 		
 	def pumpcall1(self, frameobj, data=None):
-		if frameobj.statflg==2:
+		if frameobj.statflg==11:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
 			if self.bookm==None:
@@ -1646,7 +1659,7 @@ class urlgo:
 		#if frameobj.statflg==3:
 		#	if deskt.hovertext==self.hovmsg:
 		#		deskt.hovertext=""
-		if frameobj.statflg==2:
+		if frameobj.statflg==11:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
 			frameobj.sizeminy=100
@@ -1780,7 +1793,7 @@ class imgview:
 				frameobj.name=("Image: " + str(self.host) + "/" + self.gtype + self.selector)
 			else:
 				frameobj.name=("Image: gopher://" + self.host + "/" + self.gtype + self.selector)
-		if frameobj.statflg==1 or frameobj.statflg==2 or self.loaderupt:
+		if frameobj.statflg==1 or frameobj.statflg==11 or self.loaderupt:
 			
 			self.pscf=None
 			self.loaderupt=0
@@ -1843,14 +1856,19 @@ class imgview:
 				framesc.add_frame(stz.framex(500, 150, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, xpos=50, ypos=50, sizeminy=150))
 		return
 
-#basic routine for quitting.
+#basic Ghost routine for quitting.
 class quitx:
 	def __init__(self):
 		return
+	def askcallback(self, yn, data):
+		if yn==True:
+			framesc.shutdown()
+		else:
+			framesc.close_ghost(data)
 	def pumpcall1(self, frameobj, data=None):
-		pygame.event.clear()
-		pygame.event.post(pygame.event.Event(pygame.QUIT))
-		framesc.close_frame(frameobj)
+		if frameobj.statflg==1:
+			libzoxui.do_yndialog("Quit?", "Are you sure you want to quit Zoxenpher?", self.askcallback, carrydata=frameobj, canclose=1)
+		
 
 
 class sndplay:
@@ -1880,7 +1898,7 @@ class sndplay:
 			frameobj.name="sound: ZERROR: aud0"
 			return
 	def pumpcall1(self, frameobj, data=None):
-		if frameobj.statflg==2:
+		if frameobj.statflg==11:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
 			frameobj.name="sound: loading... Please wait."
@@ -2016,7 +2034,7 @@ class mediaplay:
 		self.nextrect=frameobj.surface.blit(media_next, (200+boff, 0))
 		
 	def pumpcall1(self, frameobj, data=None):
-		if frameobj.statflg==2:
+		if frameobj.statflg==11:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
 			frameobj.name="Zoxenpher Media Player"
@@ -2159,7 +2177,7 @@ class morethings:
 		else:
 			self.backrect=frameobj.surface.blit(self.backbtn_inact, (5, 0))
 	def pumpcall1(self, frameobj, data=None):
-		if frameobj.statflg==2:
+		if frameobj.statflg==11:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
 			frameobj.seticon(more_wicon.convert())

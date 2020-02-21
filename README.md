@@ -5,7 +5,9 @@ v3.0.0.indev
 powered by:      
  - libgop gopher library v0.2      
  - strazoloid virtual window manager framework v1.4.0             
-          
+
+![Screenshot of Zoxenpher](/vgop/screenshots/zoxenpher1.jpg)
+    
 Copyright (c) 2018-2020 Thomas Leathers and contributors       
 
       

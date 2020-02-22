@@ -381,7 +381,7 @@ class progobj:
 		self.side=side
 		self.ghost=ghost
 
-#special gopherpane "launch icon" class. used by help icon to bring up "about:help"
+#special gopherpane "launch icon" class. used by help icon to bring up help index.
 class pathprogobj:
 	def __init__(self, classref, icon, idcode, friendly_name, commname, xsize, ysize, resizable=0, key=None, mod=None, host="zoxsplash>>", port=70, selector="/", hint="", side=0):
 		self.idcode=idcode
@@ -399,6 +399,7 @@ class pathprogobj:
 		self.selector=selector
 		self.hint=hint
 		self.side=side
+		self.ghost=0
 	def classref(self):
 		return self.classrefx(host=self.host, port=self.port, selector=self.selector)
 

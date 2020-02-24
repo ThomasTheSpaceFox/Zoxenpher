@@ -233,12 +233,22 @@ class aboutsplash:
 			self.splashbg=pygame.image.load(os.path.join(libzox.gfxpath, "aboutsplash.jpg")).convert()
 		self.texypos=0
 		self.subval=26
+		self.lines=[]
+		self.lineindex=0
+		
+		pathis=["libzoxphr", "dat", "credits.dat"]
+		t=open(os.path.join(*pathis), "r")
+		for line in t:
+			self.lines.extend([line.replace("\n", "")])
 	def renderdisp(self, frameobj):
 		frameobj.surface.fill((255, 255, 255))
 		prect=pygame.Rect(0, self.texypos, frameobj.sizex, frameobj.sizey+100)
 		pygame.draw.rect(frameobj.surface, (0, 0, 0), prect, 0)
 		frameobj.surface.blit(self.splashbg, (0, self.texypos))
-		
+		if self.linexpos>0:
+			frameobj.surface.blit(self.linetext, (self.linexpos, 0))
+		else:
+			frameobj.surface.blit(self.linetext, (0, 0))
 	def pumpcall1(self, frameobj, data=None):
 		#if frameobj.statflg==0:
 		#	self.renderdisp(frameobj)
@@ -247,12 +257,24 @@ class aboutsplash:
 			if self.subval>-1:
 				self.subval-=1
 			self.renderdisp(frameobj)
+		elif frameobj.statflg==0:
+			if self.linexpos>-10000-(self.linetext.get_width()*20):
+				self.linexpos-=100
+			else:
+				self.lineindex+=1
+				if self.lineindex==len(self.lines):
+					self.lineindex=0
+				self.linetext=self.font.render(self.lines[self.lineindex], True, (0, 0, 0))
+				self.linexpos=frameobj.sizex
+			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
 			#self.versiontext=self.font.render(versionstring, True, (0, 0, 0))
 			#self.versionpos=(frameobj.surface.get_width()-self.versiontext.get_width(), 147-self.versiontext.get_height())
 			#self.splashbg.blit(self.versiontext, (self.versionpos))
 			frameobj.seticon(about_wicon.convert())
 			frameobj.name=versionstring
+			self.linetext=self.font.render(self.lines[self.lineindex], True, (0, 0, 0))
 			self.texypos=343
+			self.linexpos=frameobj.sizex
 			self.renderdisp(frameobj)
 

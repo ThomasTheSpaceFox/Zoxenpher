@@ -92,7 +92,7 @@ booknew_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "booknew_wicon.png"
 more_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "more_wicon.png"))
 about_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "about_wicon.png"))
 help_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "help_wicon.png"))
-
+exit_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "exit_wicon.png"))
 framesc=None
 
 def init(framescape, desktop):
@@ -1914,7 +1914,7 @@ class quitx:
 			framesc.close_ghost(data)
 	def pumpcall1(self, frameobj, data=None):
 		if frameobj.statflg==1:
-			libzoxui.do_yndialog("Quit?", "Are you sure you want to quit Zoxenpher?", self.askcallback, carrydata=frameobj, canclose=1)
+			libzoxui.do_yndialog("Quit?", "Are you sure you want to quit Zoxenpher?", self.askcallback, carrydata=frameobj, canclose=1, icon=exit_wicon)
 		
 
 

@@ -31,13 +31,13 @@ def init(framescape, desktop):
 	framesc=framescape
 	deskt=desktop
 
-def do_yndialog(name, message, callback, canclose=0, carrydata=None):
-	newgop=yndialog(name, message, callback, canclose, carrydata)
+def do_yndialog(name, message, callback, canclose=0, carrydata=None, icon=yn_wicon):
+	newgop=yndialog(name, message, callback, canclose, carrydata, icon)
 	framesc.add_frame(stz.framex(400, 150, name, resizable=0, pumpcall=newgop.pumpcall1, xpos=60, ypos=100))
 
 
 class yndialog:
-	def __init__(self, name, message, callback, canclose, carrydata=None):
+	def __init__(self, name, message, callback, canclose, carrydata=None, icon=yn_wicon):
 		self.canclose=canclose
 		self.ypos=0
 		self.yjump=int(libzox.cnfdict["menutextjump"])
@@ -46,6 +46,7 @@ class yndialog:
 		self.callback=callback
 		self.carrydata=carrydata
 		self.closeflg=0
+		self.icon=icon
 	def renderdisp(self, frameobj):
 		frameobj.surface.fill((220, 220, 220))
 		for line in self.message.split("\n"):
@@ -65,7 +66,7 @@ class yndialog:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
 			frameobj.name=self.dname
-			frameobj.seticon(yn_wicon.convert())
+			frameobj.seticon(self.icon.convert())
 			self.renderdisp(frameobj)
 		if frameobj.statflg==3:
 			if frameobj.runflg==2:

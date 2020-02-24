@@ -28,6 +28,7 @@ i - ALT+down: goto server root menu if not alreay there.	null	null	70
 i - ALT+left: goto previous menu in history.	null	null	70
 i - ALT+right: goto next menu in history.	null	null	70
 i - CTRL+r: reload current menu. (disabled when menu is loading data)	null	null	70
+i - CTRL+i: Toggle Image previews (disabled when menu is loading data)	null	null	70
 i - Home: goto top of menu/document.	null	null	70
 i - End: goto end of menu/document.	null	null	70
 i	null	null	70

@@ -62,6 +62,9 @@ rootbtn=pygame.image.load(os.path.join(libzox.gfxpath, "rootbtn.png"))
 rootbtn_inact=pygame.image.load(os.path.join(libzox.gfxpath, "rootbtn_inact.png"))
 perrorbtn=pygame.image.load(os.path.join(libzox.gfxpath, "perrorbtn.png"))
 perrorbtn_inact=pygame.image.load(os.path.join(libzox.gfxpath, "perrorbtn_inact.png"))
+imgbtn=pygame.image.load(os.path.join(libzox.gfxpath, "imgbtn.png"))
+imgbtn_inact=pygame.image.load(os.path.join(libzox.gfxpath, "imgbtn_inact.png"))
+
 
 
 
@@ -485,6 +488,8 @@ class gopherpane:
 		self.upbtn_inact=upbtn_inact.convert()
 		self.perrorbtn=perrorbtn.convert()
 		self.perrorbtn_inact=perrorbtn_inact.convert()
+		self.imgbtn=imgbtn.convert()
+		self.imgbtn_inact=imgbtn_inact.convert()
 		self.loading=loading
 		self.prevtype=None
 		self.PageError=0
@@ -494,6 +499,7 @@ class gopherpane:
 		self.ServerErrorList=[]
 		self.screenup=False
 		self.imghalt=0
+		self.imgprev=libzox.cnfdict["imgprevbool"]
 	#menu get routine
 	def menuget(self):
 		
@@ -648,43 +654,47 @@ class gopherpane:
 			#image preview routine
 			
 			elif item.gtype=="g" or item.gtype=="p" or item.gtype=="I":
-				imagecount+=1
-				#check to see if image is loaded, if not, add it to image preview queue (if preview cap is not met yet/rendering local documentation.)
-				#place a placeholder "loading" image to be shown until image has loaded.
-				try:
-					foobar=item.image
-					
-				except AttributeError as err:
-					#print(err)
-					if imagecount<maximages or (imagecount<2 and self.forceimage) or libzox.isinternalhost(self.host):
-						item.image=loadingimage.copy()
-						item.fullimage=None
-						imageset.extend([item])
-					else:
-						item.image=None
-						item.fullimage=None
-					#item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
-
-				if item.image!=None:
-					ytemp=0
-					if item.name.strip()!="":
-						rectia, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
-					else:
-						rectia, ytemp, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
-					rectib=frameobj.surface.blit(item.image, (26, self.ypos))
-					item.rect=rectia.unionall([rectib])
-					#pygame.draw.rect(frameobj.surface, (60, 60, 255), item.rect, 1)
-					itemimagehig=item.image.get_height()
-					if ytemp!=0:
-						lsize=abs(ytemp-self.ypos)
-						if lsize<itemimagehig:
-							lsize=itemimagehig
-						self.ypos+=lsize
-					else:	
-						self.ypos+=itemimagehig
-				if item.image==None:
+				if self.imgprev:
+					imagecount+=1
+					#check to see if image is loaded, if not, add it to image preview queue (if preview cap is not met yet/rendering local documentation.)
+					#place a placeholder "loading" image to be shown until image has loaded.
+					try:
+						foobar=item.image
+						
+					except AttributeError as err:
+						#print(err)
+						if imagecount<maximages or (imagecount<2 and self.forceimage) or libzox.isinternalhost(self.host):
+							item.image=loadingimage.copy()
+							item.fullimage=None
+							imageset.extend([item])
+						else:
+							item.image=None
+							item.fullimage=None
+						#item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
+	
+					if item.image!=None:
+						ytemp=0
+						if item.name.strip()!="":
+							rectia, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
+						else:
+							rectia, ytemp, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
+						rectib=frameobj.surface.blit(item.image, (26, self.ypos))
+						item.rect=rectia.unionall([rectib])
+						#pygame.draw.rect(frameobj.surface, (60, 60, 255), item.rect, 1)
+						itemimagehig=item.image.get_height()
+						if ytemp!=0:
+							lsize=abs(ytemp-self.ypos)
+							if lsize<itemimagehig:
+								lsize=itemimagehig
+							self.ypos+=lsize
+						else:	
+							self.ypos+=itemimagehig
+					if item.image==None:
+						item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
+					#pygame.draw.rect(frameobj.surface, (255, 255, 0), item.rect, 1)
+				else:
 					item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
-				#pygame.draw.rect(frameobj.surface, (255, 255, 0), item.rect, 1)
+
 			elif item.gtype=="s":
 				item.rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtsound, 1)
 			
@@ -764,6 +774,11 @@ class gopherpane:
 			self.erroriconRect=frameobj.surface.blit(self.perrorbtn, (xpos, 0))
 		else:
 			self.erroriconRect=frameobj.surface.blit(self.perrorbtn_inact, (xpos, 0))
+		xpos+=24
+		if self.imgprev:
+			self.imgbtnRect=frameobj.surface.blit(self.imgbtn, (xpos, 0))
+		else:
+			self.imgbtnRect=frameobj.surface.blit(self.imgbtn_inact, (xpos, 0))
 		
 		if self.yoff<25:
 			self.scuprect=frameobj.surface.blit(self.scrollup, (frameobj.surface.get_width()-24, 0))
@@ -940,6 +955,15 @@ class gopherpane:
 		#enabled by access threads to trigger display redraw.
 		if frameobj.statflg==0 and self.screenup==True:
 			self.menudraw(frameobj)
+		if frameobj.statflg==0:
+			while self.ypos<frameobj.sizey:
+				if self.yoff==25:
+					break
+				self.screenup=True
+				self.ypos+=1
+				self.yoff+=1
+				
+				
 		#link destination preview routine. 
 		if frameobj.statflg==0 and frameobj.wo==0 and frameobj.shade==0:
 			mpos=stz.mousehelper(pygame.mouse.get_pos(), frameobj)
@@ -959,6 +983,11 @@ class gopherpane:
 				deskt.hovertext="If not greyed out, you may scroll up."
 			elif self.scdnrect.collidepoint(mpos):
 				deskt.hovertext="If not greyed out, you may scroll down."
+			elif self.imgbtnRect.collidepoint(mpos):
+				if self.imgprev:
+					deskt.hovertext="Image Previews are ON. Click to Toggle (when not loading) (Ctrl+i)"
+				else:
+					deskt.hovertext="Image Previews are OFF. Click to Toggle (when not loading) (Ctrl+i)"
 			elif self.erroriconRect.collidepoint(mpos):
 				if self.PageError!=0 and self.ServError!=0:
 					deskt.hovertext=str(self.ServError) + " Server Error(s). " + str(self.PageError) + " Page Error(s)."
@@ -1019,7 +1048,7 @@ class gopherpane:
 				self.newhist()
 		#resize
 		if frameobj.statflg==11:
-			self.yoff=25
+			#self.yoff=25
 			for item in self.renderdict:
 				del item
 			del self.renderdict
@@ -1050,6 +1079,15 @@ class gopherpane:
 						sideproc=Thread(target = self.menurefresh, args = [frameobj])
 						sideproc.daemon=True
 						sideproc.start()
+				if data.key==pygame.K_i: 
+					if not self.loading:
+						if self.imgprev:
+							self.imgprev=0
+						else:
+							self.imgprev=1
+						#self.yoff=25
+						self.screenup=True
+						#self.menudraw(frameobj)
 			if mods & pygame.KMOD_ALT:
 				if data.key==pygame.K_LEFT:
 					if self.histpoint>0:
@@ -1109,6 +1147,15 @@ class gopherpane:
 							sideproc=Thread(target = self.menurefresh, args = [frameobj])
 							sideproc.daemon=True
 							sideproc.start()
+					if self.imgbtnRect.collidepoint(stz.mousehelper(data.pos, frameobj)):
+						if not self.loading:
+							if self.imgprev:
+								self.imgprev=0
+							else:
+								self.imgprev=1
+							#self.yoff=25
+							self.screenup=True
+							#self.menudraw(frameobj)
 					if self.rootrect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 						if self.selector!="/" and self.selector!="":
 							self.loading=1

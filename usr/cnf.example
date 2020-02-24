@@ -10,8 +10,11 @@
 #[string] specify a string with no enclosing marks. i.e. setting=string NOT setting="string"
 
 
-#number of images to show in-line in menus. [int] 0=disable
+#number of images to show in-line in menus. [int]
 imgpreview=10
+
+#wether image previews are enabled/disabled by default: [bool]
+imgprevbool=on
 
 #max number of history items in menu windows [int]
 histsize=10

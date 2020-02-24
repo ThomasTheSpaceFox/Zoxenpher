@@ -527,7 +527,7 @@ def bmsave(bmlist):
 #bmsave(bmlist)
 
 #syntax check lists
-cnfbools=["itemdebug", "showzoxban"]
+cnfbools=["itemdebug", "showzoxban", "imgprevbool"]
 cnfints=["imgpreview", "bgmode", "histsize", "deskw", "deskh", "menufontsize", "menutextjump", "menuheight", "framestyle", "wmfps", "viewzoom"]
 
 cnfdef={"imgpreview" : "10",
@@ -545,7 +545,8 @@ cnfdef={"imgpreview" : "10",
 "viewzoom" : "2400",
 "browser" : "none",
 "bgmode" : "1",
-"showzoxban" : "1"}
+"showzoxban" : "1",
+"imgprevbool" : "1"}
 
 itemdebug=0
 

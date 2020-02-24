@@ -52,8 +52,10 @@ i--- Image preview settings ---	null	null	70
 i______________________________________________________	null	null	70
 iIf you have a slow internet connection, or a slow computer, you may wish to adjust the image preview settings. Likewise, you may also want to increase the number of previewed images as well.	null	null	70
 i	null	null	70
-i -To do either of these things, use this setting. (note that setting this to 0 disables image previewing outright):	null	null	70
+i -To change the max number of previewed images, use:	null	null	70
 iimgpreview=10	null	null	70
+i -To change the default image preview state (on/off)	null	null	70
+iimgprevbool=on	null	null	70
 p	/part7.png	zoxhelp>>	70
 i--- Menu window history size limit ---	null	null	70
 i______________________________________________________	null	null	70

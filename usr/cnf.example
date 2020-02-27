@@ -34,6 +34,11 @@ browser=none
 #browser=firefox
 #browser=chrome
 
+#telnet/telnet3270 (will pass arguments given, replaces %h with hostname and %p with port.)
+telnet=none
+telnet3270=none
+
+#tip: try running 'telnet' in your terminal emulator using your terminal's "execute" command line option.
 
 #font size for menus [int]
 menufontsize=15

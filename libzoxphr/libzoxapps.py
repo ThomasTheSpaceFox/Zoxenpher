@@ -14,6 +14,8 @@ import subprocess
 from subprocess import Popen
 from . import libzoxui
 import time
+#used to help parse telnet client command.
+import shlex
 
 simplefont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
 linkfont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
@@ -729,9 +731,9 @@ class gopherpane:
 			
 			
 			elif item.gtype=="8":
-				item.rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gttelnet, 1)
+				item.rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gttelnet, 1)
 			elif item.gtype=="T":
-				item.rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gttelnet3270, 1)
+				item.rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gttelnet3270, 1)
 			elif item.gtype=="2":
 				item.rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gtccso, 1)
 			
@@ -1289,6 +1291,30 @@ class gopherpane:
 										print("Can't open web browser!")
 								else:
 									print("Web browser not configured!")
+						if item.gtype=="8":
+							if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
+								print(item.selector)
+								browscmd=libzox.cnfdict["telnet"]
+								if browscmd not in ["", "none"]:
+									browscmd=shlex.split(browscmd.replace("%h", item.hostname).replace("%p", str(item.port)))
+									try:
+										Popen(browscmd)
+									except OSError:
+										print("Can't open telnet client!!")
+								else:
+									print("telnet client not configured!")
+						if item.gtype=="T":
+							if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
+								print(item.selector)
+								browscmd=libzox.cnfdict["telnet3270"]
+								if browscmd not in ["", "none"]:
+									browscmd=shlex.split(browscmd.replace("%h", item.hostname).replace("%p", str(item.port)))
+									try:
+										Popen(browscmd)
+									except OSError:
+										print("Can't open telnet 3270 client!!")
+								else:
+									print("telnet 3270 client not configured!")
 
 			elif data.button==3 and not self.linkdisable:
 				for item in self.menu:

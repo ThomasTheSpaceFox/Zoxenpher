@@ -544,6 +544,8 @@ cnfdef={"imgpreview" : "10",
 "itemdebug" : "0",
 "viewzoom" : "2400",
 "browser" : "none",
+"telnet" : "none",
+"telnet3270" : "none",
 "bgmode" : "1",
 "showzoxban" : "1",
 "imgprevbool" : "1"}

@@ -26,11 +26,27 @@ ibrowser=firefox	null	null	70
 ibrowser=chrome	null	null	70
 i	null	null	70
 p	/part4.png	zoxhelp>>	70
+i--- Setting Up Telnet Client ---	null	null	70
+i______________________________________________________	null	null	70
+ptelnet	/vgop/gfx/telneticn.png	zox>>	70
+ptelnet 3270	/vgop/gfx/tel3270icn.png	zox>>	70
+iZoxenpher Supports telnet links via opening them in a dedicated client.	null	null	70
+iseparate settings exist for telnet and telnet 3270. both pass the specified arguments to the program given.	null	null	70
+iUse %h for hostname and %p for port.	null	null	70
+i	null	null	70
+i -Default setting. AKA no client configured.	null	null	70
+itelnet=none	null	null	70
+itelnet3270=none	null	null	70
+i	null	null	70
+i -linux example (replace "my_favorite_terminal_emulator" with your favorite one!)	null	null	70
+itelnet=my_favorite_terminal_emulator -e "telnet %h %p"	null	null	70
+i	null	null	70
+p	/part5.png	zoxhelp>>	70
 i--- Setting wallpaper ---	null	null	70
 i______________________________________________________	null	null	70
 1see: wallpaper help	/wallpaper	zoxhelp>>	70
 i	null	null	70
-p	/part5.png	zoxhelp>>	70
+p	/part6.png	zoxhelp>>	70
 i--- Fixing menu font ---	null	null	70
 i______________________________________________________	null	null	70
 iOn some systems, the default settings will end up loading a non-monospaced font, or wind up being the wrong size.	null	null	70
@@ -47,7 +63,7 @@ imenufont=mono	null	null	70
 i	null	null	70
 i -While the default width is sized automatically to 80 columns, the height is set in the configuration. adjust to your preference.	null	null	70
 imenuheight=460	null	null	70
-p	/part6.png	zoxhelp>>	70
+p	/part7.png	zoxhelp>>	70
 i--- Image preview settings ---	null	null	70
 i______________________________________________________	null	null	70
 iIf you have a slow internet connection, or a slow computer, you may wish to adjust the image preview settings. Likewise, you may also want to increase the number of previewed images as well.	null	null	70
@@ -56,13 +72,13 @@ i -To change the max number of previewed images, use:	null	null	70
 iimgpreview=10	null	null	70
 i -To change the default image preview state (on/off)	null	null	70
 iimgprevbool=on	null	null	70
-p	/part7.png	zoxhelp>>	70
+p	/part8.png	zoxhelp>>	70
 i--- Menu window history size limit ---	null	null	70
 i______________________________________________________	null	null	70
 i -This will limit how many history entries zoxenpher will keep for each gopher menu. history entries are cached.	null	null	70
 ihistsize=10	null	null	70
 i	null	null	70
-p	/part8.png	zoxhelp>>	70
+p	/part9.png	zoxhelp>>	70
 i--- Default Window Size ---	null	null	70
 i______________________________________________________	null	null	70
 iIf 800x600 is not your desired window size, you can change it. via these settings:	null	null	70
@@ -74,7 +90,7 @@ i	null	null	70
 i -height:	null	null	70
 ideskh=600	null	null	70
 i	null	null	70
-p	/part9.png	zoxhelp>>	70
+p	/part10.png	zoxhelp>>	70
 i--- Strazoloidwm frame style ---	null	null	70
 i______________________________________________________	null	null	70
 ichoose what builtin frame style strazoloidwm should use.	null	null	70

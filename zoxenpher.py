@@ -20,6 +20,7 @@ print("Zoxenpher v3.0.0.indev")
 #set some option variables inside strazoloidwm based upon cnf.dat settings.
 stz.framestyle=int(libzox.cnfdict["framestyle"])
 stz.wmfps=int(libzox.cnfdict["wmfps"])
+resizable_desk=int(libzox.cnfdict["resizable"])
 stz.hudsize=25
 #calculate gopher menu window width and height. (needed by desktop class)
 simplefont = pygame.font.SysFont(libzox.cnfdict["menufont"], int(libzox.cnfdict["menufontsize"]))
@@ -41,7 +42,7 @@ pygame.font.init()
 
 
 #logical equivalent to the desktop's "frame"
-deskframe=stz.desktop(int(libzox.cnfdict["deskw"]), int(libzox.cnfdict["deskh"]), "Zoxenpher v3.0.0.indev", pumpcall=deskt.pumpcall1, resizable=1)
+deskframe=stz.desktop(int(libzox.cnfdict["deskw"]), int(libzox.cnfdict["deskh"]), "Zoxenpher v3.0.0.indev", pumpcall=deskt.pumpcall1, resizable=resizable_desk)
 
 windowicon=pygame.image.load(os.path.join(libzox.gfxpath, "icon32.png"))
 

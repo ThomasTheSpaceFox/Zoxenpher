@@ -90,6 +90,10 @@ i	null	null	70
 i -height:	null	null	70
 ideskh=600	null	null	70
 i	null	null	70
+i	null	null	70
+i -resizable (controls wether the main window can be resized):	null	null	70
+iresizable=true	null	null	70
+i	null	null	70
 p	/part10.png	zoxhelp>>	70
 i--- Strazoloidwm frame style ---	null	null	70
 i______________________________________________________	null	null	70

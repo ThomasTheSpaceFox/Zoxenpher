@@ -157,11 +157,12 @@ class framex:
 		self.xpos=xpos
 		self.ypos=ypos
 		self.name=name
-		if self.ypos<miny:
-			self.ypos=miny
+		
 		self.wo=None
 		self.pid=None
 		if self.xpos!=None and self.ypos!=None:
+			if self.ypos<miny:
+				self.ypos=miny
 			self.SurfRect=pygame.Rect(self.xpos, self.ypos, sizex, sizey)
 			self.framerect=getframe_shadeaware(self, self.SurfRect, self.resizable)
 			self.closerect=getclose(self.framerect)
@@ -184,7 +185,7 @@ class framex:
 		self.iconsrc=icon.copy()
 		self.icon=pygame.transform.scale(icon, (hudsize, hudsize))
 	def _internal_set_pos(self, deskx, desky):
-		if self.xpos==None:
+		if self.ypos==None:
 			if self.sizey<(desky-miny):
 				maxy=desky-self.sizey
 				#print((miny, maxy))
@@ -197,6 +198,8 @@ class framex:
 				self.xpos=saferandom(0, maxx)
 			else:
 				self.xpos=0
+		if self.ypos<miny:
+			self.ypos=miny
 		#make rects now, as they aren't made in __init__ when random position is used.
 		self.SurfRect=pygame.Rect(self.xpos, self.ypos, self.sizex, self.sizey)
 		self.framerect=getframe_shadeaware(self, self.SurfRect, self.resizable)

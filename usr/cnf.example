@@ -25,6 +25,9 @@ deskw=800
 #desk height [int]
 deskh=600
 
+#resizable desktop [bool]
+resizable=true
+
 #Max zoom/image size for viewer [int] (larger images will be pre-shrunk down.)
 viewzoom=2400
 

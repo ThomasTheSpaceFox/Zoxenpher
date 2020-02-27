@@ -103,7 +103,10 @@ def init(framescape, desktop):
 	global gtmenuroot
 	global gtmenurootremote
 	global gthelp
-	
+	global gtfile
+	global gttelnet
+	global gtccso
+	global gttelnet3270
 	
 	global gtimage
 	global gttext
@@ -111,6 +114,10 @@ def init(framescape, desktop):
 	
 	global gtsound
 	global gtbin
+	global gtbinuu
+	global gtbinhex
+	global gtbindos
+	
 	global gtweb
 	global gterror
 	global gtEND
@@ -141,8 +148,16 @@ def init(framescape, desktop):
 	
 	gtsound=pygame.image.load(os.path.join(libzox.gfxpath, "soundicn.png")).convert()
 	gtbin=pygame.image.load(os.path.join(libzox.gfxpath, "binicn.png")).convert()
+	gtbinuu=pygame.image.load(os.path.join(libzox.gfxpath, "binuuicn.png")).convert()
+	gtbinhex=pygame.image.load(os.path.join(libzox.gfxpath, "binhexicn.png")).convert()
+	gtbindos=pygame.image.load(os.path.join(libzox.gfxpath, "bindosicn.png")).convert()
+	
 	gtweb=pygame.image.load(os.path.join(libzox.gfxpath, "webicn.png")).convert()
 	gterror=pygame.image.load(os.path.join(libzox.gfxpath, "erroricn.png")).convert()
+	gtfile=pygame.image.load(os.path.join(libzox.gfxpath, "fileicn.png")).convert()
+	gttelnet=pygame.image.load(os.path.join(libzox.gfxpath, "telneticn.png")).convert()
+	gttelnet3270=pygame.image.load(os.path.join(libzox.gfxpath, "tel3270icn.png")).convert()
+	gtccso=pygame.image.load(os.path.join(libzox.gfxpath, "ccsoicn.png")).convert()
 	#special markers
 	highlight_arrow=pygame.image.load(os.path.join(libzox.gfxpath, "highlight_arrow.png")).convert()
 	gtEND=pygame.image.load(os.path.join(libzox.gfxpath, "eof_icon.png")).convert()
@@ -630,8 +645,11 @@ class gopherpane:
 				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gthelp, 1)
 				item.rect=rect
 			#TODO: add seprate gtmenufile icon for file directories. if anything like downloads>> or usr>> is added, they should also use gtmenufile.
-			elif item.gtype=="1" and (item.hostname=="zox>>" or item.hostname=="zoxsplash>>" or item.hostname=="file>>"):
+			elif item.gtype=="1" and (item.hostname=="zox>>" or item.hostname=="zoxsplash>>"):
 				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenuint, 1)
+				item.rect=rect
+			elif item.gtype=="1" and item.hostname=="file>>":
+				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtfile, 1)
 				item.rect=rect
 			elif item.gtype=="1" and item.hostname!=self.host and (item.selector=="/" or item.selector==""):
 				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenurootremote, 1)
@@ -701,7 +719,22 @@ class gopherpane:
 			
 			
 			elif item.gtype=="9":
-				rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gtbin, 1)
+				item.rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gtbin, 1)
+			elif item.gtype=="4":
+				item.rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gtbinhex, 1)
+			elif item.gtype=="5":
+				item.rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gtbindos, 1)
+			elif item.gtype=="6":
+				item.rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gtbinuu, 1)
+			
+			
+			elif item.gtype=="8":
+				item.rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gttelnet, 1)
+			elif item.gtype=="T":
+				item.rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gttelnet3270, 1)
+			elif item.gtype=="2":
+				item.rect, self.ypos, self.renderdict = textitem("[NS]"+item.name, linkfont, self.yjump, (30, 0, 0), frameobj.surface, self.ypos, self.renderdict, gtccso, 1)
+			
 			
 			elif item.gtype=="h":
 				item.rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtweb, 1)
@@ -917,8 +950,8 @@ class gopherpane:
 		elif self.host=="file>>":
 			self.prefix="file: "
 			self.shortprefix="file: "
-			#TODO: add special gtmenufile icon here. note that anything like usr>> or downloads>> should share this icon.
-			frameobj.seticon(gtmenuint)
+			
+			frameobj.seticon(gtfile)
 		elif self.gtype=="0":
 			self.prefix="text: gopher://"
 			self.shortprefix="text: "
@@ -1002,7 +1035,7 @@ class gopherpane:
 				for item in self.menu:
 					if item.gtype!=None:
 						#normal (supported) gopher types
-						if item.gtype in "01pgI7s":
+						if item.gtype in "01pgI7s9456":
 							try:
 								if item.rect.collidepoint(mpos):
 									if libzox.isinternalhost(item.hostname):
@@ -1017,6 +1050,12 @@ class gopherpane:
 							try:
 								if item.rect.collidepoint(mpos):
 									deskt.hovertext=item.selector
+							except AttributeError:
+								continue
+						if item.gtype in "28T":
+							try:
+								if item.rect.collidepoint(mpos):
+									deskt.hovertext=item.hostname+":"+str(item.port)
 							except AttributeError:
 								continue
 		#delete some of the larger things upon close
@@ -1225,8 +1264,12 @@ class gopherpane:
 								#itemcopy=copy.deepcopy(item)
 								#del itemcopy.image
 								#newgop=gopherpane(host=itemcopy.hostname, port=itemcopy.port, selector=itemcopy.selector, prefix="image: gopher://", preload=[itemcopy], forceimage=1, linkdisable=1, gtype=item.gtype, shortprefix="image: ")
-								newgop=imgview(host=item.hostname, port=item.port, selector=item.selector, gtype=item.gtype, imagesurf=item.fullimage)
-								framesc.add_frame(stz.framex(500, 400, "Image", resizable=1, pumpcall=newgop.pumpcall1))
+								try:
+									newgop=imgview(host=item.hostname, port=item.port, selector=item.selector, gtype=item.gtype, imagesurf=item.fullimage)
+									framesc.add_frame(stz.framex(500, 400, "Image", resizable=1, pumpcall=newgop.pumpcall1))
+								except AttributeError:
+									newgop=imgview(host=item.hostname, port=item.port, selector=item.selector, gtype=item.gtype, imagesurf=None)
+									framesc.add_frame(stz.framex(500, 400, "Image", resizable=1, pumpcall=newgop.pumpcall1))
 						if item.gtype=="7":
 							if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
 								newgop=querypane(host=item.hostname, port=item.port, selector=item.selector, itmdesc=item.name)
@@ -2175,8 +2218,8 @@ widgetslist=[xmitm("more_clock.png", "Clock", 1, data1=libzoxui.clock, comment="
 xmitm("more_tipofday.png", "Tip Of The Day", 1, data1=libzoxui.tipofday, comment="Get a random tip from a set of Zoxenpher-related tips.", width=350, height=120, resize=0)]
 
 #main category
-defaultlist=[xmitm("more_dummy.png", "File Browse", 2, data1="file>>", data2="/", comment="Browse zoxenpher's subdirectories.", width=gopherwidth, height=gopherheight, resize=1),
-xmitm("more_dummy.png", "Widgets ->", 4, data1=widgetslist, data2="Widgets", comment="A selection of assorted mini-programs of varying usefulness.",),
+defaultlist=[xmitm("more_files.png", "File Browse", 2, data1="file>>", data2="/", comment="Browse zoxenpher's subdirectories.", width=gopherwidth, height=gopherheight, resize=1),
+xmitm("more_submenu_widgets.png", "Widgets ->", 4, data1=widgetslist, data2="Widgets", comment="A selection of assorted mini-programs of varying usefulness.",),
 xmitm("more_sinfo.png", "System Info", 1, data1=libzoxui.sinfo, comment="Info on Zoxenpher's runtime, and host OS.", width=200, height=240, resize=0)]
 
 testmenu=[xmitm("more_dummy.png", "TEST ITEM 02", 1, data1=gopherpane, comment="Hello", width=gopherwidth, height=gopherheight),

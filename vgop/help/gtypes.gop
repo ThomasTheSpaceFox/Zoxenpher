@@ -19,7 +19,10 @@ pmenu-root-remote	/vgop/gfx/menurootremoteicn.png	zox>>	70
 iThe root menu of a different server than the current one.	null	null	70
 i	null	null	70
 pmenu-internal	/vgop/gfx/menuinticn.png	zox>>	70
-iVirtual menu provided internally by zoxenpher. i.e. the "about:splash" page.	null	null	70
+iVirtual menu provided internally by zoxenpher. i.e. the "splash" page.	null	null	70
+i	null	null	70
+pmenu-file	/vgop/gfx/fileicn.png	zox>>	70
+iVirtual menu representing zoxenpher's directory, or a subdirectory within it.	null	null	70
 i	null	null	70
 pmenu-help	/vgop/gfx/menuhelpicn.png	zox>>	70
 iVirtual Help menu provided internally by zoxenpher. Indicates internal zoxenpher documentation.	null	null	70
@@ -54,6 +57,7 @@ i	null	null	70
 i	null	null	70
 iNot yet supported:	null	null	70
 i	null	null	70
+i____Not Yet Implimented____	null	null	70
 iThese gopher types have support of some sort planned, but this support isn't yet working. Their labels will be prefixed with "[NS]"	null	null	70
 iIn addition, unknown gopher types will be prefixed with "[NS:x]" where x is the gopher type.	null	null	70
 i	null	null	70
@@ -61,5 +65,19 @@ i	null	null	70
 i	null	null	70
 i	null	null	70
 pbinary	/vgop/gfx/binicn.png	zox>>	70
-itype 9: downloading support will be added when a suitable solution is found. such as a configuration option to use a dedicated downloader.	null	null	70
+itype 9: downloading support is planned.	null	null	70
+pBinHex Encoded File	/vgop/gfx/binhexicn.png	zox>>	70
+itype 4: downloading support is planned.	null	null	70
+pDOS file	/vgop/gfx/bindosicn.png	zox>>	70
+itype 5: downloading support is planned.	null	null	70
+puuencoded file	/vgop/gfx/binuuicn.png	zox>>	70
+itype 6: downloading support is planned.	null	null	70
+ptelnet	/vgop/gfx/telneticn.png	zox>>	70
+itype 8: telnet support is planned. (at minimum, the option to open a dedicated telnet client.)	null	null	70
+ptelnet 3270	/vgop/gfx/tel3270icn.png	zox>>	70
+itype T: most likely via external applications (similar to type 'h')	null	null	70
+i	null	null	70
+i____Not Planned Yet____	null	null	70
+pCCSO Nameserver	/vgop/gfx/ccsoicn.png	zox>>	70
+itype 2: support not yet planned.	null	null	70
 .

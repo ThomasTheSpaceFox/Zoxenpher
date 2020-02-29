@@ -749,7 +749,7 @@ class gopherpane:
 				rects, self.ypos, self.renderdict = textitem("[NS:" + item.gtype + "]" + item.name, simplefont, 15, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
 				#print(item.gtype)
 			#ensure non-image types contain 'valid' item.rect2
-			if item.gtype not in "pIg":
+			if not (item.gtype=="p" or item.gtype=="I" or item.gtype=="g"):
 				item.rect2=item.rect
 			#item.rect/item.rect2 debug tracing.
 			if libzox.itemdebug:

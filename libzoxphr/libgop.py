@@ -23,6 +23,8 @@ class mitem:
 		self.errortype=ERR_NONE
 		self.errorlabel=""
 		self.errorinfo=""
+		self.rect=None
+		self.rect2=None
 		if not isinstance(data, str) and vers==3:
 			data=data.decode()
 			#print("py3 data convert")

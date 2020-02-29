@@ -699,7 +699,10 @@ class gopherpane:
 						else:
 							rectia, ytemp, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
 						rectib=frameobj.surface.blit(item.image, (26, self.ypos))
-						item.rect=rectia.unionall([rectib])
+						#NOTE: merge causing weird issues, rect2 workaround added.
+						#item.rect=rectia.unionall([rectib])
+						item.rect=rectia
+						item.rect2=rectib
 						#pygame.draw.rect(frameobj.surface, (60, 60, 255), item.rect, 1)
 						itemimagehig=item.image.get_height()
 						if ytemp!=0:
@@ -711,10 +714,11 @@ class gopherpane:
 							self.ypos+=itemimagehig
 					if item.image==None:
 						item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
+						item.rect2=item.rect
 					#pygame.draw.rect(frameobj.surface, (255, 255, 0), item.rect, 1)
 				else:
 					item.rect, self.ypos, self.renderdict = textitem(item.name, simplefont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtimage, 1)
-
+					item.rect2=item.rect
 			elif item.gtype=="s":
 				item.rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtsound, 1)
 			
@@ -744,10 +748,17 @@ class gopherpane:
 			else:
 				rects, self.ypos, self.renderdict = textitem("[NS:" + item.gtype + "]" + item.name, simplefont, 15, (0, 0, 0), frameobj.surface, self.ypos, self.renderdict)
 				#print(item.gtype)
+			#ensure non-image types contain 'valid' item.rect2
+			if item.gtype not in "pIg":
+				item.rect2=item.rect
+			#item.rect/item.rect2 debug tracing.
 			if libzox.itemdebug:
 				try:
 					pygame.draw.rect(frameobj.surface, (255, 0, 0), item.rect, 1)
-				except AttributeError:
+					#don't draw duplicate rect2's 
+					if item.rect!=item.rect2:
+						pygame.draw.rect(frameobj.surface, (255, 0, 255), item.rect2, 1)
+				except TypeError:
 					pass
 			count+=1
 		#launch image loader thread if needed
@@ -1047,6 +1058,17 @@ class gopherpane:
 									break
 							except AttributeError:
 								continue
+						#parse rect2 of image types.
+						if item.gtype in "pIg":
+							try:
+								if item.rect2.collidepoint(mpos):
+									if libzox.isinternalhost(item.hostname):
+										deskt.hovertext=(item.hostname + "/" + item.gtype + item.selector)
+									else:
+										deskt.hovertext=("gopher://" + item.hostname + "/" + item.gtype + item.selector)
+									break
+							except AttributeError:
+								continue
 						#web url
 						if item.gtype=="h":
 							try:
@@ -1231,7 +1253,7 @@ class gopherpane:
 					if mods & pygame.KMOD_SHIFT:
 						if item.gtype!=None:
 							if item.gtype in "10gpI7s":
-								if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
+								if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)) or item.rect2.collidepoint(stz.mousehelper(data.pos, frameobj)):
 									newgop=bookmadded(url=libzox.gurlencode(item.hostname, item.selector, item.gtype, item.port), name=item.name)
 									framesc.add_frame(stz.framex(500, 150, "New Bookmark", resizable=1, pumpcall=newgop.pumpcall1, sizeminy=150))
 
@@ -1262,7 +1284,7 @@ class gopherpane:
 								sideproc.start()
 								break
 						if item.gtype=="g" or item.gtype=="p" or item.gtype=="I":
-							if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
+							if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)) or item.rect2.collidepoint(stz.mousehelper(data.pos, frameobj)):
 								#itemcopy=copy.deepcopy(item)
 								#del itemcopy.image
 								#newgop=gopherpane(host=itemcopy.hostname, port=itemcopy.port, selector=itemcopy.selector, prefix="image: gopher://", preload=[itemcopy], forceimage=1, linkdisable=1, gtype=item.gtype, shortprefix="image: ")

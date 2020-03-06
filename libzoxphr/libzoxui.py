@@ -150,8 +150,8 @@ class clock:
 class sinfo:
 	def __init__(self):
 		self.ypos=0
-		self.hourding=pygame.mixer.Sound(os.path.join("vgop", "clockhour.ogg"))
-		self.minding=pygame.mixer.Sound(os.path.join("vgop", "clockmin.ogg"))
+		#self.hourding=pygame.mixer.Sound(os.path.join("vgop", "clockhour.ogg"))
+		#self.minding=pygame.mixer.Sound(os.path.join("vgop", "clockmin.ogg"))
 		self.font=pygame.font.SysFont(None, 22)
 		
 	def renderdisp(self, frameobj):

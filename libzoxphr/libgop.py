@@ -40,7 +40,7 @@ class mitem:
 		else:
 				
 			try:
-				datax=data.replace("\r\n", "")
+				datax=data.replace("\r\n", "").replace("\n", "")
 				#handle gopher EOF dots here, so error message code is less ugly.
 				if datax==".":
 					self.gtype="END"

@@ -11,6 +11,10 @@ ERR_PARSER=1
 ERR_IMAGELOAD=3
 ERR_NONE=0
 stopget=0
+
+#whether to filter unicode characters not in u0000 to uFFFF in python 3
+py3_unicodefilter=True
+
 print("libgop gopher library v0.2")
 print("check python version...")
 vers=sys.version_info[0]
@@ -18,6 +22,7 @@ if vers==2:
 	print("Python 2")
 else:
 	print("python 3")
+	import re
 class mitem:
 	def __init__(self, data, txtflg=0):
 		self.errortype=ERR_NONE
@@ -27,6 +32,8 @@ class mitem:
 		self.rect2=None
 		if not isinstance(data, str) and vers==3:
 			data=data.decode()
+			if py3_unicodefilter:
+				data=re.sub("[^\u0000-\uFFFF]", "?", data)
 			#print("py3 data convert")
 		if txtflg:
 			self.datalist=None

@@ -1900,7 +1900,7 @@ class imgview:
 			self.surf=imagefx
 			self.surf=libzox.imagelimit(self.surf, self.maxsize)
 		except pygame.error:
-			self.surf=pygame.image.load(os.path.join(libzox.gfxpath, "giaerror.png"))
+			self.surf=pygame.image.load(os.path.join(libzox.errorpath, "gaierror.png"))
 			print("imgview: Failed to load.")
 			
 		self.loaderupt=1

@@ -44,7 +44,7 @@ pygame.font.init()
 #logical equivalent to the desktop's "frame"
 deskframe=stz.desktop(int(libzox.cnfdict["deskw"]), int(libzox.cnfdict["deskh"]), "Zoxenpher v3.0.0.indev", pumpcall=deskt.pumpcall1, resizable=resizable_desk)
 
-windowicon=pygame.image.load(os.path.join(libzox.gfxpath, "icon32.png"))
+windowicon=pygame.image.load(os.path.join(libzox.gfxpath, "icon64.png"))
 
 #init framescape window manager class
 framesc=stz.framescape(deskframe, deskicon=windowicon, actbevel=(230, 230, 230), inactbevel=(200, 200, 200), framebg=(160, 160, 160), framefg=(255, 255, 255), actframebg=(60, 60, 110), actframefg=(255, 255, 255))

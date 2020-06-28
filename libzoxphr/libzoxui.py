@@ -272,7 +272,7 @@ class aboutsplash:
 			#self.versiontext=self.font.render(versionstring, True, (0, 0, 0))
 			#self.versionpos=(frameobj.surface.get_width()-self.versiontext.get_width(), 147-self.versiontext.get_height())
 			#self.splashbg.blit(self.versiontext, (self.versionpos))
-			frameobj.seticon(about_wicon.convert())
+			frameobj.seticon(about_wicon.convert_alpha())
 			frameobj.name=versionstring
 			self.linetext=self.font.render(self.lines[self.lineindex], True, (0, 0, 0))
 			self.texypos=343

@@ -947,7 +947,7 @@ class gopherpane:
 		if self.host=="zoxsplash>>" and self.selector=="/about.gop":
 			self.prefix="about: "
 			self.shortprefix="about: "
-			frameobj.seticon(about_wicon.convert())
+			frameobj.seticon(about_wicon.convert_alpha())
 		elif self.host=="zoxhelp>>":
 			self.prefix="help: "
 			self.shortprefix="help: "

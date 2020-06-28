@@ -15,7 +15,7 @@ i - centered mode	null	null	70
 ibgmode=0	null	null	70
 i - tiled mode (default)	null	null	70
 ibgmode=1	null	null	70
-i - centered mode	null	null	70
+i - stretched mode	null	null	70
 ibgmode=2	null	null	70
 i	null	null	70
 p	/part3.png	zoxhelp>>	70

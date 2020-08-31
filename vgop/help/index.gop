@@ -3,6 +3,8 @@ iwelcome to Zoxenpher's live help system.	null	null	70
 i	null	null	70
 iPlease take your time to read the topics below, if you need any help.	null	null	70
 p 	/helptitle.png	zoxhelp>>	70
+7Help Search	/helpsearch	zoxdynamic>>	70
+1Glossary	/glossary	zoxdynamic>>	70
 iTopics:	null	null	70
 i______________________________________________________	null	null	70
 1Basics	/basic.gop	zoxhelp>>	70

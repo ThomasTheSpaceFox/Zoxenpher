@@ -94,6 +94,7 @@ booknew_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "booknew_wicon.png"
 more_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "more_wicon.png"))
 about_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "about_wicon.png"))
 help_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "help_wicon.png"))
+gloss_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "glossary_wicon.png"))
 exit_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "exit_wicon.png"))
 framesc=None
 
@@ -457,12 +458,6 @@ class deskclass:
 
 
 
-#text document wrapper for gopherpane
-def textshow(host, port, selector):
-	data=pathfigure(host, port, selector, gtype="0")
-	menu=libgop.menudecode(data, txtflg=1)
-	newgop=gopherpane(host=host, port=port, selector=selector, preload=menu, prefix="text: gopher://", gtype="0", shortprefix="text: ")
-	framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Text Document", resizable=1, pumpcall=newgop.pumpcall1, xpos=20))
 
 
 
@@ -646,8 +641,8 @@ class gopherpane:
 			elif item.gtype=="1" and item.hostname=="zoxhelp>>":
 				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gthelp, 1)
 				item.rect=rect
-			#TODO: add seprate gtmenufile icon for file directories. if anything like downloads>> or usr>> is added, they should also use gtmenufile.
-			elif item.gtype=="1" and (item.hostname=="zox>>" or item.hostname=="zoxsplash>>"):
+			#TODO: if anything like downloads>> or usr>> is added, they should also use gtmenufile.
+			elif item.gtype=="1" and (item.hostname=="zoxdynamic>>" or item.hostname=="zox>>" or item.hostname=="zoxsplash>>"):
 				rect, self.ypos, self.renderdict = textitem(item.name, linkfont, self.yjump, (0, 0, 255), frameobj.surface, self.ypos, self.renderdict, gtmenuint, 1)
 				item.rect=rect
 			elif item.gtype=="1" and item.hostname=="file>>":
@@ -965,6 +960,7 @@ class gopherpane:
 			self.shortprefix="file: "
 			
 			frameobj.seticon(gtfile)
+		
 		elif self.gtype=="0":
 			self.prefix="text: gopher://"
 			self.shortprefix="text: "
@@ -986,6 +982,22 @@ class gopherpane:
 			querystring=""
 		if self.host=="zoxsplash>>" and self.selector=="/about.gop":
 			frameobj.name="About Zoxenpher"
+		#ZDP (Dynamic Pages)
+		elif self.host=="zoxdynamic>>":
+			if self.selector.startswith("/helpsearch"):
+				intnme="Help Search: "
+				frameobj.seticon(help_wicon.convert())
+			elif self.selector.startswith("/glossary"):
+				intnme="Glossary: "
+				frameobj.seticon(gloss_wicon.convert())
+			else:
+				intnme="Zoxenpher: "
+				frameobj.seticon(gtmenuint)
+			try:
+				frameobj.name=intnme+self.menu[0].name
+			except IndexError:
+				frameobj.name=intnme
+		#Zoxenpher Help Pages
 		elif self.host=="zoxhelp>>":
 			try:
 				frameobj.name="Help: "+self.menu[0].name
@@ -1270,10 +1282,6 @@ class gopherpane:
 								break
 						if item.gtype=="0":
 							if item.rect.collidepoint(stz.mousehelper(data.pos, frameobj)):
-								#sideproc=Thread(target = textshow, args = [item.hostname, item.port, item.selector])
-								#sideproc.daemon=True
-								#sideproc.start()
-								#break
 								self.menu=[]
 								self.loading=1
 								self.gtype="0"
@@ -1384,7 +1392,6 @@ class querypane:
 			self.querylabel="Query: "+itmdesc
 		else:
 			self.querylabel="Query: "+ self.host+"/7"+self.selector
-		#self.hovmsg="Enter your query into the serarch box"
 		self.yjump=int(libzox.cnfdict["menutextjump"])+2
 		self.stringblob=query
 		if self.stringblob==None:
@@ -1410,34 +1417,17 @@ class querypane:
 		foo, self.ypos, bar = textitem(self.stringblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.ypos+3, {}, xoff=5)
 	def loader(self, frameobj):
 		frameobj.name="Loading..."
-		#try:
-		#	data=libgop.gopherget(self.host, self.port, self.selector, query=self.stringblob)
-		#except Exception as err:
-		#	print(err)
-		#	data=open(os.path.join("vgop", "gaierror"))
-		#menu=libgop.menudecode(data)
 		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, gtype="7", query=self.stringblob)
 		framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 		#close self
 		framesc.close_pid(frameobj.pid)
 	def pumpcall1(self, frameobj, data=None):
-		#if frameobj.statflg==0:
-			#show hint in hover text area
-			#if frameobj.wo==0:
-			#	deskt.hovertext=self.hovmsg
 		if frameobj.statflg==11:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:
-			#str1=self.host+"/7"+self.selector
-			#print("querypane:")
-			#print(str1)
-			#frameobj.name="query: "+str1
 			frameobj.name=self.querylabel
 			self.renderdisp(frameobj)
 			frameobj.seticon(gtquery)
-		#if frameobj.statflg==3:
-		#	if deskt.hovertext==self.hovmsg:
-		#		deskt.hovertext=""
 		if frameobj.statflg==6:
 			if data.key==pygame.K_RETURN:
 				if self.debug==1:
@@ -1448,12 +1438,10 @@ class querypane:
 					sideproc.start()
 			elif data.key==pygame.K_BACKSPACE:
 				self.stringblob=self.stringblob[:-1]
-				#print(self.stringblob)
 				self.renderdisp(frameobj)
 			else:
 				if str(data.unicode) in self.validchars:
 					self.stringblob+=str(data.unicode)
-					#print(self.stringblob)
 					self.renderdisp(frameobj)
 				
 		
@@ -1467,7 +1455,6 @@ class bookmarks:
 		self.yoff=0
 		self.yjump=int(libzox.cnfdict["menutextjump"])
 		self.stringblob=""
-		#self.hovmsg="Enter a gopher URL to load."
 		self.validchars="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890:/.-_ "
 		#self.url=url
 		self.bookm=bookm
@@ -1683,15 +1670,6 @@ class bookmadded:
 		pygame.draw.rect(frameobj.surface, (0, 0, 100), pygame.Rect(0, 0, frameobj.sizex, self.yjump+3))
 		foo, self.ypos, bar = textitem("tab=switch textboxes, enter=accept", simplefont, self.yjump, (255, 255, 255), frameobj.surface, self.ypos, {}, xoff=0, textcoly=(0, 0, 100))
 		self.ypos+=3+self.yjump
-		#textitem("tab=switch entries, enter=accept", simplefont, self.yjump, (0, 0, 0), frameobj.surface, self.yjump*1, {}, xoff=0)
-		
-		
-		#if self.line:
-			#textitem("gopher://"+self.urlblob+"", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*3, {}, xoff=0)
-			#textitem("name:"+self.nameblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*5, {}, xoff=0)
-		#else:
-			#textitem("gopher://"+self.urlblob+"|", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*3, {}, xoff=0)
-			#textitem("name:"+self.nameblob+"", simplefont, self.yjump, (14, 0, 14), frameobj.surface, self.yjump*5, {}, xoff=0)
 		if self.line:
 			urlstr="gopher://"+self.urlblob+""
 			namestr="name:"+self.nameblob+"|"
@@ -1790,13 +1768,6 @@ class urlgo:
 		newgop=gopherpane(host=self.host, port=self.port, selector=self.selector, gtype="0", prefix="text: gopher://")
 		framesc.add_frame(stz.framex(gopherwidth, gopherheight, "Gopher Menu", resizable=1, pumpcall=newgop.pumpcall1))
 	def pumpcall1(self, frameobj, data=None):
-		#if frameobj.statflg==0:
-		#	#show hint in hover text area
-		#	if frameobj.wo==0:
-		#		deskt.hovertext=self.hovmsg
-		#if frameobj.statflg==3:
-		#	if deskt.hovertext==self.hovmsg:
-		#		deskt.hovertext=""
 		if frameobj.statflg==11:
 			self.renderdisp(frameobj)
 		if frameobj.statflg==1:

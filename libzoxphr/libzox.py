@@ -10,7 +10,7 @@ import socket
 #import sys
 
 gfxpath=os.path.join("vgop", "gfx")
-internalurlhosts=["zox>>", "zoxhelp>>", "zoxsplash>>", "file>>"]
+internalurlhosts=["zox>>", "zoxhelp>>", "zoxsplash>>", "file>>", "zoxdynamic>>"]
 
 def isinternalurl(url):
 	for host in internalurlhosts:
@@ -49,7 +49,10 @@ def pathfigure(host, port, selector, gtype="0", query=None):
 				#data=open(os.path.join(errorpath, "gaierror.gif"))
 	#new internal doc URL scheme.
 	#these "fake" hosts, enact hardcoded file loading/internal page generation activity.
-	if host==("zox>>") or host=="zoxhelp>>" or host=="zoxsplash>>" or host=="file>>":
+	if host==("zox>>") or host=="zoxhelp>>" or host=="zoxsplash>>" or host=="file>>" or host=="zoxdynamic>>":
+		selectorlist=selector.split("/")
+		if host=="zoxdynamic>>":
+			return dynamic_query_int(host, port, selector, gtype, query)
 		#run special fileurl listing code. if not a directory, normal internal doc code runs.
 		if host=="file>>" and gtype=="1":
 			fileurldata=fileurl(host, port, selector)
@@ -57,8 +60,6 @@ def pathfigure(host, port, selector, gtype="0", query=None):
 				return fileurldata
 		#hoststripped=host.replace('\\', "").replace("/", "").replace("..", "")
 		#hoststripped=hoststripped[6:]
-		selectorlist=selector.split("/")
-		
 		if "" in selectorlist:
 			selectorlist.remove("")
 		if "." in selectorlist:
@@ -127,6 +128,28 @@ def SecureFilter(menulist, serverhost):
 
 def ientry(string, gtype="i", selector="null", host="null"):
 	return gtype+string+"\t"+selector+"\t"+host+"\t70"
+
+def dynamic_query_int(host, port, selector, gtype, query):
+	selectorlist=selector.split("/")
+	if "" in selectorlist:
+		selectorlist.remove("")
+	if selectorlist[0]=="helpsearch":
+		data=[]
+		data.append(ientry(str(query)))
+		data.append(ientry(default_heading_divider))
+		data.append(ientry("INSERT SEARCH RESULTS HERE!"))
+		data.append(ientry(default_heading_divider))
+		data.append(ientry("This page was generated internally by Zoxenpher."))
+	elif selectorlist[0]=="glossary":
+		data=[]
+		data.append(ientry("Main"))
+		data.append(ientry(default_heading_divider))
+		data.append(ientry("INSERT LISTING OF GLOSSARY DATABASE HERE"))
+		data.append(ientry(default_heading_divider))
+		data.append(ientry("This page was generated internally by Zoxenpher."))
+	else:
+		data=PathErrorHandle(selector, host, port, "Invalid Dynamic Internal Address (via zoxdynamic>>)", "", gtype=gtype, querytext=query)
+	return data
 
 def PathErrorHandle(selector, host, port, errorstr, errordesc, errraw=None, gtype="1", querytext=None):
 	#print(gtype)

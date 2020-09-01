@@ -23,7 +23,7 @@ sinfo_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "sinfo_wicon.png"))
 yn_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "yn_wicon.png"))
 about_wicon=pygame.image.load(os.path.join(libzox.gfxpath, "about_wicon.png"))
 
-
+wood_bg_1=pygame.image.load(os.path.join(libzox.gfxpath, "woodgrain_bg_1.png"))
 
 def init(framescape, desktop):
 	global framesc
@@ -108,23 +108,28 @@ class clock:
 		self.font=pygame.font.SysFont(None, 22)
 		
 	def renderdisp(self, frameobj):
-		frameobj.surface.fill((223, 223, 223))
+		#frameobj.surface.fill((223, 223, 223))
+		#draw background
+		frameobj.surface.blit(self.bg, (0, 0))
 		self.ypos=0
 		if self.timest.startswith("0"):
-			timetx=self.fonttime.render(self.timest[1:], True, (0, 0, 0), (223, 223, 223))
+			timetx=self.fonttime.render(self.timest[1:], True, (127, 255, 127), (0, 0, 0))
 			frameobj.name=self.timest[1:]+" - Clock"
 		else:
-			timetx=self.fonttime.render(self.timest, True, (0, 0, 0), (223, 223, 223))
+			timetx=self.fonttime.render(self.timest, True, (127, 255, 127), (0, 0, 0))
 			frameobj.name=self.timest+" - Clock"
-		datetx=self.font.render(self.datest, True, (0, 0, 0), (223, 223, 223))
+		datetx=self.font.render(self.datest, True, (127, 255, 127), (0, 0, 0))
 		timexpos=frameobj.surface.get_width()//2 - timetx.get_width()//2
 		datexpos=frameobj.surface.get_width()//2 - datetx.get_width()//2
-		frameobj.surface.blit(timetx, (timexpos, 2))
-		frameobj.surface.blit(datetx, (datexpos, 34))
+		trect=frameobj.surface.blit(timetx, (timexpos, 2))
+		drect=frameobj.surface.blit(datetx, (datexpos, 34))
+		stz.draw3Dbox(frameobj.surface, trect, (160, 160, 160), (255, 255, 255), size=1)
+		stz.draw3Dbox(frameobj.surface, drect, (160, 160, 160), (255, 255, 255), size=1)
 	def pumpcall1(self, frameobj, data=None):
 		if frameobj.statflg==1:
 			frameobj.name="Clock"
 			frameobj.seticon(clock_wicon.convert())
+			self.bg=wood_bg_1.convert()
 			self.time=time.localtime()
 			self.hour=self.time.tm_hour
 			self.minu=self.time.tm_min

@@ -2235,14 +2235,20 @@ class xmitm:
 #Widgets Menu
 widgetslist=[xmitm("more_clock.png", "Clock", 1, data1=libzoxui.clock, comment="An on-screen clock with date and sound.", width=230, height=60, resize=0),
 xmitm("more_tipofday.png", "Tip Of The Day", 1, data1=libzoxui.tipofday, comment="Get a random tip from a set of Zoxenpher-related tips.", width=350, height=120, resize=0)]
+#Games menu (placeholder for now. no games yet)
+gameslist=[xmitm("more_clock.png", "Clock", 1, data1=libzoxui.clock, comment="An on-screen clock with date and sound.", width=230, height=60, resize=0),
+xmitm("more_tipofday.png", "Tip Of The Day", 1, data1=libzoxui.tipofday, comment="Get a random tip from a set of Zoxenpher-related tips.", width=350, height=120, resize=0)]
 
 #main category
 defaultlist=[xmitm("more_files.png", "File Browse", 2, data1="file>>", data2="/", comment="Browse zoxenpher's subdirectories.", width=gopherwidth, height=gopherheight, resize=1),
 xmitm("more_submenu_widgets.png", "Widgets ->", 4, data1=widgetslist, data2="Widgets", comment="A selection of assorted mini-programs of varying usefulness.",),
+xmitm("more_submenu_games.png", "Games ->", 4, data1=gameslist, data2="Games", comment="A selecion of built-in games.",),
 xmitm("more_sinfo.png", "System Info", 1, data1=libzoxui.sinfo, comment="Info on Zoxenpher's runtime, and host OS.", width=200, height=240, resize=0)]
 
 testmenu=[xmitm("more_dummy.png", "TEST ITEM 02", 1, data1=gopherpane, comment="Hello", width=gopherwidth, height=gopherheight),
 xmitm("more_dummy.png", "TEST ITEM 03", 1, data1=gopherpane, comment="Hello", width=gopherwidth, height=gopherheight),]
+
+
 
 class morethings:
 	def __init__(self, appselect=defaultlist, label="main"):
